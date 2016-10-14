@@ -1,0 +1,13 @@
+github "izouxv/sqlite3" "master"
+
+#github "izouxv/sqlite3" "master"
+#carthage update --no-use-binaries --platform iOS
+#github "Quick/Quick"
+#github "Quick/Nimble"
+#github "Quick/Quick" ~> 0.9.2
+#github "Quick/Nimble" ~> 3.2.0
+#github "stephencelis/SQLiteCipher.swift" "master"
+#github "Quick/Nimble" "master"
+#github "izouxv/sqlcipher_FMWK" "master"
+
+

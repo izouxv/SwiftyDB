@@ -1,0 +1,3 @@
+[submodule "Carthage/Checkouts/sqlite3"]
+	path = Carthage/Checkouts/sqlite3
+	url = https://github.com/izouxv/sqlite3.git

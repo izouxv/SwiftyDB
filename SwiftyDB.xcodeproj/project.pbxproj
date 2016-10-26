@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		422E6C551DA7665000169649 /* SwiftDB+Asynchronous.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283E3E11D0FDFB200E7966A /* SwiftDB+Asynchronous.swift */; };
-		42422CA61DC0B62B007C9D76 /* sqlite3.framework in Resources */ = {isa = PBXBuildFile; fileRef = 4281182E1D0E581500DD680B /* sqlite3.framework */; };
+		42422CA81DC0B777007C9D76 /* sqlite3.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4281182E1D0E581500DD680B /* sqlite3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		425D99471D8292DC00969025 /* DatabaseConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D99421D8292DC00969025 /* DatabaseConnection.swift */; };
 		425D99481D8292DC00969025 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D99431D8292DC00969025 /* Statement.swift */; };
 		425D99491D8292DC00969025 /* SwiftDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D99441D8292DC00969025 /* SwiftDB.swift */; };
@@ -53,6 +53,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		42422CA71DC0B770007C9D76 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				42422CA81DC0B777007C9D76 /* sqlite3.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		42F1E0C71D0E72A7008527EB /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -218,6 +228,7 @@
 				428117E41D0E56D800DD680B /* Frameworks */,
 				428117E51D0E56D800DD680B /* Headers */,
 				428117E61D0E56D800DD680B /* Resources */,
+				42422CA71DC0B770007C9D76 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -290,7 +301,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42422CA61DC0B62B007C9D76 /* sqlite3.framework in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

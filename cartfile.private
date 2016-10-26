@@ -1,4 +1,4 @@
-#github "izouxv/sqlite3" "master"
+github "izouxv/sqlite3" "master"
 
 #github "izouxv/sqlite3" "master"
 #carthage update --no-use-binaries --platform iOS

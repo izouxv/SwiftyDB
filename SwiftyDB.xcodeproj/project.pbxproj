@@ -57,7 +57,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolderSpec = 11;
 			files = (
 				42422CA81DC0B777007C9D76 /* sqlite3.framework in CopyFiles */,
 			);

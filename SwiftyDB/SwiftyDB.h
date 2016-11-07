@@ -6,7 +6,9 @@
 //  Copyright © 2016 team.bz. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import Foundation;
+
+//#import <UIKit/UIKit.h>
 
 //! Project version number for SwiftyDB.
 FOUNDATION_EXPORT double SwiftyDBVersionNumber;

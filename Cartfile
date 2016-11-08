@@ -1,6 +1,6 @@
 #github "izouxv/sqlite3" "master"     "http://7xoz74.com1.z0.glb.clouddn.com/sqlite3.framework.zip"
 
-github "izouxv/sqlite3" "v1.0"
+github "izouxv/sqlite3" "master"
 
 #github "izouxv/sqlite3" "master"
 #carthage update --no-use-binaries --platform iOS

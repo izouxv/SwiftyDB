@@ -2,7 +2,7 @@
 
 github "izouxv/sqlite3" "master"
 
-#github "izouxv/sqlite3" "master"
+#github "izouxv/sqlite3" "master" #test
 #carthage update --no-use-binaries --platform iOS
 #github "Quick/Quick"
 #github "Quick/Nimble"

@@ -14,6 +14,7 @@ import Foundation
 public protocol Storable {
     /** Used to initialize an object to get information about its properties */
     init()
+    func setValuesForKeys(_ keyedValues: [String : Any]) 
 }
 
 /** Implement this protocol to use primary keys */

@@ -56,8 +56,6 @@ extension SwiftyDB  {
             throw thrownError!
         }
     }
-    
-   
 }
 
 
@@ -81,7 +79,7 @@ extension SwiftyDB {
      - returns:             Result wrapping the objects, or an error, if unsuccessful
      */
     
-    public func objectsForType <D> (_ type: D.Type, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable, D: NSObject {
+    public func objectsForType <D> (_ type: D.Type, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
         let dataResults = dataForType(D.self, matchingFilter: filter)
         
         if !dataResults.isSuccess {
@@ -104,8 +102,8 @@ extension SwiftyDB {
      - returns:          object of the provided type populated with the provided data
      */
     
-    fileprivate func objectWithData <D> (_ data: [String: Value?], forType type: D.Type) -> D where D: Storable, D: NSObject {
-        let object = (type as NSObject.Type).init() as! D
+    fileprivate func objectWithData <D> (_ data: [String: Value?], forType type: D.Type) -> D where D: Storable  {
+        let object = type.init()
         
         var validData: [String: AnyObject] = [:]
         
@@ -175,6 +173,14 @@ extension SwiftyDB  {
         return Result.success(true)
     }
     
+//    public func deleteObjects<D>(_ obj: D)->Result<Bool> where D : Storable, D: PrimaryKeys{
+//        let keys = obj.primaryKeys()
+//        let key = keys[0]
+//        let value = obj.
+//        let filter = Filter.equal(key, value: msgId)
+//        self.deleteObjectsForType(obj.Type)
+//        //return .success(true)
+//    }
     
     public func deleteObjectsForType (_ type: Storable.Type, matchingFilter filter: Filter? = nil) -> Result<Bool> {
         do {

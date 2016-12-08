@@ -64,8 +64,10 @@ class SwiftDBTestsNew: XCTestCase {
         let dog3 = Dog.init(3, "dog3")
         let dogs = [dog3, dog2]
         
-        let database = SwiftyDB(databaseName: "dogto2pi122a")
+        let database = SwiftyDB(databaseName: "dogdb")
         try! database.open()
+        try! database.key("123123")
+        
         XCTAssertTrue(database.addObject(dog1, update: true).isSuccess)
         XCTAssertTrue(database.dataForType(Dog.self).value?.count == 1)
         XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)

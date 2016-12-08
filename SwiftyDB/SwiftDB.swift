@@ -14,7 +14,7 @@ import Foundation
 public protocol Storable {
     /** Used to initialize an object to get information about its properties */
     init()
-    func setValuesForKeys(_ keyedValues: [String : Any]) 
+    func setValuesForKeys(_ keyedValues: [String : Any])
 }
 
 /** Implement this protocol to use primary keys */
@@ -40,7 +40,7 @@ public protocol MigrationProperties {
 /*
  all models' table info need save into db
  
-Nested Objects
+ Nested Objects
  
  RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
  config.objectClasses = @[MyClass.class, MyOtherClass.class];
@@ -93,7 +93,7 @@ open class SwiftyDB {
         let  path1 = documentsDir+"/\(databaseName).sqlite"
         
         self.init(path:path1)
-      //  try! self.open()
+        //  try! self.open()
     }
     
     public convenience init(userPath: String) {
@@ -101,3 +101,22 @@ open class SwiftyDB {
         self.init(path:path1)
     }
 }
+
+
+extension SwiftyDB{
+    public func key(_ key: String)throws{
+        try self.database.key(key: key)
+    }
+    public func rekey(_ key: String)throws{
+        try self.database.rekey(key: key)
+    }
+}
+
+
+
+
+
+
+
+
+

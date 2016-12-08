@@ -299,14 +299,16 @@ extension DatabaseConnection {
 
 
 extension DatabaseConnection {
-    #if SQLITE_HAS_CODEC
-    internal func key(key: String) throws {
-        try SQLiteResultHandler.verifyResultCode(sqlite3_key(handle, key, Int32(key.utf8.count)), forHandle: handle)
+    public func key(key: String) throws {
+        #if SQLITE_HAS_CODEC
+            try SQLiteResultHandler.verifyResultCode(sqlite3_key(handle, key, Int32(key.utf8.count)), forHandle: handle)
+        #endif
     }
-    internal func rekey(key: String) throws {
-        try SQLiteResultHandler.verifyResultCode(sqlite3_rekey(handle, key, Int32(key.utf8.count)), forHandle: handle)
+    public func rekey(key: String) throws {
+        #if SQLITE_HAS_CODEC
+            try SQLiteResultHandler.verifyResultCode(sqlite3_rekey(handle, key, Int32(key.utf8.count)), forHandle: handle)
+        #endif
     }
-    #endif
 }
 
 

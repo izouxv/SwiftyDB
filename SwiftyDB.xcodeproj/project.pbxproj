@@ -86,6 +86,7 @@
 		4283E3E21D0FDFB200E7966A /* SwiftyDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftyDB.h; sourceTree = "<group>"; };
 		4283E3E71D0FDFB200E7966A /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		42D080251DF94DCD00417D77 /* SwiftyDBTestsNew.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTestsNew.swift; sourceTree = "<group>"; };
+		42D080311DF9661600417D77 /* Other.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Other.md; sourceTree = "<group>"; };
 		42F1E0991D0E5BFE008527EB /* SwiftyDBTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftyDBTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		42F1E09A1D0E5BFE008527EB /* DatabaseConnectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseConnectionTests.swift; sourceTree = "<group>"; };
 		42F1E09C1D0E5C1A008527EB /* FilterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterSpec.swift; sourceTree = "<group>"; };
@@ -135,6 +136,7 @@
 		428117DE1D0E56D800DD680B = {
 			isa = PBXGroup;
 			children = (
+				42D080311DF9661600417D77 /* Other.md */,
 				425D99381D826C8F00969025 /* README.md */,
 				428118291D0E573500DD680B /* cartfile */,
 				428117EA1D0E56D800DD680B /* SwiftyDB */,

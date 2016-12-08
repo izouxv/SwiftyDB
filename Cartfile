@@ -1,15 +1,8 @@
-#github "izouxv/sqlite3" "master"     "http://7xoz74.com1.z0.glb.clouddn.com/sqlite3.framework.zip"
 
 github "izouxv/sqlite3" # "master"
 
-#github "izouxv/sqlite3" "master" #test
-#carthage update --no-use-binaries --platform iOS
-#github "Quick/Quick"
-#github "Quick/Nimble"
-#github "Quick/Quick" ~> 0.9.2
-#github "Quick/Nimble" ~> 3.2.0
-#github "stephencelis/SQLiteCipher.swift" "master"
-#github "Quick/Nimble" "master"
+github "Quick/Quick" "0.9.2"
+github "Quick/Nimble" "3.2.0"
 #github "izouxv/sqlcipher_FMWK" "master"
 
 

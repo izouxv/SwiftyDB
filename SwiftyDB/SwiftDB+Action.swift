@@ -168,7 +168,10 @@ extension SwiftyDB  {
             return Result.success(true)
         }
         for object in objects {
-            return self.addObject(object, update: update)
+            let result = self.addObject(object, update: update)
+            if !result.isSuccess{
+                return result
+            }
         }
         return Result.success(true)
     }

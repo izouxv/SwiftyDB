@@ -76,20 +76,24 @@ open class SwiftyDB {
     /** A cache containing existing table names */
     internal var existingTables: Set<String> = []
     
-    open func open() throws {
+    public func open() throws {
         try self.database.open()
     }
     
-    open func close(){
+    public func close(){
         try! self.database.close()
     }
     
+    deinit {
+        self.close()
+    }
     
     public convenience init(databaseName: String) {
         let documentsDir : String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
         let  path1 = documentsDir+"/\(databaseName).sqlite"
         
         self.init(path:path1)
+      //  try! self.open()
     }
     
     public convenience init(userPath: String) {

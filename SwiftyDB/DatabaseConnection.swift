@@ -176,18 +176,18 @@ internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.se
 
 
 /** Responsible for opening and closing database connections, executing queries, and managing transactions */
-class DatabaseConnection {
+open class DatabaseConnection {
     
     fileprivate var handle: OpaquePointer? = nil
     fileprivate let path: String
     
     fileprivate var isOpen: Bool = false
     
-    internal func IsOpen() -> Bool {
+    public func IsOpen() -> Bool {
         return self.isOpen
     }
     
-    internal init(path: String) {
+    public init(path: String) {
         self.path = path
     }
     
@@ -196,7 +196,7 @@ class DatabaseConnection {
     }
     
     /** Open the database connection */
-    internal func open() throws {
+    public func open() throws {
         if isOpen{
             return
         }
@@ -205,7 +205,7 @@ class DatabaseConnection {
     }
     
     /** Close the database connection */
-    internal func close() throws {
+    public func close() throws {
         if !isOpen{
             return
         }
@@ -221,7 +221,7 @@ class DatabaseConnection {
      
      - returns:          a prepared statement
      */
-    internal func prepare(_ query: String) throws -> Statement {
+    public func prepare(_ query: String) throws -> Statement {
         let statement: Statement = Statement(query)
         try statement.prepareForDatabase(handle!)
         return statement
@@ -232,21 +232,21 @@ class DatabaseConnection {
 extension DatabaseConnection {
     
     /** Begin a transaction */
-    internal  func beginTransaction() throws {
+    public  func beginTransaction() throws {
         try self.prepare("BEGIN TRANSACTION")
             .executeUpdate()
             .finalize()
     }
     
     /** End an ongoing transaction */
-    internal  func endTransaction() throws {
+    public  func endTransaction() throws {
         try self.prepare("END TRANSACTION")
             .executeUpdate()
             .finalize()
     }
     
     /** Rollback a transaction */
-    internal func rollback() throws {
+    public func rollback() throws {
         try self.prepare("ROLLBACK TRANSACTION")
             .executeUpdate()
             .finalize()
@@ -282,7 +282,7 @@ extension DatabaseConnection {
      
      - returns:              boolean indicating whether the table exists, or not
      */
-    internal func containsTable(_ tableName: String) throws -> Bool {
+    public func containsTable(_ tableName: String) throws -> Bool {
         let query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
         
         let statement = try prepare(query)

@@ -9,13 +9,13 @@
 import XCTest
 @testable import SwiftyDB
 
-class Dog: Storable {
+class Dog:NSObject, Storable {
     var id: Int?
     var name: String?
     var owner: String?
     var birth: NSDate?
     
-    required init() {}
+    required override init() {}
 }
 extension Dog: PrimaryKeys {
     class func primaryKeys() -> Set<String> {

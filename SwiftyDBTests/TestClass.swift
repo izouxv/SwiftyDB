@@ -53,7 +53,9 @@ extension DynamicTestClass: PrimaryKeys {
     }
 }
 
-class TestClass: Storable {
+class TestClass:NSObject, Storable {
+  
+
     
     var primaryKey: NSNumber = 1
     var ignored: Int = -1
@@ -113,7 +115,7 @@ class TestClass: Storable {
     var dictionary: NSDictionary = ["1":1,"2":2]
     var optionalDictionary: NSDictionary? = ["1":1,"2":2]
     
-    required init() {}
+    required override init() {}
 }
 
 extension TestClass: PrimaryKeys {

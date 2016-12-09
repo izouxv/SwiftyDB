@@ -37,6 +37,9 @@ public protocol MigrationProperties {
     static func migrationProperties(_ oldVersion : Int) -> Set<String>
 }
 
+
+
+
 /*
  all models' table info need save into db
  

@@ -11,7 +11,7 @@ import XCTest
 
 
 
-class Dog:NSObject, Storable {
+class Dog:NSObject {
     var id: Int
     var name: String
     var owner: String?
@@ -41,7 +41,8 @@ extension Dog: IgnoredProperties {
     }
 }
 
-
+extension NSObject: Storable  {
+}
 
 class SwiftDBTestsNew: XCTestCase {
     
@@ -55,7 +56,20 @@ class SwiftDBTestsNew: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    func testWithDogNSObject() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        let dog1 = Dog.init(1, "dog1")
+        let database = SwiftyDB(databaseName: "dogdkk2b2122_1")
+        try! database.open()
+        try! database.key("123123")
+        let dogs  : [NSObject] = [dog1]
+        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
+        XCTAssertTrue(database.dataForType(Dog.self).value?.count == 1)
+    }
+    
+    func testWithDogType() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         

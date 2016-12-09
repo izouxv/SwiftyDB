@@ -133,11 +133,11 @@ extension SwiftyDB  {
         //        }
         
         do {
-            if !(try tableExistsForType(S)) {
+            if !(try tableExistsForObj(object)) {
                 createTableForTypeRepresentedByObject(object)
             }
             
-            let insertStatement = StatementGenerator.insertStatementForType(S.self, update: update)
+            let insertStatement = StatementGenerator.insertStatementForType(object, update: update)
             
             //这里不应该直接做事务，因为有可能多个操作一起事务
             //try databaseQueue.transaction { (database) -> Void in

@@ -78,7 +78,16 @@ extension SwiftyDB  {
     
     internal func tableExistsForType(_ type: Storable.Type) throws -> Bool {
         let tableName = tableNameForType(type)
-        
+        return try self.tableExistsForName(tableName)
+    }
+    
+    
+    internal func tableExistsForObj(_ obj: Storable) throws -> Bool {
+        let tableName = tableNameForObj(obj)
+        return try self.tableExistsForName(tableName)
+    }
+    
+    internal func tableExistsForName(_ tableName: String) throws -> Bool {
         var exists: Bool = existingTables.contains(tableName)
         
         /* Return true if the result is cached */
@@ -97,7 +106,6 @@ extension SwiftyDB  {
         
         return exists
     }
-    
     /**
      Used to create name of the table representing a type
      
@@ -107,6 +115,9 @@ extension SwiftyDB  {
      */
     internal func tableNameForType(_ type: Storable.Type) -> String {
         return String(describing: type)
+    }
+    internal func tableNameForObj(_ obj: Storable) -> String {
+        return String(describing: type(of:obj))
     }
     
     /**

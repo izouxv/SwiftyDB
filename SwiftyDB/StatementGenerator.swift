@@ -38,19 +38,25 @@ internal enum SQLiteDatatype: String {
 internal class StatementGenerator {
     
     internal class func createTableStatementForTypeRepresentedByObject <S: Storable> (_ object: S) -> String {
-        let tableName =  tableNameForType(S.self)
+       // let tableName =  tableNameForType(S.self)
+        let tableName =   tableNameForObj(object)
         
         var statement = "CREATE TABLE " + tableName + " ("
         
-        for propertyData in PropertyData.validPropertyDataForObject(object) {
+        let items = PropertyData.validPropertyDataForObject(object)
+        for i in 0..<items.count{
+            let propertyData = items[i]
             statement += "\(propertyData.name!) \(SQLiteDatatype(type: propertyData.type!)!.rawValue)"
             statement += propertyData.isOptional ? "" : " NOT NULL"
-            statement += ", "
+            if i<items.count-1{
+                statement += ", "
+            }
         }
         
-        if S.self is PrimaryKeys.Type {
-            let primaryKeysType = S.self as! PrimaryKeys.Type
-            statement += "PRIMARY KEY (\(primaryKeysType.primaryKeys().joined(separator: ", ")))"
+        let objT = type(of:object)
+        if objT is PrimaryKeys.Type {
+            let primaryKeysType = objT as! PrimaryKeys.Type
+            statement += ", PRIMARY KEY (\(primaryKeysType.primaryKeys().joined(separator: ", ")))"
         }
         
         statement += ")"
@@ -58,10 +64,10 @@ internal class StatementGenerator {
         return statement
     }
     
-    internal class func insertStatementForType(_ type: Storable.Type, update: Bool) -> String {
-        var statement = "INSERT OR " + (update ? "REPLACE" : "ABORT") + " INTO " + tableNameForType(type)
+    internal class func insertStatementForType(_ obj: Storable, update: Bool) -> String {
+        var statement = "INSERT OR " + (update ? "REPLACE" : "ABORT") + " INTO " + tableNameForObj(obj)
         
-        let propertyData = PropertyData.validPropertyDataForObject(type.init())
+        let propertyData = PropertyData.validPropertyDataForObject(type(of:obj).init())
         
         let columns = propertyData.map {$0.name!}
         let namedParameters = columns.map {":" + $0}
@@ -111,4 +117,8 @@ internal class StatementGenerator {
     fileprivate class func tableNameForType(_ type: Storable.Type) -> String {
         return String(describing: type)
     }
+    internal  class func tableNameForObj(_ obj: Storable) -> String {
+        return String(describing: type(of:obj))
+    }
+    
 }

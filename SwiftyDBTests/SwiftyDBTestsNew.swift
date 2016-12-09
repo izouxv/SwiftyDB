@@ -41,6 +41,11 @@ extension Dog: IgnoredProperties {
     }
 }
 
+class BigDog:Dog {
+    var XiXi: String = "XiXi"
+}
+
+
 extension NSObject: Storable  {
 }
 
@@ -54,6 +59,19 @@ class SwiftDBTestsNew: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+    }
+    
+    func testWaOverride() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+        let dog1 = BigDog.init(1, "dog1")
+        let database = SwiftyDB(databaseName: "dogdsskk2rrb2122_1")
+        try! database.open()
+        try! database.key("123123")
+        let dogs  : [NSObject] = [dog1]
+        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
+        XCTAssertTrue(database.dataForType(BigDog.self).value?.count == 1)
     }
     
     func testWithDogNSObject() {

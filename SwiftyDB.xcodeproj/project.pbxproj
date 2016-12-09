@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4215A5D11DFA5DB30098830A /* OCBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4215A5D01DFA5DB30098830A /* OCBase.m */; };
+		4215A5D31DFA5E680098830A /* SwiftyDBTestsBaseOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4215A5D21DFA5E680098830A /* SwiftyDBTestsBaseOC.swift */; };
 		422E6C551DA7665000169649 /* SwiftDB+Asynchronous.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283E3E11D0FDFB200E7966A /* SwiftDB+Asynchronous.swift */; };
 		425D99471D8292DC00969025 /* DatabaseConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D99421D8292DC00969025 /* DatabaseConnection.swift */; };
 		425D99481D8292DC00969025 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425D99431D8292DC00969025 /* Statement.swift */; };
@@ -64,6 +66,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4215A5CF1DFA5DB30098830A /* OCBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBase.h; sourceTree = "<group>"; };
+		4215A5D01DFA5DB30098830A /* OCBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBase.m; sourceTree = "<group>"; };
+		4215A5D21DFA5E680098830A /* SwiftyDBTestsBaseOC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTestsBaseOC.swift; sourceTree = "<group>"; };
 		425D99381D826C8F00969025 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		425D99421D8292DC00969025 /* DatabaseConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseConnection.swift; sourceTree = "<group>"; };
 		425D99431D8292DC00969025 /* Statement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
@@ -178,6 +183,9 @@
 		428117F61D0E56D800DD680B /* SwiftyDBTests */ = {
 			isa = PBXGroup;
 			children = (
+				4215A5D21DFA5E680098830A /* SwiftyDBTestsBaseOC.swift */,
+				4215A5CF1DFA5DB30098830A /* OCBase.h */,
+				4215A5D01DFA5DB30098830A /* OCBase.m */,
 				42D080251DF94DCD00417D77 /* SwiftyDBTestsNew.swift */,
 				42F1E09E1D0E5C35008527EB /* AsynchronousSpec.swift */,
 				42F1E09F1D0E5C35008527EB /* DatabaseManipulationSpec.swift */,
@@ -329,8 +337,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4215A5D11DFA5DB30098830A /* OCBase.m in Sources */,
 				42F1E0C11D0E5C68008527EB /* DatabaseConnectionTests.swift in Sources */,
 				42D080261DF94DCD00417D77 /* SwiftyDBTestsNew.swift in Sources */,
+				4215A5D31DFA5E680098830A /* SwiftyDBTestsBaseOC.swift in Sources */,
 				42F1E0BD1D0E5C68008527EB /* SwiftyDBTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

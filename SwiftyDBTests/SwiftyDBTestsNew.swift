@@ -46,6 +46,11 @@ class BigDog:Dog {
 }
 
 
+class BigDogOC:Dog {
+    var XiXi: String = "XiXi"
+}
+
+
 extension NSObject: Storable  {
 }
 
@@ -60,7 +65,7 @@ class SwiftDBTestsNew: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-    
+     
     func testWaOverride() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.

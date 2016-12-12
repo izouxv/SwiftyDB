@@ -52,7 +52,7 @@ extension SwiftyDB {
          - parameter type:      type of the objects to be retrieved
          */
         
-        internal func asyncObjectsForType <D> (_ type: D.Type, matchingFilter filter: Filter? = nil, withCompletionHandler completionHandler: @escaping ((Result<[D]>)->Void)) where D: Storable {
+        internal func asyncObjectsForType <D> (_ type: D, matchingFilter filter: Filter? = nil, withCompletionHandler completionHandler: @escaping ((Result<[D]>)->Void)) where D: Storable {
             
             queueAsync.async { [unowned self] () -> Void in
                 completionHandler(self.objectsForType(type, matchingFilter: filter))

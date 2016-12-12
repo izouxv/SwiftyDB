@@ -81,9 +81,9 @@ internal class StatementGenerator {
         return statement
     }
     
-    internal class func selectStatementForType(_ type: Storable.Type, matchingFilter filter: Filter?) -> String {
+    internal class func selectStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
         
-        let tableName =  tableNameForType(type)
+        let tableName =  tableNameForObj(type)
         
         var statement = "SELECT ALL * FROM \(tableName)"
         
@@ -96,9 +96,9 @@ internal class StatementGenerator {
         return statement
     }
     
-    internal class func deleteStatementForType(_ type: Storable.Type, matchingFilter filter: Filter?) -> String {
+    internal class func deleteStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
         
-        let tableName =  tableNameForType(type)
+        let tableName =  tableNameForObj(type)
         
         var statement = "DELETE FROM \(tableName)"
         
@@ -114,9 +114,9 @@ internal class StatementGenerator {
     
     
     /** Name of the table representing a class */
-    fileprivate class func tableNameForType(_ type: Storable.Type) -> String {
-        return String(describing: type)
-    }
+//    fileprivate class func tableNameForType(_ type: Storable.Type) -> String {
+//        return String(describing: type)
+//    }
     internal  class func tableNameForObj(_ obj: Storable) -> String {
         return String(describing: type(of:obj))
     }

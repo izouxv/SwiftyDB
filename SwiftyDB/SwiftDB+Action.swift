@@ -79,8 +79,8 @@ extension SwiftyDB {
      - returns:             Result wrapping the objects, or an error, if unsuccessful
      */
     
-    public func objectsForType <D> (_ type: D.Type, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
-        let dataResults = dataForType(D.self, matchingFilter: filter)
+    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
+        let dataResults = dataForType(obj, matchingFilter: filter)
         
         if !dataResults.isSuccess {
             return .Error(dataResults.error!)
@@ -185,9 +185,9 @@ extension SwiftyDB  {
 //        //return .success(true)
 //    }
     
-    public func deleteObjectsForType (_ type: Storable.Type, matchingFilter filter: Filter? = nil) -> Result<Bool> {
+    public func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter? = nil) -> Result<Bool> {
         do {
-            guard try tableExistsForType(type) else {
+            guard try tableExistsForObj(type) else {
                 return Result.success(true)
             }
             
@@ -207,16 +207,16 @@ extension SwiftyDB  {
     
     
     
-    public func dataForType <S: Storable> (_ type: S.Type, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
+    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
         
         var results: [[String: Value?]] = []
         do {
-            guard try tableExistsForType(type) else {
+            guard try tableExistsForObj(obj) else {
                 return Result.success([])
             }
             
             /* Generate statement */
-            let query = StatementGenerator.selectStatementForType(type, matchingFilter: filter)
+            let query = StatementGenerator.selectStatementForType(obj, matchingFilter: filter)
             
             try database { (database) -> Void in
                 let parameters = filter?.parameters() ?? [:]
@@ -225,7 +225,7 @@ extension SwiftyDB  {
                 
                 
                 /* Create a dummy object used to extract property data */
-                let object = type.init()
+                let object =  type(of:obj).init()
                 let objectPropertyData = PropertyData.validPropertyDataForObject(object)
                 
                 results = statement.map { row in

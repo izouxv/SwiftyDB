@@ -76,10 +76,10 @@ extension SwiftyDB  {
      - returns:         boolean indicating if the table exists
      */
     
-    internal func tableExistsForType(_ type: Storable.Type) throws -> Bool {
-        let tableName = tableNameForType(type)
-        return try self.tableExistsForName(tableName)
-    }
+//    internal func tableExistsForType(_ type: Storable.Type) throws -> Bool {
+//        let tableName = tableNameForType(type)
+//        return try self.tableExistsForName(tableName)
+//    }
     
     
     internal func tableExistsForObj(_ obj: Storable) throws -> Bool {

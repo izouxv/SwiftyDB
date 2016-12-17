@@ -203,7 +203,7 @@ open class Statement {
             
         case let dataValue as Data:
             if dataValue.count == 0 {
-                print("[ WARNING: Data values with zero bytes are treated as NULL by SQLite ]")
+                Swift.print("[ WARNING: Data values with zero bytes are treated as NULL by SQLite ]")
             }
             result = sqlite3_bind_blob(handle, index, (dataValue as NSData).bytes, Int32(dataValue.count), SQLITE_TRANSIENT)
             

@@ -115,7 +115,7 @@ extension SwiftyDB {
 //            }else if let validValue = value as? AnyObject {
 //                validData[name] = validValue
             }else{
-                print("not support name: \(name)")
+                Swift.print("not support name: \(name)")
             }
         }
         object.setValuesForKeys(validData)
@@ -232,8 +232,8 @@ extension SwiftyDB  {
                     self.parsedDataForRow(row, forPropertyData: objectPropertyData)
                 }
                 
-                print("query: \(query)")
-                print("results: \(results.count)")
+                Swift.print("query: \(query)")
+                Swift.print("results: \(results.count)")
                 //print("statement: \(statement)")
                 
                 try statement.finalize()

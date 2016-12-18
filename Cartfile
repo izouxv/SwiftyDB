@@ -1,8 +1,8 @@
 
 
 github "izouxv/sqlite3" # "master"
-github "Quick/Quick" "v1.0.0"
-github "Quick/Nimble" "v5.0.0"
+#github "Quick/Quick" "v1.0.0"
+#github "Quick/Nimble" "v5.0.0"
 #github "izouxv/sqlcipher_FMWK" "master"
 
 

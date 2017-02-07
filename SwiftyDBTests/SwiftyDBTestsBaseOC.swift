@@ -70,7 +70,7 @@ class SwiftDBTestsOC: XCTestCase {
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
         XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(DogOC.self).value?.count == 1)
+        XCTAssertTrue(database.dataForType(DogOC()).value?.count == 1)
     }
     
 }

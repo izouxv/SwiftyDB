@@ -9,7 +9,6 @@
 
 /** Support asynchronous queries */
 extension SwiftyDB {
-    
     /** A global, concurrent queue with default priority */
     internal var queueAsync: DispatchQueue {
         return DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated)
@@ -36,9 +35,9 @@ extension SwiftyDB {
             throw thrownError!
         }
     }
-    
 }
 
+ 
 
 #if false
     extension SwiftyDB {

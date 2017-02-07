@@ -14,22 +14,26 @@ import Foundation
 extension SwiftyDB  {
     
     /** Execute a synchronous transaction on the database in a sequential queue */
-    public func transaction(_ block: @escaping ((_ db: SwiftyDB) throws -> Void)) throws {
-        try database { (database) -> Void in
-            /* If an error occurs, rollback the transaction and rethrow the error */
-            do {
-                try database.database.beginTransaction()
-                try block(database)
-                try database.database.endTransaction()
-            } catch let error {
-                try database.database.rollback()
-                throw error
+    public func transaction(_ block: @escaping ((_ db: SwiftyDB) throws -> Void)) ->Bool {
+        do{
+            try dbSync{(database) in
+                do {
+                    try database.database.beginTransaction()
+                    try block(self)
+                    try database.database.endTransaction()
+                } catch let error {
+                    try database.database.rollback()
+                }
             }
+        } catch let error {
+            return false
         }
+        return true
     }
     
+    //写需要放在这个同步队列里面，避免事务冲突
     /** Execute synchronous queries on the database in a sequential queue */
-    public func database(_ block: @escaping ((_ database: SwiftyDB) throws -> Void)) throws {
+    public func dbSync(_ block: @escaping ((_ database: SwiftyDB) throws -> Void)) throws {
         var thrownError: Error?
         
         /* Run the query in a sequential queue to avoid threading related problems */
@@ -112,8 +116,8 @@ extension SwiftyDB {
                 validData[name] = Int(numValue) as AnyObject?
             }else if let validValue = value as? String {
                 validData[name] =  String(validValue) as AnyObject?
-//            }else if let validValue = value as? AnyObject {
-//                validData[name] = validValue
+                //            }else if let validValue = value as? AnyObject {
+                //                validData[name] = validValue
             }else{
                 Swift.print("not support name: \(name)")
             }
@@ -132,12 +136,17 @@ extension SwiftyDB  {
         //            return Result.Success(true)
         //        }
         
+        //        try database{ (database) -> Void in
+        //        }
         do {
             if !(try tableExistsForObj(object)) {
                 createTableForTypeRepresentedByObject(object)
             }
             
             let insertStatement = StatementGenerator.insertStatementForType(object, update: update)
+            
+            
+            //            try dbSync{ (database) in
             
             //这里不应该直接做事务，因为有可能多个操作一起事务
             //try databaseQueue.transaction { (database) -> Void in
@@ -148,11 +157,9 @@ extension SwiftyDB  {
                 let _ = try? statement.finalize()
             }
             
-            //for object in objects {
             let data = self.dataFromObject(object)
             try statement.executeUpdate(data)
-            //  }
-            // }
+            //}
         } catch let error {
             return Result.Error(error)
         }
@@ -167,23 +174,30 @@ extension SwiftyDB  {
         guard objects.count > 0 else {
             return Result.success(true)
         }
-        for object in objects {
-            let result = self.addObject(object, update: update)
-            if !result.isSuccess{
-                return result
+        do{
+            
+        try self.transaction { (db:SwiftyDB) in
+            for object in objects {
+                let result = db.addObject(object, update: update)
+                if !result.isSuccess{
+                    
+                }
             }
+            }
+        } catch let error {
+            return Result.Error(error)
         }
         return Result.success(true)
     }
     
-//    public func deleteObjects<D>(_ obj: D)->Result<Bool> where D : Storable, D: PrimaryKeys{
-//        let keys = obj.primaryKeys()
-//        let key = keys[0]
-//        let value = obj.
-//        let filter = Filter.equal(key, value: msgId)
-//        self.deleteObjectsForType(obj.Type)
-//        //return .success(true)
-//    }
+    //    public func deleteObjects<D>(_ obj: D)->Result<Bool> where D : Storable, D: PrimaryKeys{
+    //        let keys = obj.primaryKeys()
+    //        let key = keys[0]
+    //        let value = obj.
+    //        let filter = Filter.equal(key, value: msgId)
+    //        self.deleteObjectsForType(obj.Type)
+    //        //return .success(true)
+    //    }
     
     public func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter? = nil) -> Result<Bool> {
         do {
@@ -193,7 +207,7 @@ extension SwiftyDB  {
             
             let deleteStatement = StatementGenerator.deleteStatementForType(type, matchingFilter: filter)
             
-            try database { (database) -> Void in
+            try dbSync { (database) -> Void in
                 try database.database.prepare(deleteStatement)
                     .executeUpdate(filter?.parameters() ?? [:])
                     .finalize()
@@ -218,7 +232,7 @@ extension SwiftyDB  {
             /* Generate statement */
             let query = StatementGenerator.selectStatementForType(obj, matchingFilter: filter)
             
-            try database { (database) -> Void in
+            try dbSync { (database) -> Void in
                 let parameters = filter?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
                     .execute(parameters)
@@ -242,7 +256,7 @@ extension SwiftyDB  {
             return .Error(error)
         }
         
-       // print(results)
+        // print(results)
         return .success(results)
     }
     

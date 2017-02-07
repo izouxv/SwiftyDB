@@ -36,11 +36,11 @@ extension SwiftyDB  {
         let statement = StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
         
         do {
-            try database({ (database) -> Void in
-                try database.database.prepare(statement)
+          //  try dbSync({ (database) -> Void in
+                try database.prepare(statement)
                     .executeUpdate()
                     .finalize()
-            })
+          //  })
         } catch let error {
             return .Error(error)
         }
@@ -84,6 +84,7 @@ extension SwiftyDB  {
     
     internal func tableExistsForObj(_ obj: Storable) throws -> Bool {
         let tableName = tableNameForObj(obj)
+        Swift.print("tableName: \(tableName)")
         return try self.tableExistsForName(tableName)
     }
     
@@ -95,9 +96,10 @@ extension SwiftyDB  {
             return exists
         }
         
-        try database({ (database) in
-            exists = try database.database.containsTable(tableName)
-        })
+        //TODO 需要优先判断
+      //  try dbSync({ (database) in
+            exists = try database.containsTable(tableName)
+      //  })
         
         /* Cache the result */
         if exists {

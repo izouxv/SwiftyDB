@@ -131,7 +131,7 @@ extension SwiftyDB {
 
 extension SwiftyDB  {
     //by_zouxu need compare add & update
-    public func addObject <S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
+    public func addObjectInner <S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
         //        guard objects.count > 0 else {
         //            return Result.Success(true)
         //        }
@@ -166,6 +166,13 @@ extension SwiftyDB  {
         return Result.success(true)
     }
     
+    public func addObject<S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
+        var resut : Result<Bool> = Result.success(true)
+        try! dbSync { (database) -> Void in
+            resut = self.addObjectInner(object, update:update)
+        }
+        return resut
+    }
     public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {
         return addObjects([object] + moreObjects)
     }
@@ -178,7 +185,7 @@ extension SwiftyDB  {
             
         try self.transaction { (db:SwiftyDB) in
             for object in objects {
-                let result = db.addObject(object, update: update)
+                let result = db.addObjectInner(object, update: update)
                 if !result.isSuccess{
                     
                 }

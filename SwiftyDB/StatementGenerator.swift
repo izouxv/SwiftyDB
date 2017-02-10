@@ -93,6 +93,8 @@ internal class StatementGenerator {
         
         statement += " " + filter!.whereStatement()
         
+        statement += " " + filter!.extraStatement()
+        
         return statement
     }
     
@@ -107,6 +109,8 @@ internal class StatementGenerator {
         }
                 
         statement += " \(filter!.whereStatement())"
+        
+        statement += filter!.extraStatement()
         
         return statement
     }

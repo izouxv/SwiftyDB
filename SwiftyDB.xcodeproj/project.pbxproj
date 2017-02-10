@@ -37,6 +37,7 @@
 		42F1E0C91D0E72AC008527EB /* Quick.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4281182D1D0E581500DD680B /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		42F1E0CA1D0E72AC008527EB /* sqlite3.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4281182E1D0E581500DD680B /* sqlite3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		42F1E0CB1D0E72AF008527EB /* SwiftyDB.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 428117E81D0E56D800DD680B /* SwiftyDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		42F9AB2A1E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F9AB291E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +104,7 @@
 		42F1E0A31D0E5C35008527EB /* SwiftyDBTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests.swift; sourceTree = "<group>"; };
 		42F1E0A41D0E5C35008527EB /* TestClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestClass.swift; sourceTree = "<group>"; };
 		42F1E0A51D0E5C35008527EB /* Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		42F9AB291E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_Filter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -183,6 +185,7 @@
 		428117F61D0E56D800DD680B /* SwiftyDBTests */ = {
 			isa = PBXGroup;
 			children = (
+				42F9AB291E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift */,
 				4215A5D21DFA5E680098830A /* SwiftyDBTestsBaseOC.swift */,
 				4215A5CF1DFA5DB30098830A /* OCBase.h */,
 				4215A5D01DFA5DB30098830A /* OCBase.m */,
@@ -340,6 +343,7 @@
 				4215A5D11DFA5DB30098830A /* OCBase.m in Sources */,
 				42F1E0C11D0E5C68008527EB /* DatabaseConnectionTests.swift in Sources */,
 				42D080261DF94DCD00417D77 /* SwiftyDBTestsNew.swift in Sources */,
+				42F9AB2A1E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift in Sources */,
 				4215A5D31DFA5E680098830A /* SwiftyDBTestsBaseOC.swift in Sources */,
 				42F1E0BD1D0E5C68008527EB /* SwiftyDBTests.swift in Sources */,
 			);

@@ -76,7 +76,7 @@ class SwiftDBTestsNew: XCTestCase {
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
         XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(BigDog.self).value?.count == 1)
+        XCTAssertTrue(database.dataForType(BigDog()).value?.count == 1)
     }
     
     func testWithDogNSObject() {
@@ -89,7 +89,7 @@ class SwiftDBTestsNew: XCTestCase {
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
         XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(Dog.self).value?.count == 1)
+        XCTAssertTrue(database.dataForType(Dog()).value?.count == 1)
     }
     
     func testWithDogType() {
@@ -106,19 +106,19 @@ class SwiftDBTestsNew: XCTestCase {
         try! database.key("123123")
         
         XCTAssertTrue(database.addObject(dog1, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(Dog.self).value?.count == 1)
+        XCTAssertTrue(database.dataForType(Dog()).value?.count == 1)
         XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(Dog.self).value?.count == 3)
-        XCTAssertTrue(database.dataForType(Dog.self, matchingFilter: ["id": 1]).value?.count == 1)
+        XCTAssertTrue(database.dataForType(Dog()).value?.count == 3)
+        XCTAssertTrue(database.dataForType(Dog(), matchingFilter: ["id": 1]).value?.count == 1)
         
         dog2.name = "dog222"
         XCTAssertTrue(database.addObject(dog2, update: true).isSuccess)
    
-        XCTAssertTrue(database.deleteObjectsForType(Dog.self, matchingFilter: ["name": "dog1"]).isSuccess)
+        XCTAssertTrue(database.deleteObjectsForType(Dog(), matchingFilter: ["name": "dog1"]).isSuccess)
        
-        let result = database.dataForType(Dog.self, matchingFilter: ["id": 2])
+        let result = database.dataForType(Dog(), matchingFilter: ["id": 2])
         XCTAssertTrue(result.value![0]["name"] as! String == dog2.name)
-         XCTAssertTrue( database.deleteObjectsForType(Dog.self).isSuccess)
+         XCTAssertTrue( database.deleteObjectsForType(Dog()).isSuccess)
     }
  
     

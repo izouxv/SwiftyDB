@@ -13,13 +13,14 @@ import Foundation
 
 extension SwiftyDb  {
     //!!! TODO 需要做读写分离
-    
-    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
+    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
         
         var results: [[String: Value?]] = []
         do {
-            guard try tableExistsForObj(obj) else {
-                return Result.success([])
+            if checkTableExist{
+                guard try tableExistsForObj(obj) else {
+                    return Result.success([])
+                }
             }
             
             /* Generate statement */
@@ -52,6 +53,10 @@ extension SwiftyDb  {
         // print(results)
         return .success(results)
     }
+    
+//    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
+//        return dataForTypeInner(obj,  matchingFilter: filter, true)
+//    }
     
     
     
@@ -125,8 +130,22 @@ extension SwiftyDb {
      - returns:             Result wrapping the objects, or an error, if unsuccessful
      */
     
-    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
-        let dataResults = dataForType(obj, matchingFilter: filter)
+//    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
+//        let dataResults = dataForType(obj, matchingFilter: filter)
+//        
+//        if !dataResults.isSuccess {
+//            return .Error(dataResults.error!)
+//        }
+//        
+//        let objects: [D] = dataResults.value!.map {
+//            objectWithData($0, forType: D.self)
+//        }
+//        
+//        return .success(objects)
+//    }
+//    
+    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
+        let dataResults = dataForType(obj, matchingFilter: filter, checkTableExist)
         
         if !dataResults.isSuccess {
             return .Error(dataResults.error!)
@@ -139,6 +158,7 @@ extension SwiftyDb {
         return .success(objects)
     }
     
+    
     /**
      Creates a new dynamic object of a specified type and populates it with data from the provided dictionary
      
@@ -148,7 +168,8 @@ extension SwiftyDb {
      - returns:          object of the provided type populated with the provided data
      */
     
-    fileprivate func objectWithData <D> (_ data: [String: Value?], forType type: D.Type) -> D where D: Storable  {
+    //fileprivate
+    internal func objectWithData <D> (_ data: [String: Value?], forType type: D.Type) -> D where D: Storable  {
         let object = type.init()
         
         var validData: [String: AnyObject] = [:]
@@ -225,13 +246,13 @@ extension SwiftyDb  {
         }
         do{
             
-        try self.transaction { (db:SwiftyDb) in
-            for object in objects {
-                let result = db.addObjectInner(object, update: update)
-                if !result.isSuccess{
-                    
+            try self.transaction { (db:SwiftyDb) in
+                for object in objects {
+                    let result = db.addObjectInner(object, update: update)
+                    if !result.isSuccess{
+                        
+                    }
                 }
-            }
             }
         } catch let error {
             return Result.Error(error)
@@ -269,7 +290,7 @@ extension SwiftyDb  {
     }
     
     
-   
+    
     
     
     

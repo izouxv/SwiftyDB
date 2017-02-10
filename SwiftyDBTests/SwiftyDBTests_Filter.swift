@@ -71,9 +71,7 @@ class SwiftyDbFilter: SwiftyDBSpec {
                     let value = database.dataForType(TestClassSimple(), matchingFilter: filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 1
-                }
-                
-                
+                } 
             }
         }
     }

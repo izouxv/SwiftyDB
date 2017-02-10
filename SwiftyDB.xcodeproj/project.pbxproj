@@ -21,6 +21,8 @@
 		427D4C5B1E4DAA8D00D4D285 /* DatabaseManipulationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1E09F1D0E5C35008527EB /* DatabaseManipulationSpec.swift */; };
 		427D4C5C1E4DAAC500D4D285 /* DynamicRetrievalSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1E0A01D0E5C35008527EB /* DynamicRetrievalSpec.swift */; };
 		427D4C5D1E4DAACB00D4D285 /* RetrievedDataSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1E0A11D0E5C35008527EB /* RetrievedDataSpec.swift */; };
+		427D4C5F1E4DB5A200D4D285 /* SwiftDB+Migrate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D4C5E1E4DB5A200D4D285 /* SwiftDB+Migrate.swift */; };
+		427D4C611E4DB77100D4D285 /* SwiftyDBTestsMigrate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D4C601E4DB77100D4D285 /* SwiftyDBTestsMigrate.swift */; };
 		428117F31D0E56D800DD680B /* SwiftyDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 428117E81D0E56D800DD680B /* SwiftyDB.framework */; };
 		4281182F1D0E581500DD680B /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4281182C1D0E581500DD680B /* Nimble.framework */; };
 		428118301D0E581500DD680B /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4281182D1D0E581500DD680B /* Quick.framework */; };
@@ -81,6 +83,8 @@
 		425D99441D8292DC00969025 /* SwiftDB.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftDB.swift; sourceTree = "<group>"; };
 		425D99451D8292DC00969025 /* SwiftDB+Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Action.swift"; sourceTree = "<group>"; };
 		425D99461D8292DC00969025 /* SwiftDB+Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Util.swift"; sourceTree = "<group>"; };
+		427D4C5E1E4DB5A200D4D285 /* SwiftDB+Migrate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Migrate.swift"; sourceTree = "<group>"; };
+		427D4C601E4DB77100D4D285 /* SwiftyDBTestsMigrate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTestsMigrate.swift; sourceTree = "<group>"; };
 		428117E81D0E56D800DD680B /* SwiftyDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftyDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		428117ED1D0E56D800DD680B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		428117F21D0E56D800DD680B /* SwiftyDBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftyDBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -170,6 +174,7 @@
 				425D99441D8292DC00969025 /* SwiftDB.swift */,
 				425D99451D8292DC00969025 /* SwiftDB+Action.swift */,
 				425D99461D8292DC00969025 /* SwiftDB+Util.swift */,
+				427D4C5E1E4DB5A200D4D285 /* SwiftDB+Migrate.swift */,
 				4283E3E11D0FDFB200E7966A /* SwiftDB+Asynchronous.swift */,
 				4283E3DC1D0FDFB200E7966A /* Filter.swift */,
 				4283E3E71D0FDFB200E7966A /* Value.swift */,
@@ -187,6 +192,7 @@
 		428117F61D0E56D800DD680B /* SwiftyDBTests */ = {
 			isa = PBXGroup;
 			children = (
+				427D4C601E4DB77100D4D285 /* SwiftyDBTestsMigrate.swift */,
 				42F1E09A1D0E5BFE008527EB /* DatabaseConnectionTests.swift */,
 				42F9AB291E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift */,
 				4215A5D21DFA5E680098830A /* SwiftyDBTestsBaseOC.swift */,
@@ -328,6 +334,7 @@
 				425D994A1D8292DC00969025 /* SwiftDB+Action.swift in Sources */,
 				4283E3EA1D0FDFB200E7966A /* Result.swift in Sources */,
 				4283E3EB1D0FDFB200E7966A /* StatementGenerator.swift in Sources */,
+				427D4C5F1E4DB5A200D4D285 /* SwiftDB+Migrate.swift in Sources */,
 				4283E3E91D0FDFB200E7966A /* PropertyData.swift in Sources */,
 				4283E3F31D0FE1A700E7966A /* Value.swift in Sources */,
 				425D994B1D8292DC00969025 /* SwiftDB+Util.swift in Sources */,
@@ -344,6 +351,7 @@
 				427D4C581E4D9C3900D4D285 /* Tests.swift in Sources */,
 				427D4C5D1E4DAACB00D4D285 /* RetrievedDataSpec.swift in Sources */,
 				427D4C5B1E4DAA8D00D4D285 /* DatabaseManipulationSpec.swift in Sources */,
+				427D4C611E4DB77100D4D285 /* SwiftyDBTestsMigrate.swift in Sources */,
 				427D4C571E4D9C1500D4D285 /* FilterSpec.swift in Sources */,
 				4215A5D11DFA5DB30098830A /* OCBase.m in Sources */,
 				42F1E0C11D0E5C68008527EB /* DatabaseConnectionTests.swift in Sources */,

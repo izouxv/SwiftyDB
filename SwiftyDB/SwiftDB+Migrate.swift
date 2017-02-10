@@ -37,6 +37,12 @@ extension SwiftyDb {
         Swift.print("result: \(dataResults)")
     }
     
+//    internal func migrateIfNecessary(type: Storeable.Type, inSwifty swifty: Swifty) throws {
+//        if validTypes.contains("\(type)") {
+//            return
+//        }
+//    }
+    
     //数据交换
     //new data is nil, : delete this data
     internal class func DataUpgrade(_ ver:Int, _ talbeName : String, _ oldData:[String:Any])->[String:Any]?{

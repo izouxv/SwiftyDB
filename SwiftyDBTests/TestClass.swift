@@ -129,3 +129,28 @@ extension TestClass: IgnoredProperties {
         return ["ignored"]
     }
 }
+
+
+
+
+
+class TestClassSimple:NSObject {
+    var primaryKey: NSNumber = 1
+    var num: Int      = 0
+}
+
+extension TestClassSimple: PrimaryKeys {
+    static func primaryKeys() -> Set<String> {
+        return ["primaryKey"]
+    }
+}
+
+
+
+
+
+
+
+
+
+

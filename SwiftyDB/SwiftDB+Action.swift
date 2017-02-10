@@ -12,6 +12,48 @@ import Foundation
 
 
 extension SwiftyDB  {
+    //!!! TODO 需要做读写分离
+    
+    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
+        
+        var results: [[String: Value?]] = []
+        do {
+            guard try tableExistsForObj(obj) else {
+                return Result.success([])
+            }
+            
+            /* Generate statement */
+            let query = StatementGenerator.selectStatementForType(obj, matchingFilter: filter)
+            
+            try dbSync { (database) -> Void in
+                let parameters = filter?.parameters() ?? [:]
+                let statement = try! database.database.prepare(query)
+                    .execute(parameters)
+                
+                
+                /* Create a dummy object used to extract property data */
+                let object =  type(of:obj).init()
+                let objectPropertyData = PropertyData.validPropertyDataForObject(object)
+                
+                results = statement.map { row in
+                    self.parsedDataForRow(row, forPropertyData: objectPropertyData)
+                }
+                
+                Swift.print("query: \(query)")
+                Swift.print("results: \(results.count)")
+                //print("statement: \(statement)")
+                
+                try statement.finalize()
+            }
+        } catch let error {
+            return .Error(error)
+        }
+        
+        // print(results)
+        return .success(results)
+    }
+    
+    
     
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDB) throws -> Void)) ->Bool {
@@ -131,7 +173,7 @@ extension SwiftyDB {
 
 extension SwiftyDB  {
     //by_zouxu need compare add & update
-    public func addObjectInner <S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
+    internal func addObjectInner <S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
         //        guard objects.count > 0 else {
         //            return Result.Success(true)
         //        }
@@ -227,47 +269,7 @@ extension SwiftyDB  {
     }
     
     
-    
-    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
-        
-        var results: [[String: Value?]] = []
-        do {
-            guard try tableExistsForObj(obj) else {
-                return Result.success([])
-            }
-            
-            /* Generate statement */
-            let query = StatementGenerator.selectStatementForType(obj, matchingFilter: filter)
-            
-            try dbSync { (database) -> Void in
-                let parameters = filter?.parameters() ?? [:]
-                let statement = try! database.database.prepare(query)
-                    .execute(parameters)
-                
-                
-                /* Create a dummy object used to extract property data */
-                let object =  type(of:obj).init()
-                let objectPropertyData = PropertyData.validPropertyDataForObject(object)
-                
-                results = statement.map { row in
-                    self.parsedDataForRow(row, forPropertyData: objectPropertyData)
-                }
-                
-                Swift.print("query: \(query)")
-                Swift.print("results: \(results.count)")
-                //print("statement: \(statement)")
-                
-                try statement.finalize()
-            }
-        } catch let error {
-            return .Error(error)
-        }
-        
-        // print(results)
-        return .success(results)
-    }
-    
-    
+   
     
     
     

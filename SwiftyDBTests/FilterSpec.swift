@@ -9,17 +9,18 @@ import Quick
 import Nimble
 import SwiftyDB
 
+
 class FilterSpec: SwiftyDBSpec {
     
-    func resetDatabase(database: SwiftyDB) {
+    func resetDatabase(_ database: SwiftyDb) {
         let object = TestClass()
-        database.deleteObjectsForType(TestClass.self)
+        _=database.deleteObjectsForType(TestClass())
         object.primaryKey = 1
-        database.addObject(object)
+        _=database.addObject(object)
         object.primaryKey = 2
-        database.addObject(object)
+        _=database.addObject(object)
         object.primaryKey = 3
-        database.addObject(object)
+        _=database.addObject(object)
     }
     
     override func spec() {
@@ -28,15 +29,16 @@ class FilterSpec: SwiftyDBSpec {
             
             context("retrieve object") {
                 
-                let database = SwiftyDB(databaseName: "test_database")
+                let database = SwiftyDbX(databaseName: "test_database")
+          
                 
-                func countForFilter(filter: SwiftyDB.Filter) -> Int {
-                    return database.dataForType(TestClass.self, matchingFilter: filter).value!.count
+                func countForFilter(_ filter: SwiftyDB.Filter) -> Int {
+                    return database.dataForType(TestClass(), matchingFilter: filter).value!.count
                 }
                 
                 it("should filter equal") {
                     self.resetDatabase(database)
-
+                    
                     expect(countForFilter(["primaryKey": 2])) == 1
                     expect(countForFilter(["primaryKey": "dsa"])) == 0
                 }

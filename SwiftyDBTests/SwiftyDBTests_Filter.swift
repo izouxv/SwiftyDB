@@ -22,13 +22,9 @@ class SwiftyDBTests_Filter: XCTestCase {
     }
     
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
         let f = Filter.contains("123", array: [1,2]).orderBy(["a", "b", "c"]).limit(10).offset(100)
-    
-        
-        
-       let str = StatementGenerator.deleteStatementForType(SwiftyDBTests_Filter(), matchingFilter: f)
+        let str = StatementGenerator.deleteStatementForType(SwiftyDBTests_Filter(), matchingFilter: f)
         Swift.print("\(str)")
         
     }

@@ -10,7 +10,7 @@ import Foundation
 
 import SwiftyDB
 
-class DynamicTestClass: NSObject, Storable {
+class DynamicTestClass: NSObject {
     
     var primaryKey: NSNumber = 1
     
@@ -53,7 +53,7 @@ extension DynamicTestClass: PrimaryKeys {
     }
 }
 
-class TestClass:NSObject, Storable {
+class TestClass:NSObject {
   
 
     

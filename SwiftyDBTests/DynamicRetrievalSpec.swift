@@ -34,7 +34,7 @@ class DynamicRetrievalSpec: SwiftyDBSpec {
 //            dynamicObject.optionalDictionary = ["1":12]
             
             context("is successful when") {
-                let database = SwiftyDB(databaseName: "test_database")
+                let database = SwiftyDbX(databaseName: "test_database")
                 
                 it("is stored") {
                     expect(database.addObject(dynamicObject).isSuccess).to(beTrue())
@@ -42,18 +42,18 @@ class DynamicRetrievalSpec: SwiftyDBSpec {
                 
                 
                 it("is retrieved") {
-                    expect(database.objectsForType(DynamicTestClass.self).isSuccess).to(beTrue())
-                    expect(database.objectsForType(DynamicTestClass.self).value?.count) == 1
+                    expect(database.objectsForType(DynamicTestClass()).isSuccess).to(beTrue())
+                    expect(database.objectsForType(DynamicTestClass()).value?.count) == 1
                 }
             }
             
             
             context("contains all data when retrieved") {
-                let database = SwiftyDB(databaseName: "test_database")
+                let database = SwiftyDbX(databaseName: "test_database")
                 
                 database.addObject(dynamicObject)
                 
-                let retrievedDynamicObject = database.objectsForType(DynamicTestClass.self, matchingFilter: ["primaryKey": dynamicObject.primaryKey]).value!.first!
+                let retrievedDynamicObject = database.objectsForType(DynamicTestClass(), matchingFilter: ["primaryKey": dynamicObject.primaryKey]).value!.first!
                 
                 it("should contain equal String values") {
                     expect(retrievedDynamicObject.string == dynamicObject.string).to(beTrue())

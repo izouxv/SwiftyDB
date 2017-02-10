@@ -71,8 +71,8 @@ class SwiftDBTestsNew: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         
         let dog1 = BigDog.init(1, "dog1")
-        let database = SwiftyDB(databaseName: "dogdsskk2rrb2122_1")
-        try! database.open()
+        let database = SwiftyDbX(databaseName: "dogdsskk2rrb2122_1")
+ 
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
         XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
@@ -84,8 +84,8 @@ class SwiftDBTestsNew: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         
         let dog1 = Dog.init(1, "dog1")
-        let database = SwiftyDB(databaseName: "dogdkk2b2122_1")
-        try! database.open()
+        let database = SwiftyDbX(databaseName: "dogdkk2b2122_1")
+ 
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
         XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
@@ -101,8 +101,8 @@ class SwiftDBTestsNew: XCTestCase {
         let dog3 = Dog.init(3, "dog3")
         let dogs = [dog3, dog2]
         
-        let database = SwiftyDB(databaseName: "dogdb")
-        try! database.open()
+        let database = SwiftyDbX(databaseName: "dogdb")
+  
         try! database.key("123123")
         
         XCTAssertTrue(database.addObject(dog1, update: true).isSuccess)

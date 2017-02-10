@@ -14,7 +14,8 @@ class DatabaseManipulationSpec: SwiftyDBSpec {
     override func spec() {
         super.spec()
         
-        let database = SwiftyDB(databaseName: "test_database")
+        let database = SwiftyDbX(databaseName: "test_database")
+       // defer database.close()
         
         describe("Data in database is updated") {
             let object = TestClass()
@@ -27,14 +28,14 @@ class DatabaseManipulationSpec: SwiftyDBSpec {
             context("object is added") {
                 it("should contain the object after it is added") {
                     expect(database.addObject(object).isSuccess).to(beTrue())
-                    expect(database.dataForType(TestClass.self, matchingFilter: filter).value?.count) == 1
+                    expect(database.dataForType(TestClass(), matchingFilter: filter).value?.count) == 1
                 }
             }
             
             context("object is deleted") {
                 it("should not contain the object after deletion") {
-                    expect(database.deleteObjectsForType(TestClass.self, matchingFilter: filter).isSuccess).to(beTrue())
-                    expect(database.dataForType(TestClass.self, matchingFilter: filter).value?.count) == 0
+                    expect(database.deleteObjectsForType(TestClass(), matchingFilter: filter).isSuccess).to(beTrue())
+                    expect(database.dataForType(TestClass(), matchingFilter: filter).value?.count) == 0
                 }
             }
             
@@ -45,9 +46,9 @@ class DatabaseManipulationSpec: SwiftyDBSpec {
                     object.string = "Updated string"
                     
                     expect(database.addObject(object).isSuccess).to(beTrue())
-                    expect(database.dataForType(TestClass.self, matchingFilter: filter).value?.count) == 1
+                    expect(database.dataForType(TestClass(), matchingFilter: filter).value?.count) == 1
                     
-                    if let stringValue = database.dataForType(TestClass.self, matchingFilter: filter).value?.first?["string"] as? String {
+                    if let stringValue = database.dataForType(TestClass(), matchingFilter: filter).value?.first?["string"] as? String {
                         expect(stringValue == "Updated string").to(beTrue())
                     }
                 }

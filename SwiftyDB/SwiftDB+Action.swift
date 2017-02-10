@@ -11,7 +11,7 @@ import Foundation
 //private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
 
 
-extension SwiftyDB  {
+extension SwiftyDb  {
     //!!! TODO 需要做读写分离
     
     public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
@@ -56,7 +56,7 @@ extension SwiftyDB  {
     
     
     /** Execute a synchronous transaction on the database in a sequential queue */
-    public func transaction(_ block: @escaping ((_ db: SwiftyDB) throws -> Void)) ->Bool {
+    public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
         do{
             try dbSync{(database) in
                 do {
@@ -75,7 +75,7 @@ extension SwiftyDB  {
     
     //写需要放在这个同步队列里面，避免事务冲突
     /** Execute synchronous queries on the database in a sequential queue */
-    public func dbSync(_ block: @escaping ((_ database: SwiftyDB) throws -> Void)) throws {
+    public func dbSync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
         var thrownError: Error?
         
         /* Run the query in a sequential queue to avoid threading related problems */
@@ -112,7 +112,7 @@ extension SwiftyDB  {
 
 
 
-extension SwiftyDB {
+extension SwiftyDb {
     
     // MARK: - Dynamic initialization
     
@@ -171,7 +171,7 @@ extension SwiftyDB {
 
 
 
-extension SwiftyDB  {
+extension SwiftyDb  {
     //by_zouxu need compare add & update
     internal func addObjectInner <S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
         //        guard objects.count > 0 else {
@@ -225,7 +225,7 @@ extension SwiftyDB  {
         }
         do{
             
-        try self.transaction { (db:SwiftyDB) in
+        try self.transaction { (db:SwiftyDb) in
             for object in objects {
                 let result = db.addObjectInner(object, update: update)
                 if !result.isSuccess{

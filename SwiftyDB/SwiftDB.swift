@@ -64,9 +64,9 @@ public protocol MigrationProperties {
 //private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
 
 //需要继承NSObjec才会出现在SwiftDB－swift.h里面
-open class SwiftyDB {
+open class SwiftyDb {
     //@nonobjc
-    static let defaultDB : SwiftyDB = SwiftyDB.init(databaseName: "SwiftyDB")
+    static let defaultDB : SwiftyDb = SwiftyDb.init(databaseName: "SwiftyDB")
     
     internal let queue: DispatchQueue = DispatchQueue(label: "TinySQLiteQueue", attributes: [])
     
@@ -107,7 +107,7 @@ open class SwiftyDB {
 }
 
 
-extension SwiftyDB{
+extension SwiftyDb{
     public func key(_ key: String)throws{
         try self.database.key(key: key)
     }

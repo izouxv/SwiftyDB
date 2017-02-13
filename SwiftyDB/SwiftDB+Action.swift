@@ -12,7 +12,8 @@ import Foundation
 
 
 extension SwiftyDb  {
-    //!!! TODO 需要做读写分离
+    //!!! TODO need seperate Write and Read
+    //need write queue, and read queue
     public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
         
         var results: [[String: Value?]] = []
@@ -78,7 +79,6 @@ extension SwiftyDb  {
         return true
     }
     
-    //写需要放在这个同步队列里面，避免事务冲突
     /** Execute synchronous queries on the database in a sequential queue */
     public func dbSync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
         var thrownError: Error?
@@ -111,32 +111,6 @@ extension SwiftyDb  {
 
 
 extension SwiftyDb {
-    
-    // MARK: - Dynamic initialization
-    
-    /**
-     Get objects of a specified type, matching a filter, from the database
-     
-     - parameter filter:   `Filter` object containing the filters for the query
-     - parameter type:      type of the objects to be retrieved
-     
-     - returns:             Result wrapping the objects, or an error, if unsuccessful
-     */
-    
-    //    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
-    //        let dataResults = dataForType(obj, matchingFilter: filter)
-    //
-    //        if !dataResults.isSuccess {
-    //            return .Error(dataResults.error!)
-    //        }
-    //
-    //        let objects: [D] = dataResults.value!.map {
-    //            objectWithData($0, forType: D.self)
-    //        }
-    //
-    //        return .success(objects)
-    //    }
-    //
     public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
         let dataResults = dataForType(obj, matchingFilter: filter, checkTableExist)
         
@@ -204,7 +178,6 @@ extension SwiftyDb  {
             
             //            try dbSync{ (database) in
             
-            //这里不应该直接做事务，因为有可能多个操作一起事务
             //try databaseQueue.transaction { (database) -> Void in
             let statement = try database.prepare(insertStatement)
             

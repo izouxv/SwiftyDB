@@ -54,9 +54,9 @@ extension SwiftyDb  {
         return .success(results)
     }
     
-    //    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
-    //        return dataForTypeInner(obj,  matchingFilter: filter, true)
-    //    }
+//    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
+//        return dataForTypeInner(obj,  matchingFilter: filter, true)
+//    }
     
     
     

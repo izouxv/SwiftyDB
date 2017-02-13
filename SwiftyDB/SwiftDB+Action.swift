@@ -54,9 +54,9 @@ extension SwiftyDb  {
         return .success(results)
     }
     
-//    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
-//        return dataForTypeInner(obj,  matchingFilter: filter, true)
-//    }
+    //    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
+    //        return dataForTypeInner(obj,  matchingFilter: filter, true)
+    //    }
     
     
     
@@ -110,13 +110,6 @@ extension SwiftyDb  {
 }
 
 
-
-
-
-
-
-
-
 extension SwiftyDb {
     
     // MARK: - Dynamic initialization
@@ -130,20 +123,20 @@ extension SwiftyDb {
      - returns:             Result wrapping the objects, or an error, if unsuccessful
      */
     
-//    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
-//        let dataResults = dataForType(obj, matchingFilter: filter)
-//        
-//        if !dataResults.isSuccess {
-//            return .Error(dataResults.error!)
-//        }
-//        
-//        let objects: [D] = dataResults.value!.map {
-//            objectWithData($0, forType: D.self)
-//        }
-//        
-//        return .success(objects)
-//    }
-//    
+    //    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil) -> Result<[D]> where D: Storable  {
+    //        let dataResults = dataForType(obj, matchingFilter: filter)
+    //
+    //        if !dataResults.isSuccess {
+    //            return .Error(dataResults.error!)
+    //        }
+    //
+    //        let objects: [D] = dataResults.value!.map {
+    //            objectWithData($0, forType: D.self)
+    //        }
+    //
+    //        return .success(objects)
+    //    }
+    //
     public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
         let dataResults = dataForType(obj, matchingFilter: filter, checkTableExist)
         
@@ -245,7 +238,6 @@ extension SwiftyDb  {
             return Result.success(true)
         }
         do{
-            
             try self.transaction { (db:SwiftyDb) in
                 for object in objects {
                     let result = db.addObjectInner(object, update: update)
@@ -259,15 +251,6 @@ extension SwiftyDb  {
         }
         return Result.success(true)
     }
-    
-    //    public func deleteObjects<D>(_ obj: D)->Result<Bool> where D : Storable, D: PrimaryKeys{
-    //        let keys = obj.primaryKeys()
-    //        let key = keys[0]
-    //        let value = obj.
-    //        let filter = Filter.equal(key, value: msgId)
-    //        self.deleteObjectsForType(obj.Type)
-    //        //return .success(true)
-    //    }
     
     public func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter? = nil) -> Result<Bool> {
         do {
@@ -285,17 +268,31 @@ extension SwiftyDb  {
         } catch let error {
             return .Error(error)
         }
-        
         return .success(true)
     }
-    
-    
-    
-    
-    
-    
 }
-
+extension SwiftyDb {
+    public func query(_ sql: String, _ values: SQLiteValues? = nil, _ cb:((Statement)->Void)?=nil){
+        var statement = try! self
+            .database
+            .prepare(sql)
+        if let v = values{
+            statement = try! statement.execute(v)
+        }
+        /* Finalize the statement if necessary */
+        defer {
+            try! statement.finalize()
+        }
+        var stat : Statement? = statement.next()
+        if !(cb != nil){
+            return
+        }
+        while stat != nil{
+            cb!(stat!)
+            stat = stat!.next()
+        }
+    }
+}
 
 
 

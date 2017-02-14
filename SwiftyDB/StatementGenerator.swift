@@ -7,38 +7,9 @@
 
 import Foundation
 
-internal enum SQLiteDatatype: String {
-    case Text       = "TEXT"
-    case Integer    = "INTEGER"
-    case Real       = "REAL"
-    case Blob       = "BLOB"
-    case Numeric    = "NUMERIC"
-    case Null       = "NULL"
-    
-    init?(type: Value.Type) {
-        switch type {
-        case is Int.Type, is Int8.Type, is Int16.Type, is Int32.Type, is Int64.Type, is UInt.Type, is UInt8.Type, is UInt16.Type, is UInt32.Type, is UInt64.Type, is Bool.Type:
-            self.init(rawValue: "INTEGER")
-        case is Double.Type, is Float.Type, is Date.Type:
-            self.init(rawValue: "REAL")
-        case is Data.Type:
-            self.init(rawValue: "BLOB")
-        case is NSNumber.Type:
-            self.init(rawValue: "NUMERIC")
-        case is String.Type, is NSString.Type, is Character.Type:
-            self.init(rawValue: "TEXT")
-        case is NSArray.Type, is NSDictionary.Type:
-            self.init(rawValue: "BLOB")
-        default:
-            fatalError("DSADSASA")
-        }
-    }
-}
-
 internal class StatementGenerator {
     
     internal class func createTableStatementForTypeRepresentedByObject <S: Storable> (_ object: S) -> String {
-       // let tableName =  tableNameForType(S.self)
         let tableName =   tableNameForObj(object)
         
         var statement = "CREATE TABLE " + tableName + " ("
@@ -114,15 +85,18 @@ internal class StatementGenerator {
         
         return statement
     }
-    
-    
-    
-    /** Name of the table representing a class */
-//    fileprivate class func tableNameForType(_ type: Storable.Type) -> String {
-//        return String(describing: type)
-//    }
-    internal  class func tableNameForObj(_ obj: Storable) -> String {
-        return String(describing: type(of:obj))
-    }
-    
 }
+
+extension StatementGenerator {
+    /** Name of the table representing a class */
+    internal  class func tableNameForObj(_ obj: Storable) -> String {
+        return obj.tableName()
+//        return type(of:obj).tableName()
+//        if let tableName = type(of:obj).tableName(){
+//            return tableName
+//        }
+//        return String(describing: type(of:obj))
+    }
+}
+
+

@@ -8,14 +8,44 @@
 
 import sqlite3
 
-public enum SQLiteDatatypeTiny: String {
+//public enum SQLiteDatatypeTiny: String {
+//    case Text       = "TEXT"
+//    case Integer    = "INTEGER"
+//    case Real       = "REAL"
+//    case Blob       = "BLOB"
+//    case Numeric    = "NUMERIC"
+//    case Null       = "NULL"
+//}
+
+
+public enum SQLiteDatatype: String {
     case Text       = "TEXT"
     case Integer    = "INTEGER"
     case Real       = "REAL"
     case Blob       = "BLOB"
     case Numeric    = "NUMERIC"
     case Null       = "NULL"
+    
+    init?(type: Value.Type) {
+        switch type {
+        case is Int.Type, is Int8.Type, is Int16.Type, is Int32.Type, is Int64.Type, is UInt.Type, is UInt8.Type, is UInt16.Type, is UInt32.Type, is UInt64.Type, is Bool.Type:
+            self.init(rawValue: "INTEGER")
+        case is Double.Type, is Float.Type, is Date.Type:
+            self.init(rawValue: "REAL")
+        case is Data.Type:
+            self.init(rawValue: "BLOB")
+        case is NSNumber.Type:
+            self.init(rawValue: "NUMERIC")
+        case is String.Type, is NSString.Type, is Character.Type:
+            self.init(rawValue: "TEXT")
+        case is NSArray.Type, is NSDictionary.Type:
+            self.init(rawValue: "BLOB")
+        default:
+            fatalError("DSADSASA")
+        }
+    }
 }
+
 
 open class Statement {
     fileprivate var handle: OpaquePointer?
@@ -308,7 +338,7 @@ open class Statement {
 extension Statement {
     
     /** Returns the datatype for the column given by an index */
-    public func typeForColumn(_ index: Int32) -> SQLiteDatatypeTiny? {
+    public func typeForColumn(_ index: Int32) -> SQLiteDatatype? {
         switch sqlite3_column_type(handle, index) {
         case SQLITE_INTEGER:
             return .Integer
@@ -525,7 +555,7 @@ extension Statement {
 extension Statement {
     
     /** Returns the datatype for the column given by a column name */
-    public func typeForColumn(_ name: String) -> SQLiteDatatypeTiny? {
+    public func typeForColumn(_ name: String) -> SQLiteDatatype? {
         return typeForColumn(nameToIndexMapping[name]!)
     }
     

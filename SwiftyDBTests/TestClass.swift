@@ -54,8 +54,8 @@ extension DynamicTestClass: PrimaryKeys {
 }
 
 class TestClass:NSObject {
-  
-
+    
+    
     
     var primaryKey: NSNumber = 1
     var ignored: Int = -1
@@ -93,7 +93,7 @@ class TestClass:NSObject {
     var date: Date        = Date()
     var number: NSNumber    = 1
     var data: Data        = String("Test").data(using: String.Encoding.utf8)! //Empty data is treated as NULL by sqlite3
-
+    
     var int: Int            = 1
     var int8: Int8          = 1
     var int16: Int16        = 1
@@ -116,6 +116,8 @@ class TestClass:NSObject {
     var optionalDictionary: NSDictionary? = ["1":1,"2":2]
     
     required override init() {}
+    
+    
 }
 
 extension TestClass: PrimaryKeys {
@@ -130,10 +132,6 @@ extension TestClass: IgnoredProperties {
     }
 }
 
-
-
-
-
 class TestClassSimple:NSObject {
     var primaryKey: NSNumber = 1
     var num: Int      = 0
@@ -145,20 +143,23 @@ extension TestClassSimple: PrimaryKeys {
     }
 }
 
-
-
-class TestMigrateVer1 : NSObject{
+class TestMigrateVer1 : NSObject, TableNameSet{
     var name : String = ""
     var age : String = ""
     var email : String = ""
+    static func tableName()->String{
+        return "testMigrate"
+    }
 }
 
-class TestMigrateVer2 : NSObject, MigrationProperties{
+class TestMigrateVer2 : NSObject, MigrationProperties, TableNameSet{
     var name : String = ""
     var age : Int = 0  //retype
     var address : String = ""//add
-//    var email : String = ""//remove
-    
+    //    var email : String = ""//remove
+   static  func tableName()->String{
+        return "testMigrate"
+    }
     static func Migrate(_ ver:Int, _ action:MigrationOperationI){
         if ver < 1{
             _=action.add("address", .Text).remove("email").migrate("age", .Integer, {(oldData:Any) -> Any in

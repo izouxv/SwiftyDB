@@ -18,6 +18,21 @@ public protocol Storable {
     func value(forKey key: String) -> Any?
 }
 
+extension Storable {
+    func tableName()->String{
+        if let sss = self as? TableNameSet{
+            return (type(of:sss)).tableName()
+        } 
+        let name = String(describing: type(of: self))
+        return name
+    }
+}
+
+public protocol TableNameSet {
+    static func tableName()->String
+}
+
+
 /** Implement this protocol to use primary keys */
 public protocol PrimaryKeys {
     static func primaryKeys() -> Set<String>
@@ -34,13 +49,14 @@ public protocol IndexProperties {
 }
 
 public protocol MigrationOperationI{
-    func add(_ name: String,_ newType: SQLiteDatatypeTiny)->MigrationOperationI
+    func add(_ name: String,_ newType: SQLiteDatatype)->MigrationOperationI
     func remove(_ name: String)->MigrationOperationI
-    func migrate(_ newName: String,_ newType: SQLiteDatatypeTiny?,_ dataMigrate:((_ data: Any)->Any)?)->MigrationOperationI
+    func migrate(_ newName: String,_ newType: SQLiteDatatype?,_ dataMigrate:((_ data: Any)->Any)?)->MigrationOperationI
 }
-public protocol MigrationProperties{
+public protocol MigrationProperties : Storable{
     static func Migrate(_ ver:Int, _ action:MigrationOperationI)
 }
+
 
 
 
@@ -82,7 +98,6 @@ open class SwiftyDb {
     /** Create a database queue for the database at the provided path */
     public init(path: String) {
         database = DatabaseConnection(path: path)
-        self.query("PRAGMA journal_mode = WAL")
     }
     deinit {
         self.close()
@@ -90,8 +105,12 @@ open class SwiftyDb {
 }
 
 extension SwiftyDb{
+    public var dbPath : String{
+        return database.path
+    }
     public func open() throws {
         try self.database.open()
+        self.query("PRAGMA journal_mode = WAL")
     }
     public func close(){
         try! self.database.close()

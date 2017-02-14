@@ -12,19 +12,19 @@ internal protocol MigrationOperationIX:MigrationOperationI{
 }
 
 public protocol OperateAction {
-    func action(_ db : SwiftyDb,_ table: MigrationProperties.Type)
+    func action(_ db : SwiftyDb,_ table: MigrationProperties)
 }
 
 internal class OperationAdd : NSObject, OperateAction{
     var name : String
-    var type : SQLiteDatatypeTiny
-    init(_ name: String, _ type: SQLiteDatatypeTiny) {
+    var type : SQLiteDatatype
+    init(_ name: String, _ type: SQLiteDatatype) {
         self.name = name
         self.type = type
     }
-    func action(_ db : SwiftyDb,_ table: MigrationProperties.Type){
+    func action(_ db : SwiftyDb,_ table: MigrationProperties){
         //ALTER TABLE OLD_COMPANY ADD COLUMN SEX char(1);
-        db.query("ALTER TABLE OLD_COMPANY ADD COLUMN \(name) \(type.rawValue);")
+        db.query("ALTER TABLE \(table.tableName()) ADD COLUMN \(name) \(type.rawValue);")
     }
 }
 
@@ -33,20 +33,30 @@ internal class OperationRemove : NSObject, OperateAction{
     init(_ name: String) {
         self.name = name
     }
-    func action(_ db : SwiftyDb,_ table: MigrationProperties.Type){
-        
+    func action(_ db : SwiftyDb,_ table: MigrationProperties){
+        //
+        //BEGIN TRANSACTION;
+        //CREATE TEMPORARY TABLE t1_backup(a,b);
+        //INSERT INTO t1_backup SELECT a,b FROM t1;
+        //DROP TABLE t1;
+        //CREATE TABLE t1(a,b);
+        //INSERT INTO t1 SELECT a,b FROM t1_backup;
+        //DROP TABLE t1_backup;
+        //COMMIT;
+        //
     }
 }
+
 internal class OperationMigrate : NSObject, OperateAction{
     var name : String
-    var type : SQLiteDatatypeTiny?
+    var type : SQLiteDatatype?
     var migrate : ((Any) -> Any)?
-    init(_ name: String, _ type: SQLiteDatatypeTiny?, _ migrate: ((Any) -> Any)?) {
+    init(_ name: String, _ type: SQLiteDatatype?, _ migrate: ((Any) -> Any)?) {
         self.name = name
         self.type = type
         self.migrate = migrate
     }
-    func action(_ db : SwiftyDb,_ table: MigrationProperties.Type){
+    func action(_ db : SwiftyDb,_ table: MigrationProperties){
         //ALTER TABLE database_name.table_name RENAME TO new_table_name;
         //ALTER TABLE COMPANY RENAME TO OLD_COMPANY;
         //                    let statement = "SELECT ALL * FROM \(table.name)"
@@ -56,20 +66,15 @@ internal class OperationMigrate : NSObject, OperateAction{
     }
 }
 
-
-
-var dbMigrates : [MigrationProperties.Type] = []
-
-
-internal class MigrationPropertiesOperation : NSObject, MigrationOperationIX{
+internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
     var db : SwiftyDb
-    var tableType :  MigrationProperties.Type
+    var tableType :  MigrationProperties
     var operQ : [OperateAction] = []
-    init(_ swiftyDB : SwiftyDb, _ tableType : MigrationProperties.Type) {
+    init(_ swiftyDB : SwiftyDb, _ tableType : MigrationProperties) {
         self.db = swiftyDB
         self.tableType = tableType
     }
-    func add(_ name: String,_ newType: SQLiteDatatypeTiny)->MigrationOperationI{
+    func add(_ name: String,_ newType: SQLiteDatatype)->MigrationOperationI{
         operQ.append(OperationAdd(name, newType))
         return self
     }
@@ -77,7 +82,7 @@ internal class MigrationPropertiesOperation : NSObject, MigrationOperationIX{
         operQ.append(OperationRemove(name))
         return self
     }
-    public func migrate(_ newName: String, _ newType: SQLiteDatatypeTiny?, _ dataMigrate: ((Any) -> Any)?)->MigrationOperationI {
+    public func migrate(_ newName: String, _ newType: SQLiteDatatype?, _ dataMigrate: ((Any) -> Any)?)->MigrationOperationI {
         operQ.append(OperationMigrate(newName, newType,dataMigrate ))
         return self
     }
@@ -92,7 +97,6 @@ internal class MigrationPropertiesOperation : NSObject, MigrationOperationIX{
         db.foreign_keys = true
     }
 }
-
 
 internal class sqlite_master : NSObject, Storable{
     public var type: String = "table"//table, index
@@ -113,7 +117,7 @@ extension SwiftyDb {
     internal func tableNeedMigrate() ->Bool {
         return true
     }
-    public class func Migrate(_ versionNew : Int, _ dbPath : String){
+    public class func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
         let db = SwiftyDb(path:dbPath)
         try! db.open()
         defer {db.close()}
@@ -125,9 +129,9 @@ extension SwiftyDb {
         if dataResults.isSuccess{
             for table in dataResults.value!{
                 if table.isTable() && db.tableNeedMigrate(){
-                    for item in dbMigrates{
-                        let oper : MigrationOperationIX =  MigrationPropertiesOperation(db, item)
-                        item.Migrate(old_version,oper)
+                    for item in tables{
+                        let oper : MigrationOperationIX =  MigrationPropertieOperation(db, item)
+                        type(of:item).Migrate(old_version,oper)
                         oper.commit()
                     }
                 }
@@ -136,7 +140,6 @@ extension SwiftyDb {
         db.user_version = versionNew
     }
 }
- 
 
 extension SwiftyDb {
     internal var foreign_keys : Bool{

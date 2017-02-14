@@ -55,12 +55,6 @@ extension SwiftyDb  {
         return .success(results)
     }
     
-    //    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
-    //        return dataForTypeInner(obj,  matchingFilter: filter, true)
-    //    }
-    
-    
-    
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
         do{

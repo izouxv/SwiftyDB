@@ -45,7 +45,7 @@ extension SwiftyDb  {
             return .Error(error)
         }
         
-        existingTables.insert(tableNameForType(S))
+        existingTables.insert(StatementGenerator.tableNameForObj(object))
         
         return .success(true)
     }
@@ -83,7 +83,7 @@ extension SwiftyDb  {
     
     
     internal func tableExistsForObj(_ obj: Storable) throws -> Bool {
-        let tableName = tableNameForObj(obj)
+        let tableName = StatementGenerator.tableNameForObj(obj)
         Swift.print("tableName: \(tableName)")
         return try self.tableExistsForName(tableName)
     }
@@ -107,19 +107,6 @@ extension SwiftyDb  {
         }
         
         return exists
-    }
-    /**
-     Used to create name of the table representing a type
-     
-     - parameter type:  type for which to generate a table name
-     
-     - returns:         table name as a String
-     */
-    internal func tableNameForType(_ type: Storable.Type) -> String {
-        return String(describing: type)
-    }
-    internal func tableNameForObj(_ obj: Storable) -> String {
-        return String(describing: type(of:obj))
     }
     
     /**

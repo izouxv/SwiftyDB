@@ -147,6 +147,51 @@ extension TestClassSimple: PrimaryKeys {
 
 
 
+class TestMigrateVer1 : NSObject{
+    var name : String = ""
+    var age : String = ""
+    var email : String = ""
+}
+
+class TestMigrateVer2 : NSObject, MigrationProperties{
+    var name : String = ""
+    var age : Int = 0  //retype
+    var address : String = ""//add
+//    var email : String = ""//remove
+    
+    static func Migrate(_ ver:Int, _ action:MigrationOperationI){
+        if ver < 1{
+            _=action.add("address", .Text).remove("email").migrate("age", .Integer, {(oldData:Any) -> Any in
+                return Int(oldData as! String) as Any
+            })
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

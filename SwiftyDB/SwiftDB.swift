@@ -33,6 +33,14 @@ public protocol IndexProperties {
     static func indexProperties() -> Set<String>
 }
 
+public protocol MigrationOperationI{
+    func add(_ name: String,_ newType: SQLiteDatatypeTiny)->MigrationOperationI
+    func remove(_ name: String)->MigrationOperationI
+    func migrate(_ newName: String,_ newType: SQLiteDatatypeTiny?,_ dataMigrate:((_ data: Any)->Any)?)->MigrationOperationI
+}
+public protocol MigrationProperties{
+    static func Migrate(_ ver:Int, _ action:MigrationOperationI)
+}
 
 
 

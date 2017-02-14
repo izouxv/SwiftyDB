@@ -11,6 +11,9 @@ import SwiftyDB
 import Quick
 import Nimble
 
+
+
+
 class SwiftyDbMigrate: SwiftyDBSpec {
     override func spec() {
         super.spec()
@@ -18,7 +21,8 @@ class SwiftyDbMigrate: SwiftyDBSpec {
         describe("Data in database is updated") {
             context("object added test sample data") {
                 let dbPath = "/Users/zouxu/Desktop/test_database.sqlite"
-                SwiftyDb.Migrate(dbPath)
+                let newVersion = 100
+                SwiftyDb.Migrate(newVersion,dbPath)
             }
         }
     }

@@ -7,47 +7,9 @@
 
 import Foundation
 
-public protocol MigrationPropertiesOperationI{
-    func add(_ name: String,_ newType: SQLiteDatatypeTiny)->MigrationPropertiesOperationI
-    func remove(_ name: String)->MigrationPropertiesOperationI
-    func migrate(_ newName: String,_ newType: SQLiteDatatypeTiny?,_ dataMigrate:((_ data: Any)->Any)?)->MigrationPropertiesOperationI
-}
-internal protocol MigrationPropertiesOperationIX:MigrationPropertiesOperationI{
+internal protocol MigrationOperationIX:MigrationOperationI{
     func commit()
 }
-public protocol MigrationProperties : Storable{
-    static func Migrate(_ ver:Int, _ action:MigrationPropertiesOperationI)
-}
-
-class TestObj : NSObject, MigrationProperties{
-    required override init() {
-    }
-    static func Migrate(_ ver:Int, _ action:MigrationPropertiesOperationI){
-        if ver < 1{
-            _=action.add("anotherName", .Text)
-            _=action.remove("age")
-            _=action.migrate("newAge", .Integer, {(oldData:Any) -> Any in
-                return Int(oldData as! String) as Any
-            })
-        }
-        if ver < 3{
-            _=action.add("anotherName", .Text).remove("age").migrate("newAge", .Integer, {(oldData:Any) -> Any in
-                return Int(oldData as! String) as Any
-            })
-        }
-        if ver < 5{
-            _=action.add("anotherName", .Text).remove("age").migrate("newAge", .Integer, {(oldData:Any) -> Any in
-                return Int(oldData as! String) as Any
-            })
-        }
-        if ver < 9{
-            _=action.add("anotherName", .Text).remove("age").migrate("newAge", .Integer, {(oldData:Any) -> Any in
-                return Int(oldData as! String) as Any
-            })
-        }
-    }
-}
-
 
 public protocol OperateAction {
     func action(_ db : SwiftyDb,_ table: MigrationProperties.Type)
@@ -62,10 +24,10 @@ internal class OperationAdd : NSObject, OperateAction{
     }
     func action(_ db : SwiftyDb,_ table: MigrationProperties.Type){
         //ALTER TABLE OLD_COMPANY ADD COLUMN SEX char(1);
-        //ALTER TABLE database_name.table_name ADD COLUMN column_def...;
         db.query("ALTER TABLE OLD_COMPANY ADD COLUMN \(name) \(type.rawValue);")
     }
 }
+
 internal class OperationRemove : NSObject, OperateAction{
     var name : String
     init(_ name: String) {
@@ -95,10 +57,11 @@ internal class OperationMigrate : NSObject, OperateAction{
 }
 
 
+
 var dbMigrates : [MigrationProperties.Type] = []
 
 
-internal class MigrationPropertiesOperation : NSObject, MigrationPropertiesOperationIX{
+internal class MigrationPropertiesOperation : NSObject, MigrationOperationIX{
     var db : SwiftyDb
     var tableType :  MigrationProperties.Type
     var operQ : [OperateAction] = []
@@ -106,15 +69,15 @@ internal class MigrationPropertiesOperation : NSObject, MigrationPropertiesOpera
         self.db = swiftyDB
         self.tableType = tableType
     }
-    func add(_ name: String,_ newType: SQLiteDatatypeTiny)->MigrationPropertiesOperationI{
+    func add(_ name: String,_ newType: SQLiteDatatypeTiny)->MigrationOperationI{
         operQ.append(OperationAdd(name, newType))
         return self
     }
-    func remove(_ name: String)->MigrationPropertiesOperationI{
+    func remove(_ name: String)->MigrationOperationI{
         operQ.append(OperationRemove(name))
         return self
     }
-    public func migrate(_ newName: String, _ newType: SQLiteDatatypeTiny?, _ dataMigrate: ((Any) -> Any)?)->MigrationPropertiesOperationI {
+    public func migrate(_ newName: String, _ newType: SQLiteDatatypeTiny?, _ dataMigrate: ((Any) -> Any)?)->MigrationOperationI {
         operQ.append(OperationMigrate(newName, newType,dataMigrate ))
         return self
     }
@@ -163,7 +126,7 @@ extension SwiftyDb {
             for table in dataResults.value!{
                 if table.isTable() && db.tableNeedMigrate(){
                     for item in dbMigrates{
-                        let oper =  MigrationPropertiesOperation(db, item)
+                        let oper : MigrationOperationIX =  MigrationPropertiesOperation(db, item)
                         item.Migrate(old_version,oper)
                         oper.commit()
                     }

@@ -4,16 +4,16 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "BC93C192DF7F24567F1E730735D1702C39D9A9FD" : 9223372036854775807,
     "8035FEC93438E4FB827455F1B4EA2CC61CC9CB03" : 9223372036854775807,
-    "482DBFFF4058FC4D341815E134C748E9E8C3E07F" : 9223372036854775807,
     "69ECF80867AF67104396451968CB6E732625368C" : 9223372036854775807,
     "E9C1F23BB067FBD94ABF49E8DB5675478D331F85" : 9223372036854775807,
     "0E18E921C801BB1A2C6342B096A660D835ED024E" : 9223372036854775807
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9BA1C70F-2EF9-407F-B9A5-73643DFFC305",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "BC93C192DF7F24567F1E730735D1702C39D9A9FD" : "..\/..\/..\/..\/..\/..",
     "8035FEC93438E4FB827455F1B4EA2CC61CC9CB03" : "..\/..\/..\/..\/..",
-    "482DBFFF4058FC4D341815E134C748E9E8C3E07F" : "..\/..\/..\/..\/..\/..",
     "69ECF80867AF67104396451968CB6E732625368C" : "..\/..\/..\/..\/..\/..\/..\/..",
     "E9C1F23BB067FBD94ABF49E8DB5675478D331F85" : "..\/..",
     "0E18E921C801BB1A2C6342B096A660D835ED024E" : "SwiftyDB\/"
@@ -28,11 +28,6 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0E18E921C801BB1A2C6342B096A660D835ED024E"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/fish.red\/zouxu\/goall.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "482DBFFF4058FC4D341815E134C748E9E8C3E07F"
-    },
-    {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/fish.red\/zouxu\/todo.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "69ECF80867AF67104396451968CB6E732625368C"
@@ -41,6 +36,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/fish.red\/zouxu\/todo.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8035FEC93438E4FB827455F1B4EA2CC61CC9CB03"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/fish.red\/zouxu\/goall.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BC93C192DF7F24567F1E730735D1702C39D9A9FD"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/fish.red\/zouxu\/fish_util.git",

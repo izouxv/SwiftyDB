@@ -55,9 +55,9 @@ extension SwiftyDb  {
         return .success(results)
     }
     
-//    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
-//        return dataForTypeInner(obj,  matchingFilter: filter, true)
-//    }
+    //    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil) -> Result<[[String: Value?]]> {
+    //        return dataForTypeInner(obj,  matchingFilter: filter, true)
+    //    }
     
     
     
@@ -246,23 +246,26 @@ extension SwiftyDb  {
 }
 extension SwiftyDb {
     public func query(_ sql: String, _ values: SQLiteValues? = nil, _ cb:((Statement)->Void)?=nil){
-        var statement = try! self
-            .database
-            .prepare(sql)
-        if let v = values{
-            statement = try! statement.execute(v)
-        }
-        /* Finalize the statement if necessary */
-        defer {
-            try! statement.finalize()
-        }
-        var stat : Statement? = statement.next()
-        if !(cb != nil){
-            return
-        }
-        while stat != nil{
-            cb!(stat!)
-            stat = stat!.next()
+        do {
+            var statement = try! self
+                .database
+                .prepare(sql)
+            if let v = values{
+                statement = try! statement.execute(v)
+            }
+            /* Finalize the statement if necessary */
+            defer {
+                try! statement.finalize()
+            }
+            var stat : Statement? = statement.next()
+            if !(cb != nil){
+                return
+            }
+            while stat != nil{
+                cb!(stat!)
+                stat = stat!.next()
+            }
+        } catch let error { 
         }
     }
 }

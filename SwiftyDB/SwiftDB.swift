@@ -33,10 +33,6 @@ public protocol IndexProperties {
     static func indexProperties() -> Set<String>
 }
 
-/** Implement this protocol to ignore arbitrary properties */
-public protocol MigrationProperties {
-    static func migrationProperties(_ oldVersion : Int) -> Set<String>
-}
 
 
 
@@ -70,28 +66,28 @@ open class SwiftyDb {
     
     internal let queue: DispatchQueue = DispatchQueue(label: "TinySQLiteQueue", attributes: [])
     
-    internal let database:       DatabaseConnection
-    
-    /** Create a database queue for the database at the provided path */
-    public init(path: String) {
-        database = DatabaseConnection(path: path)
-    }
+    internal let database : DatabaseConnection
     
     /** A cache containing existing table names */
     internal var existingTables: Set<String> = []
     
-    public func open() throws {
-        try self.database.open()
+    /** Create a database queue for the database at the provided path */
+    public init(path: String) {
+        database = DatabaseConnection(path: path)
+        self.query("PRAGMA journal_mode = WAL")
     }
-    
-    public func close(){
-        try! self.database.close()
-    }
-    
     deinit {
         self.close()
     }
-    
+}
+
+extension SwiftyDb{
+    public func open() throws {
+        try self.database.open()
+    }
+    public func close(){
+        try! self.database.close()
+    }
     public convenience init(databaseName: String) {
         let documentsDir : String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
         let  path1 = documentsDir+"/\(databaseName).sqlite"
@@ -99,13 +95,11 @@ open class SwiftyDb {
         self.init(path:path1)
         //  try! self.open()
     }
-    
     public convenience init(userPath: String) {
         let  path1 = "\(userPath).sqlite"
         self.init(path:path1)
     }
 }
-
 
 extension SwiftyDb{
     public func key(_ key: String)throws{

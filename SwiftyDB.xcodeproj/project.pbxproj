@@ -483,7 +483,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = test.SwiftyDB;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos applertvsimulator watchsimulator macosx appletvos watchos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos appletvsimulator watchsimulator macosx appletvos watchos";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
@@ -514,7 +514,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = test.SwiftyDB;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos applertvsimulator watchsimulator macosx appletvos watchos";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos appletvsimulator watchsimulator macosx appletvos watchos";
 				SWIFT_VERSION = 3.0;
 				TVOS_DEPLOYMENT_TARGET = 9.0;
 				WATCHOS_DEPLOYMENT_TARGET = 2.2;

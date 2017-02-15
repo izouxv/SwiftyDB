@@ -50,6 +50,7 @@ public protocol MigrationOperationI{
     func remove(_ name: String)->MigrationOperationI
     func migrate(_ newName: String,_ newType: SQLiteDatatype?,_ dataMigrate:((_ data: Any)->Any)?)->MigrationOperationI
 }
+
 public protocol MigrationProperties : Storable{
     static func Migrate(_ ver:Int, _ action:MigrationOperationI)
 }

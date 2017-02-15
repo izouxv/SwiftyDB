@@ -262,6 +262,19 @@ extension SwiftyDb {
         } catch let error { 
         }
     }
+    public func update(_ insertStatement: String, _ data: NamedSQLiteValues){
+//        do {
+            let statement = try! database.prepare(insertStatement)
+            defer {
+                /* If an error occurs, try to finalize the statement */
+                let _ = try? statement.finalize()
+            }
+            try! statement.executeUpdate(data)
+//        } catch let error {
+//            return Result.Error(error)
+//        }
+//        return Result.success(true)
+    }
 }
 
 

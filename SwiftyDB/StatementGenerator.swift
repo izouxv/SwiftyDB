@@ -9,7 +9,7 @@ import Foundation
 
 internal class StatementGenerator {
     
-    internal class func createTableStatementForTypeRepresentedByObject <S: Storable> (_ object: S) -> String {
+    internal class func createTableStatementForTypeRepresentedByObject (_ object: Storable) -> String {
         let tableName =   tableNameForObj(object)
         
         var statement = "CREATE TABLE " + tableName + " ("

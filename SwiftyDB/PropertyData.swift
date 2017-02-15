@@ -110,6 +110,7 @@ internal struct PropertyData {
 }
 
 extension PropertyData {
+    
     internal static func validPropertyDataForObject (_ object: Storable) -> [PropertyData] {
         return validPropertyDataForMirror(Mirror(reflecting: object))
     }

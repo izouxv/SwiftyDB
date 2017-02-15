@@ -31,7 +31,7 @@ extension SwiftyDb  {
      - returns:          Result type indicating the success of the query
      */
     
-    internal func createTableForTypeRepresentedByObject <S: Storable> (_ object: S) -> Result<Bool> {
+    internal func createTableForTypeRepresentedByObject(_ object: Storable) -> Result<Bool> {
         
         let statement = StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
         

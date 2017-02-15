@@ -12,19 +12,12 @@ internal protocol MigrationOperationIX:MigrationOperationI{
 }
 
 internal protocol OperateAction {
-    func action(_ db : SwiftyDb,_ table: MigrationProperties)
 }
 
 internal class OperationAdd : NSObject, OperateAction{
     var name : String
-    var type : SQLiteDatatype
-    init(_ name: String, _ type: SQLiteDatatype) {
+    init(_ name: String) {
         self.name = name
-        self.type = type
-    }
-    func action(_ db : SwiftyDb,_ table: MigrationProperties){
-        //ALTER TABLE OLD_COMPANY ADD COLUMN SEX char(1);
-        db.query("ALTER TABLE \(table.tableName()) ADD COLUMN \(name) \(type.rawValue);")
     }
 }
 
@@ -33,37 +26,30 @@ internal class OperationRemove : NSObject, OperateAction{
     init(_ name: String) {
         self.name = name
     }
-    func action(_ db : SwiftyDb,_ table: MigrationProperties){
-        //
-        //BEGIN TRANSACTION;
-        //CREATE TEMPORARY TABLE t1_backup(a,b);
-        //INSERT INTO t1_backup SELECT a,b FROM t1;
-        //DROP TABLE t1;
-        //CREATE TABLE t1(a,b);
-        //INSERT INTO t1 SELECT a,b FROM t1_backup;
-        //DROP TABLE t1_backup;
-        //COMMIT;
-        //
+}
+
+internal class OperationRename : NSObject, OperateAction{
+    var name : String
+    var newName : String
+    init(_ name: String, _ newName: String) {
+        self.name = name
+        self.newName = newName
     }
 }
 
 internal class OperationMigrate : NSObject, OperateAction{
     var name : String
-    var type : SQLiteDatatype?
-    var migrate : ((Any) -> Any)?
-    init(_ name: String, _ type: SQLiteDatatype?, _ migrate: ((Any) -> Any)?) {
+    var migrate : (SQLiteValue?) -> SQLiteValue?
+    init(_ name: String, _ migrate: @escaping ((SQLiteValue?) -> SQLiteValue?)) {
         self.name = name
-        self.type = type
         self.migrate = migrate
     }
-    func action(_ db : SwiftyDb,_ table: MigrationProperties){
-        //ALTER TABLE database_name.table_name RENAME TO new_table_name;
-        //ALTER TABLE COMPANY RENAME TO OLD_COMPANY;
-        //                    let statement = "SELECT ALL * FROM \(table.name)"
-        //                    db.query(statement, nil, {(stat:Statement)->Void in
-        //                        Swift.print("stat: \(stat.dictionary)")
-        //                    })
-    }
+}
+class TestClassSimple2:NSObject , Storable{
+    var primaryKey: NSNumber = 1
+    var num: Int      = 0
+    
+    required override init() {}
 }
 
 internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
@@ -74,27 +60,90 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
         self.db = swiftyDB
         self.tableType = tableType
     }
-    func add(_ name: String,_ newType: SQLiteDatatype)->MigrationOperationI{
-        operQ.append(OperationAdd(name, newType))
+    func add(_ name: String)->MigrationOperationI{
+        operQ.append(OperationAdd(name))
         return self
     }
     func remove(_ name: String)->MigrationOperationI{
         operQ.append(OperationRemove(name))
         return self
     }
-    public func migrate(_ newName: String, _ newType: SQLiteDatatype?, _ dataMigrate: ((Any) -> Any)?)->MigrationOperationI {
-        operQ.append(OperationMigrate(newName, newType,dataMigrate ))
+    func rename(_ name: String,_ newName: String)->MigrationOperationI{
+        operQ.append(OperationRename(name, newName))
+        return self
+    }
+    public func migrate(_ newName: String, _ dataMigrate: @escaping ((SQLiteValue?) -> SQLiteValue?))->MigrationOperationI {
+        operQ.append(OperationMigrate(newName,dataMigrate))
         return self
     }
     public func commit() {
-        db.foreign_keys = false
-        _=db.transaction { (sdb:SwiftyDb) in
-            for i in 0..<self.operQ.count{
-                let item  = self.operQ[i]
-                item.action(sdb, self.tableType)
+        if self.operQ.count==0{
+            return
+        }
+        
+        var onlyHasAdd = true
+        for item in self.operQ{
+            if item is OperationAdd{
+            }else{
+                onlyHasAdd = false
+                break
             }
         }
-        db.foreign_keys = true
+        
+        let tableName = tableType.tableName()
+        
+        if onlyHasAdd{
+            let propertyData = PropertyData.validPropertyDataForObject(tableType)
+            var attrMaps : [String: PropertyData] = [:]
+            for item in propertyData{
+                if let name = item.name{
+                    attrMaps[name] = item
+                }
+            }
+            
+            for itemx in self.operQ{
+                let item = itemx as! OperationAdd
+                let type = attrMaps[item.name]!.type!
+                let sqlType = SQLiteDatatype(type:type)!
+                db.query("ALTER TABLE \(tableName) ADD COLUMN \(item.name) \(sqlType.rawValue);")
+            }
+            return
+        }
+        
+        // rename table
+        let tmpTableName = "__"+tableType.tableName()
+        db.query("ALTER TABLE \(tableName) RENAME TO \(tmpTableName);")
+        
+        // create new table
+        _=db.createTableForTypeRepresentedByObject(tableType)
+        
+        //migrate
+        let statement = "SELECT ALL * FROM \(tmpTableName)"
+        db.query(statement, nil, {(stat:Statement)->Void in
+            Swift.print("stat: \(stat.dictionary)")
+            var data = stat.dictionary
+            for itemx in self.operQ{
+                if let item = itemx as? OperationMigrate{
+                    let tmp = data[item.name]
+                    data[item.name] = item.migrate(tmp!)
+                }else if let item = itemx as? OperationRename{
+                    if item.newName != item.name{
+                        data[item.newName] = data[item.name]
+                        data.removeValue(forKey: item.name)
+                    }
+                }else if let item = itemx as? OperationRemove{
+                    data.removeValue(forKey: item.name)
+                }else if let item = itemx as? OperationAdd{
+                    data[item.name] = nil
+                }
+            }
+            let insertStatement = StatementGenerator.insertStatementForType(self.tableType, update: false)
+            _=self.db.update(insertStatement, data)
+        })
+        
+        //drop template table
+        db.query("DROP TABLE \(tmpTableName);")
+        
     }
 }
 
@@ -127,15 +176,19 @@ extension SwiftyDb {
         
         let old_version = db.user_version
         if dataResults.isSuccess{
+            db.foreign_keys = false
+            _=db.transaction { (sdb:SwiftyDb) in
             for table in dataResults.value!{
                 if table.isTable() && db.tableNeedMigrate(){
                     for item in tables{
-                        let oper : MigrationOperationIX =  MigrationPropertieOperation(db, item)
+                        let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
                         type(of:item).Migrate(old_version,oper)
                         oper.commit()
                     }
                 }
             }
+            }
+            db.foreign_keys = true
         }
         db.user_version = versionNew
     }

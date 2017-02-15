@@ -46,9 +46,10 @@ public protocol IndexProperties {
 }
 
 public protocol MigrationOperationI{
-    func add(_ name: String,_ newType: SQLiteDatatype)->MigrationOperationI
+    func add(_ name: String)->MigrationOperationI
     func remove(_ name: String)->MigrationOperationI
-    func migrate(_ newName: String,_ newType: SQLiteDatatype?,_ dataMigrate:((_ data: Any)->Any)?)->MigrationOperationI
+    func rename(_ name: String,_ newName: String)->MigrationOperationI
+    func migrate(_ name: String,_ dataMigrate:@escaping((_ data: SQLiteValue?)->SQLiteValue?))->MigrationOperationI
 }
 
 public protocol MigrationProperties : Storable{

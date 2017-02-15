@@ -161,9 +161,9 @@ class TestMigrateVer2 : NSObject, MigrationProperties, TableNameSet{
         return "testMigrate"
     }
     static func Migrate(_ ver:Int, _ action:MigrationOperationI){
-        if ver < 1{
-            _=action.add("address", .Text).remove("email").migrate("age", .Integer, {(oldData:Any) -> Any in
-                return Int(oldData as! String) as Any
+        if ver < 1{ 
+            _=action.add("address").remove("email").migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in
+                return Int(oldData as! String)
             })
         }
     }

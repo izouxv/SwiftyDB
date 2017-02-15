@@ -92,15 +92,15 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
         
         let tableName = tableType.tableName()
         
-        if onlyHasAdd{
-            let propertyData = PropertyData.validPropertyDataForObject(tableType)
-            var attrMaps : [String: PropertyData] = [:]
-            for item in propertyData{
-                if let name = item.name{
-                    attrMaps[name] = item
-                }
+        let propertyData = PropertyData.validPropertyDataForObject(tableType)
+        var attrMaps : [String: PropertyData] = [:]
+        for item in propertyData{
+            if let name = item.name{
+                attrMaps[name] = item
             }
-            
+        }
+        
+        if onlyHasAdd{
             for itemx in self.operQ{
                 let item = itemx as! OperationAdd
                 let type = attrMaps[item.name]!.type!
@@ -134,7 +134,9 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
                 }else if let item = itemx as? OperationRemove{
                     data.removeValue(forKey: item.name)
                 }else if let item = itemx as? OperationAdd{
-                    data[item.name] = nil
+                    let type = attrMaps[item.name]!.type!
+                    let sqlType = SQLiteDatatype(type:type)!
+                    data[item.name] = sqlType.value()
                 }
             }
             let insertStatement = StatementGenerator.insertStatementForType(self.tableType, update: false)
@@ -171,7 +173,7 @@ extension SwiftyDb {
         try! db.open()
         defer {db.close()}
         
-        let dataResults = db.objectsForType(sqlite_master(),matchingFilter:nil, false)
+        let dataResults = db.objectsFor(sqlite_master(),matchingFilter:nil, false)
         Swift.print("result: \(dataResults)")
         
         let old_version = db.user_version

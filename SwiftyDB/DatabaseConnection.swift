@@ -179,9 +179,10 @@ internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.se
 open class DatabaseConnection {
     
     fileprivate var handle: OpaquePointer? = nil
-    internal let path: String
     
-    fileprivate var isOpen: Bool = false
+    public internal(set) var path: String
+    
+    public internal(set) var  isOpen: Bool = false
     
     public func IsOpen() -> Bool {
         return self.isOpen

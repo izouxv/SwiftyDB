@@ -38,10 +38,10 @@ import SwiftyDB
 import Quick
 import Nimble
 
-class SwiftyDbFilter: SwiftyDBSpec {
+class SwiftXDbFilter: SwiftyDBSpec {
     override func spec() {
         super.spec()
-        let database = SwiftyDbX(databaseName: "test_database")
+        let database = SwiftXDb(databaseName: "test_database")
         describe("Data in database is updated") {
             context("object added test sample data") {
                 it("should contain the object after it is added") {
@@ -51,24 +51,24 @@ class SwiftyDbFilter: SwiftyDBSpec {
                         object.num = Int(arc4random()%20)
                         expect(database.addObject(object).isSuccess).to(beTrue())
                     }
-                    expect(database.dataForType(TestClassSimple()).value?.count) == 10
+                    expect(database.dataFor(TestClassSimple()).value?.count) == 10
                 }
                 it("limit greate than data") {
                     let filter = Filter.greaterThan("primaryKey", value: 3).orderBy(["num DESC"]).limit(3)
-                    let value = database.dataForType(TestClassSimple(), matchingFilter: filter).value
+                    let value = database.dataFor(TestClassSimple(), matchingFilter: filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 3
                 }
                 it("limit greate than data") {
                     let filter = Filter.greaterThan("primaryKey", value: 3).orderBy(["num"]).limit(3)
-                    let value = database.dataForType(TestClassSimple(), matchingFilter: filter).value
+                    let value = database.dataFor(TestClassSimple(), matchingFilter: filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 3
                 }
                 
                 it("limit less than data") {
                     let filter = Filter.greaterThan("primaryKey", value: 8).orderBy(["num DESC"]).limit(3)
-                    let value = database.dataForType(TestClassSimple(), matchingFilter: filter).value
+                    let value = database.dataFor(TestClassSimple(), matchingFilter: filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 1
                 } 

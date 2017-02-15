@@ -3,7 +3,7 @@
 import Quick
 import SwiftyDB
 
-func SwiftyDbX(databaseName: String)->SwiftyDb{
+func SwiftXDb(databaseName: String)->SwiftyDb{
     let database = SwiftyDb(databaseName: databaseName)
     try! database.open()
     return database
@@ -15,5 +15,4 @@ class SwiftyDBSpec: QuickSpec {
         let path = documentsDir+"/test_database.sqlite"
         let _ = try? FileManager.default.removeItem(atPath: path)
     }
-
 }

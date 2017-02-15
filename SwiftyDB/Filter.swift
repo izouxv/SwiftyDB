@@ -48,6 +48,7 @@ open class Filter: ExpressibleByDictionaryLiteral {
 }
 
 extension Filter {
+    //DISTINCT and GRUOP BY , HAVING , MAX, SUM
     fileprivate enum ExtraRelationship: String {
         case Limit   =   "LIMIT"   //[String]
         case OrderBy =   "ORDER BY" //[int]

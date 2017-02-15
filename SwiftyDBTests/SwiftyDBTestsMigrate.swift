@@ -12,10 +12,10 @@ import Quick
 import Nimble
 
 
-class SwiftyDbMigrate: SwiftyDBSpec {
+class SwiftXDbMigrate: SwiftyDBSpec {
     override func spec() {
         super.spec()
-        let database = SwiftyDbX(databaseName: "test_database")
+        let database = SwiftXDb(databaseName: "test_database")
         describe("test db migrate") {
             let obj1 = TestMigrateVer1()
             obj1.name = "this is name"
@@ -27,7 +27,7 @@ class SwiftyDbMigrate: SwiftyDBSpec {
             let newVersion = 100
             context("migrate model 1 to 2") {
                 SwiftyDb.Migrate(newVersion, database.dbPath, [TestMigrateVer2()])
-                let res = database.objectsForType(TestMigrateVer2(), matchingFilter: ["name": obj1.name])
+                let res = database.objectsFor(TestMigrateVer2(), matchingFilter: ["name": obj1.name])
                 Swift.print("res: \(res.value?[0].description)")
                 Swift.print("res: \(res.value?[0].description)")
             }

@@ -36,7 +36,7 @@ extension SwiftyDb  {
         let statement = StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
         
         do {
-          //  try dbSync({ (database) -> Void in
+          //  try sync({ (database) -> Void in
                 try database.prepare(statement)
                     .executeUpdate()
                     .finalize()
@@ -97,7 +97,7 @@ extension SwiftyDb  {
         }
         
         //TODO 需要优先判断
-      //  try dbSync({ (database) in
+      //  try sync({ (database) in
             exists = try database.containsTable(tableName)
       //  })
         

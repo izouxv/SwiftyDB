@@ -12,9 +12,30 @@ import Foundation
 
 
 extension SwiftyDb  {
+    /** Execute synchronous queries on the database in a sequential queue */
+    public func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
+        var thrownError: Error?
+        /* Run the query in a sequential queue to avoid threading related problems */
+        queue.sync { () -> Void in
+            do {
+                try block(self)
+            } catch let error {
+                thrownError = error
+            }
+        }
+        /* If an error was thrown during execution, rethrow it */
+        // TODO: Improve the process of passing along the error
+        guard thrownError == nil else {
+            throw thrownError!
+        }
+    }
+}
+
+
+extension SwiftyDb  {
     //!!! TODO need seperate Write and Read
     //need write queue, and read queue
-    public func dataForType <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
+    public func dataFor <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
         
         var results: [[String: Value?]] = []
         do {
@@ -27,7 +48,7 @@ extension SwiftyDb  {
             /* Generate statement */
             let query = StatementGenerator.selectStatementForType(obj, matchingFilter: filter)
             
-            try dbSync { (database) -> Void in
+            try sync { (database) -> Void in
                 let parameters = filter?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
                     .execute(parameters)
@@ -58,7 +79,7 @@ extension SwiftyDb  {
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
         do{
-            try dbSync{(database) in
+            try sync{(database) in
                 do {
                     try database.database.beginTransaction()
                     try block(self)
@@ -72,41 +93,12 @@ extension SwiftyDb  {
         }
         return true
     }
-    
-    /** Execute synchronous queries on the database in a sequential queue */
-    public func dbSync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
-        var thrownError: Error?
-        
-        /* Run the query in a sequential queue to avoid threading related problems */
-        queue.sync { () -> Void in
-            
-            /* Open the database and execute the block. Pass on any errors thrown */
-            do {
-                //                try self.database.open()
-                //
-                //                /* Close the database when leaving this scope */
-                //                defer {
-                //                    try! self.database.close()
-                //                }
-                
-                try block(self)
-            } catch let error {
-                thrownError = error
-            }
-        }
-        
-        /* If an error was thrown during execution, rethrow it */
-        // TODO: Improve the process of passing along the error
-        guard thrownError == nil else {
-            throw thrownError!
-        }
-    }
 }
 
 
 extension SwiftyDb {
-    public func objectsForType <D> (_ obj: D, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
-        let dataResults = dataForType(obj, matchingFilter: filter, checkTableExist)
+    public func objectsFor <D> (_ obj: D, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
+        let dataResults = dataFor(obj, matchingFilter: filter, checkTableExist)
         
         if !dataResults.isSuccess {
             return .Error(dataResults.error!)
@@ -169,9 +161,6 @@ extension SwiftyDb  {
             
             let insertStatement = StatementGenerator.insertStatementForType(object, update: update)
             
-            
-            //            try dbSync{ (database) in
-            
             //try databaseQueue.transaction { (database) -> Void in
             let statement = try database.prepare(insertStatement)
             
@@ -182,7 +171,7 @@ extension SwiftyDb  {
             
             let data = self.dataFromObject(object)
             try statement.executeUpdate(data)
-            //}
+       
         } catch let error {
             return Result.Error(error)
         }
@@ -191,7 +180,7 @@ extension SwiftyDb  {
     
     public func addObject<S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
         var resut : Result<Bool> = Result.success(true)
-        try! dbSync { (database) -> Void in
+        try! sync { (database) -> Void in
             resut = self.addObjectInner(object, update:update)
         }
         return resut
@@ -208,8 +197,7 @@ extension SwiftyDb  {
             try self.transaction { (db:SwiftyDb) in
                 for object in objects {
                     let result = db.addObjectInner(object, update: update)
-                    if !result.isSuccess{
-                        
+                    if !result.isSuccess{ 
                     }
                 }
             }
@@ -227,7 +215,7 @@ extension SwiftyDb  {
             
             let deleteStatement = StatementGenerator.deleteStatementForType(type, matchingFilter: filter)
             
-            try dbSync { (database) -> Void in
+            try sync { (database) -> Void in
                 try database.database.prepare(deleteStatement)
                     .executeUpdate(filter?.parameters() ?? [:])
                     .finalize()

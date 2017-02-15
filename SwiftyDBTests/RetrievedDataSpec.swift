@@ -14,14 +14,14 @@ class RetrievedDataSpec: SwiftyDBSpec {
     override func spec() {
         super.spec()
         
-        let database = SwiftyDbX(databaseName: "test_database")
+        let database = SwiftXDb(databaseName: "test_database")
       
         
         describe("Datatypes retrieved matches datatypes stored") {
             let object = TestClass()
             database.addObject(object)
             
-            let data = database.dataForType(TestClass()).value!.first!
+            let data = database.dataFor(TestClass()).value!.first!
             
             context("Text types matches") {
                 it("should return String") {

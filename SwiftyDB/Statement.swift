@@ -44,6 +44,24 @@ public enum SQLiteDatatype: String {
             fatalError("DSADSASA")
         }
     }
+    public func value()->SQLiteValue? {
+        switch self {
+        case .Text:
+            return ""
+        case .Integer:
+            return 0
+        case .Real:
+            return 0.0
+        case .Blob:
+            return nil
+        case .Numeric:
+            return nil
+        case .Null:
+            return nil
+        default:
+            return nil
+        }
+    }
 }
 
 

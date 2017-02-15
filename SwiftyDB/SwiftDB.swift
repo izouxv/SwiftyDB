@@ -87,7 +87,7 @@ open class SwiftyDb {
     //@nonobjc
     static let defaultDB : SwiftyDb = SwiftyDb.init(databaseName: "SwiftyDB")
     
-    internal let queue: DispatchQueue = DispatchQueue(label: "TinySQLiteQueue", attributes: [])
+    internal let queue: DispatchQueue = DispatchQueue(label: "swiftdb write or read queue", attributes: [])
     
     internal let database : DatabaseConnection
     

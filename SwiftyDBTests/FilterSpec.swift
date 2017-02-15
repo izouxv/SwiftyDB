@@ -29,11 +29,11 @@ class FilterSpec: SwiftyDBSpec {
             
             context("retrieve object") {
                 
-                let database = SwiftyDbX(databaseName: "test_database")
+                let database = SwiftXDb(databaseName: "test_database")
           
                 
                 func countForFilter(_ filter: SwiftyDB.Filter) -> Int {
-                    return database.dataForType(TestClass(), matchingFilter: filter).value!.count
+                    return database.dataFor(TestClass(), matchingFilter: filter).value!.count
                 }
                 
                 it("should filter equal") {

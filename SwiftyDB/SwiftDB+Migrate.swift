@@ -11,7 +11,7 @@ internal protocol MigrationOperationIX:MigrationOperationI{
     func commit()
 }
 
-public protocol OperateAction {
+internal protocol OperateAction {
     func action(_ db : SwiftyDb,_ table: MigrationProperties)
 }
 

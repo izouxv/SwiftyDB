@@ -22,7 +22,7 @@ class SwiftyDbMigrate: SwiftyDBSpec {
             obj1.age = "16"
             obj1.email = "izouxv@gmail.com"
             context("add version 1 obj to db") {
-               database.addObject(obj1)
+               _=database.addObject(obj1)
             }
             let newVersion = 100
             context("migrate model 1 to 2") {

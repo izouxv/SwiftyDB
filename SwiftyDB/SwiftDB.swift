@@ -8,8 +8,6 @@
 import Foundation
 
 
-
-
 /** All objects in the database must conform to the 'Storable' protocol */
 public protocol Storable {
     /** Used to initialize an object to get information about its properties */
@@ -31,7 +29,6 @@ extension Storable {
 public protocol TableNameSet {
     static func tableName()->String
 }
-
 
 /** Implement this protocol to use primary keys */
 public protocol PrimaryKeys {
@@ -117,9 +114,9 @@ extension SwiftyDb{
     }
     public convenience init(databaseName: String) {
         let documentsDir : String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
-        let  path1 = documentsDir+"/\(databaseName).sqlite"
+        let  path = documentsDir+"/\(databaseName).sqlite"
         
-        self.init(path:path1)
+        self.init(path:path)
         //  try! self.open()
     }
     public convenience init(userPath: String) {

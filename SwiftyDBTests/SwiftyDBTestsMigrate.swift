@@ -28,8 +28,10 @@ class SwiftXDbMigrate: SwiftyDBSpec {
             context("migrate model 1 to 2") {
                 SwiftyDb.Migrate(newVersion, database.dbPath, [TestMigrateVer2()])
                 let res = database.objectsFor(TestMigrateVer2(), matchingFilter: ["name": obj1.name])
-                Swift.print("res: \(res.value?[0].description)")
-                Swift.print("res: \(res.value?[0].description)")
+                
+                expect(res.value?.count) == 1
+                expect(res.value![0].age) == 16
+                
             }
         }
     }

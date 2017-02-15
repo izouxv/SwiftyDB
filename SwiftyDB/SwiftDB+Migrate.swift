@@ -139,13 +139,13 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
                     data[item.name] = sqlType.value()
                 }
             }
+            Swift.print("data: \(data)")
             let insertStatement = StatementGenerator.insertStatementForType(self.tableType, update: false)
             _=self.db.update(insertStatement, data)
         })
         
         //drop template table
-        db.query("DROP TABLE \(tmpTableName);")
-        
+        db.query("DROP TABLE \(tmpTableName);") 
     }
 }
 

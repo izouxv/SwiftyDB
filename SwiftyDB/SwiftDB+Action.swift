@@ -125,20 +125,23 @@ extension SwiftyDb {
     internal func objectWithData <D> (_ data: [String: Value?], forType type: D.Type) -> D where D: Storable  {
         let object = type.init()
         
-        var validData: [String: AnyObject] = [:]
+        #if false
+        var validData: [String: Any] = [:]
         
         data.forEach { (name, value) -> () in
             if let numValue = value as? UInt64{
-                validData[name] = Int(numValue) as AnyObject?
+                validData[name] = Int(numValue)
             }else if let validValue = value as? String {
-                validData[name] =  String(validValue) as AnyObject?
+                validData[name] =  String(validValue)
                 //            }else if let validValue = value as? AnyObject {
                 //                validData[name] = validValue
             }else{
-                Swift.print("not support name: \(name)")
+                Swift.print("not support name: \(name) \(type(of:value))")
             }
         }
         object.setValuesForKeys(validData)
+            #endif
+        object.setValuesForKeys(data)
         return object
     }
 }

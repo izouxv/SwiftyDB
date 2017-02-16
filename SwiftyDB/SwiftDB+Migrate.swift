@@ -209,6 +209,9 @@ extension SwiftyDb {
         return needMigrate
     }
     public static func MigrateAction(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
+//        if !self.MigrateCheck(versionNew, dbPath, tables){
+//            return
+//        }
         self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
             let old_version = db.user_version
             db.foreign_keys = false

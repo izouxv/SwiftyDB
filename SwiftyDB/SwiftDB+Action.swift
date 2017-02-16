@@ -53,7 +53,6 @@ extension SwiftyDb  {
                 let statement = try! database.database.prepare(query)
                     .execute(parameters)
                 
-                
                 /* Create a dummy object used to extract property data */
                 let object =  type(of:obj).init()
                 let objectPropertyData = PropertyData.validPropertyDataForObject(object)

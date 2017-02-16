@@ -17,21 +17,33 @@ class SwiftXDbMigrate: SwiftyDBSpec {
         super.spec()
         let database = SwiftXDb(databaseName: "test_database")
         describe("test db migrate") {
-            let obj1 = TestMigrateVer1()
+            let obj1 = TestMigrateVer0()
             obj1.name = "this is name"
             obj1.age = "16"
             obj1.email = "izouxv@gmail.com"
             context("add version 1 obj to db") {
                _=database.addObject(obj1)
             }
-            let newVersion = 100
-            context("migrate model 1 to 2") {
+            
+            var newVersion = 1
+            context("migrate version 0->1") {
+                SwiftyDb.Migrate(newVersion, database.dbPath, [TestMigrateVer1()])
+                let res = database.objectsFor(TestMigrateVer1(), matchingFilter: ["name": obj1.name])
+                
+                expect(res.value?.count) == 1
+                expect(res.value![0].age) == 16
+            }
+            
+            newVersion = 2
+            context("migrate version 1->2") {
                 SwiftyDb.Migrate(newVersion, database.dbPath, [TestMigrateVer2()])
                 let res = database.objectsFor(TestMigrateVer2(), matchingFilter: ["name": obj1.name])
                 
                 expect(res.value?.count) == 1
-                expect(res.value![0].age) == 16
-                
+                let item = res.value![0]
+                expect(item.age) == 100
+                expect(item.nikeName) == "default"
+                expect(item.Address2) == "Add"
             }
         }
     }

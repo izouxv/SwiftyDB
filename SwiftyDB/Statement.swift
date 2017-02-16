@@ -547,9 +547,6 @@ extension Statement {
 }
 
 
-
-
-
 //MARK: - Dictionary representation of row
 extension Statement {
     
@@ -564,9 +561,6 @@ extension Statement {
         return dictionary
     }
 }
-
-
-
 
 
 //MARK: - Values for named columns

@@ -134,9 +134,12 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
                 }else if let item = itemx as? OperationRemove{
                     data.removeValue(forKey: item.name)
                 }else if let item = itemx as? OperationAdd{
-                    let type = attrMaps[item.name]!.type!
-                    let sqlType = SQLiteDatatype(type:type)!
-                    data[item.name] = sqlType.value()
+                    if let type2 = attrMaps[item.name]{
+                        //may be added name is removeed by next operation
+                        let type = type2.type!
+                        let sqlType = SQLiteDatatype(type:type)!
+                        data[item.name] = sqlType.value()
+                    }
                 }
             }
             Swift.print("data: \(data)")

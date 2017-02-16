@@ -70,7 +70,7 @@ public protocol SwiftDb{
     func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
     
     func addObject<S: Storable> (_ object: S, update: Bool) -> Result<Bool>
-    func addObjects<S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool>
+//    func addObjects<S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool>
     func addObjects<S: Storable> (_ objects: [S], update: Bool) -> Result<Bool>
     func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter?) -> Result<Bool>
     func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>

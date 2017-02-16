@@ -187,10 +187,9 @@ extension SwiftyDb  {
         }
         return resut
     }
-    public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {
-        return addObjects([object] + moreObjects)
-    }
-    
+//    public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {
+//        return addObjects([object] + moreObjects)
+//    }
     public func addObjects <S: Storable> (_ objects: [S], update: Bool = true) -> Result<Bool> {
         guard objects.count > 0 else {
             return Result.success(true)

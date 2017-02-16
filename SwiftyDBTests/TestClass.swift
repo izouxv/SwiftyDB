@@ -161,8 +161,8 @@ class TestMigrateVer1 : NSObject, MigrationProperties, TableNameSet{
         return "testMigrate"
     }
     //TODO  需要在数据库最开始的地方收集所有的数据库对象。这样可以集中做迁移和新建数据库
-    static func Migrate(_ ver:Int, _ action:MigrationOperationI){
-        if ver < 1{
+    static func Migrate(_ verOld:Int, _ action:MigrationOperationI){
+        if verOld < 1{
             _=action.add("address").remove("email").migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in
                 return Int(oldData as! String)
             }).migrate("address", { (oldData:SQLiteValue?) -> SQLiteValue? in
@@ -182,8 +182,8 @@ class TestMigrateVer2 : NSObject, MigrationProperties, TableNameSet{
         return "testMigrate"
     }
     //TODO  需要在数据库最开始的地方收集所有的数据库对象。这样可以集中做迁移和新建数据库
-    static func Migrate(_ ver:Int, _ action:MigrationOperationI){
-        if ver < 2{
+    static func Migrate(_ verOld:Int, _ action:MigrationOperationI){
+        if verOld < 2{
             _=action.add("nikeName").rename("address", "Address").migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in
                 return 100
             }).migrate("nikeName", { (oldData:SQLiteValue?) -> SQLiteValue? in

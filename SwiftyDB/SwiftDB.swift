@@ -53,7 +53,7 @@ public protocol MigrationOperationI{
 }
 
 public protocol MigrationProperties : Storable{
-    static func Migrate(_ ver:Int, _ action:MigrationOperationI)
+    static func Migrate(_ verOld:Int, _ action:MigrationOperationI)
 }
 
 public protocol SwiftDb{

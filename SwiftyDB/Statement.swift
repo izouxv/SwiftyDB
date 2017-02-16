@@ -66,6 +66,11 @@ public enum SQLiteDatatype: String {
 
 
 open class Statement {
+    public func printDesc(){ 
+        Swift.print("stat query: \(self.query)")
+        Swift.print("stat handle: \(self.handle)")
+    }
+    
     fileprivate var handle: OpaquePointer?
     var query: String
     

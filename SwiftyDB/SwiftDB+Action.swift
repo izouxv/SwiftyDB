@@ -240,6 +240,7 @@ extension SwiftyDb {
             defer {
                 try! statement.finalize()
             }
+            
             var stat : Statement? = statement.next()
             if !(cb != nil){
                 return
@@ -254,6 +255,7 @@ extension SwiftyDb {
     public func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
         do{
             let statement = try! database.prepare(insertStatement)
+             
             defer {
                 /* If an error occurs, try to finalize the statement */
                 let _ = try? statement.finalize()

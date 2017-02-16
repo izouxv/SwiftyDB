@@ -77,7 +77,9 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
         return self
     }
     public func commit() {
+        let tableName = tableType.tableName()
         if self.operQ.count==0{
+            Swift.print("Warning!!! type: \(tableName) operQ is empty")
             return
         }
         
@@ -90,7 +92,6 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
             }
         }
         
-        let tableName = tableType.tableName()
         
         let propertyData = PropertyData.validPropertyDataForObject(tableType)
         var attrMaps : [String: PropertyData] = [:]

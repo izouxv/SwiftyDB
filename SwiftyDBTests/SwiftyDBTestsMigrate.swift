@@ -37,13 +37,15 @@ class SwiftXDbMigrate: SwiftyDBSpec {
             newVersion = 2
             context("migrate version 1->2") {
                 SwiftyDb.Migrate(newVersion, database.dbPath, [TestMigrateVer2()])
+                
+                let database = SwiftXDb(databaseName: "test_database")
                 let res = database.objectsFor(TestMigrateVer2(), matchingFilter: ["name": obj1.name])
                 
                 expect(res.value?.count) == 1
                 let item = res.value![0]
                 expect(item.age) == 100
                 expect(item.nikeName) == "default"
-                expect(item.Address2) == "Add"
+                expect(item.Address) == "Add"
             }
         }
     }

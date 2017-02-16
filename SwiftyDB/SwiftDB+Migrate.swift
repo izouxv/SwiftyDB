@@ -128,8 +128,8 @@ internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
             var data = stat.dictionary
             for itemx in self.operQ{
                 if let item = itemx as? OperationMigrate{
-                    let tmp = data[item.name]
-                    data[item.name] = item.migrate(tmp!)
+                    let tmp = data[item.name]!
+                    data[item.name] = item.migrate(tmp)
                 }else if let item = itemx as? OperationRename{
                     if item.newName != item.name{
                         data[item.newName] = data[item.name]
@@ -143,6 +143,8 @@ internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
                         let type = type2.type!
                         let sqlType = SQLiteDatatype(type:type)!
                         data[item.name] = sqlType.value()
+                    }else{
+                        data[item.name] = nil
                     }
                 }
             }

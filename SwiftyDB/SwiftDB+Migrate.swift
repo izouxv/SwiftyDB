@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal protocol MigrationOperationIX:MigrationOperationI{
+internal protocol MigrationInnerX:MigrationOperationI{
     func commit()
     var operationCount : Int {get}
 }
@@ -53,7 +53,7 @@ class TestClassSimple2:NSObject , Storable{
     required override init() {}
 }
 
-internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
+internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
     var db : SwiftyDb
     var operationCount : Int {
         return operQ.count
@@ -197,7 +197,7 @@ extension SwiftyDb {
             let old_version = db.user_version
             for item in tables{
                 if (tables_sqlite[item.tableName()] != nil){
-                    let oper : MigrationOperationIX =  MigrationPropertieOperation(db, item)
+                    let oper : MigrationInnerX =  MigrationPropertieOperation(db, item)
                     type(of:item).Migrate(old_version,oper)
                     if oper.operationCount>0{
                         needMigrate = true
@@ -215,7 +215,7 @@ extension SwiftyDb {
             _=db.transaction { (sdb:SwiftyDb) in
                 for item in tables{
                     if (tables_sqlite[item.tableName()] != nil){
-                        let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
+                        let oper : MigrationInnerX =  MigrationPropertieOperation(sdb, item)
                         type(of:item).Migrate(old_version,oper)
                         oper.commit()
                     }

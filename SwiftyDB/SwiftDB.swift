@@ -20,7 +20,7 @@ extension Storable {
     func tableName()->String{
         if let sss = self as? TableNameSet{
             return (type(of:sss)).tableName()
-        } 
+        }
         let name = String(describing: type(of: self))
         return name
     }
@@ -56,27 +56,29 @@ public protocol MigrationProperties : Storable{
     static func Migrate(_ ver:Int, _ action:MigrationOperationI)
 }
 
-
-
-
-
-/*
- all models' table info need save into db
- 
- Nested Objects
- 
- RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
- config.objectClasses = @[MyClass.class, MyOtherClass.class];
- RLMRealm *realm = [RLMRealm realmWithConfiguration:config error:nil];
- 
- 
- Linear Migrations
- Suppose we have two users for our app: JP and Tim. JP updates the app very often, but Tim happens to skip a few versions. It’s likely that JP has seen every new version of our app, and every schema upgrade in order: he downloaded a version of the app that took him from v0 to v1, and later another update that took him from v1 to v2. In contrast, it’s possible that Tim might download an update of the app that will need to take him from v0 to v2 immediately. Structuring your migration blocks with non-nested if (oldSchemaVersion < X) calls ensures that they will see all necessary upgrades, no matter which schema version they start from.
- 
- Another scenario may arise in the case of users who skipped versions of your app. If you delete a property email at version 2 and re-introduce it at version 3, and a user jumps from version 1 to version 3, Realm will not be able to automatically detect the deletion of the email property, as there will be no mismatch between the schema on disk and the schema in the code for that property. This will lead to Tim’s Person object having a v3 address property that has the contents of the v1 address property. This may not be a problem, unless you changed the internal storage representation of that property between v1 and v3 (say, went from an ISO address representation to a custom one). To avoid this, we recommend you nil out the email property on the if (oldSchemaVersion < 3) statement, guaranteeing that all Realms upgraded to version 3 will have a correct dataset.
- 
- */
-
+public protocol SwiftDb{
+    var dbPath : String{get}
+    func open() throws
+    func close()
+    
+    func key(_ key: String)throws
+    func rekey(_ key: String)throws
+    
+    static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])
+    
+    func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws
+    func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
+    
+    func addObject<S: Storable> (_ object: S, update: Bool) -> Result<Bool>
+    func addObjects<S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool>
+    func addObjects<S: Storable> (_ objects: [S], update: Bool) -> Result<Bool>
+    func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter?) -> Result<Bool>
+    func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>
+    
+    func query(_ sql: String, _ values: SQLiteValues?, _ cb:((Statement)->Void)?)
+    func dataFor<S: Storable> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
+    func objectsFor<S> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
+}
 
 
 //// TODO: Allow queues working on different databases at the same time

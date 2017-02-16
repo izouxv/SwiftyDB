@@ -148,7 +148,7 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
         })
         
         //drop template table
-        db.query("DROP TABLE \(tmpTableName);") 
+        db.query("DROP TABLE \(tmpTableName);")
     }
 }
 
@@ -171,7 +171,7 @@ extension SwiftyDb {
     internal func tableNeedMigrate() ->Bool {
         return true
     }
-    public class func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
+    public static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
         let db = SwiftyDb(path:dbPath)
         try! db.open()
         defer {db.close()}
@@ -183,15 +183,15 @@ extension SwiftyDb {
         if dataResults.isSuccess{
             db.foreign_keys = false
             _=db.transaction { (sdb:SwiftyDb) in
-            for table in dataResults.value!{
-                if table.isTable() && db.tableNeedMigrate(){
-                    for item in tables{
-                        let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
-                        type(of:item).Migrate(old_version,oper)
-                        oper.commit()
+                for table in dataResults.value!{
+                    if table.isTable() && db.tableNeedMigrate(){
+                        for item in tables{
+                            let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
+                            type(of:item).Migrate(old_version,oper)
+                            oper.commit()
+                        }
                     }
                 }
-            }
             }
             db.foreign_keys = true
         }

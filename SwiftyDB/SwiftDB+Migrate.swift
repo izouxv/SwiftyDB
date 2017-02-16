@@ -96,7 +96,6 @@ internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
             }
         }
         
-        
         let propertyData = PropertyData.validPropertyDataForObject(tableType)
         var attrMaps : [String: PropertyData] = [:]
         for item in propertyData{
@@ -226,32 +225,6 @@ extension SwiftyDb {
             db.user_version = versionNew
         })
     }
-    //    public static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
-    //        let db = SwiftyDb(path:dbPath)
-    //        try! db.open()
-    //        defer {db.close()}
-    //
-    //        let dataResults = db.objectsFor(sqlite_master(),matchingFilter:nil, false)
-    //        Swift.print("result: \(dataResults)")
-    //
-    //        let old_version = db.user_version
-    //        if dataResults.isSuccess{
-    //            db.foreign_keys = false
-    //            _=db.transaction { (sdb:SwiftyDb) in
-    //                for table in dataResults.value!{
-    //                    if table.isTable(){
-    //                        for item in tables{
-    //                            let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
-    //                            type(of:item).Migrate(old_version,oper)
-    //                            oper.commit()
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //            db.foreign_keys = true
-    //        }
-    //        db.user_version = versionNew
-    //    }
 }
 
 extension SwiftyDb {
@@ -339,31 +312,6 @@ extension SwiftyDb {
  PRAGMA foreign_keys=on;
  */
 
-
-
-/*
- let KVersion  = 123456789
- typealias migragteClosure = (_ ver:Int,_ tableName:sqlite_master,_ datas:[String:Any])->(Int,sqlite_master,[String:Any])
- var dbMigrates : [migragteClosure] = []
- extension SwiftyDb {
- internal class func MigrateAction(){
- let item1 : migragteClosure = {(_  ver: Int,_ tableName:sqlite_master,_ data:[String:Any])->(Int,sqlite_master,[String:Any]) in
- if tableName.name == "Dog"{
- if ver<=0{
- }
- if ver<=1{
- }
- if ver<=2{
- }
- if ver<=3{
- }
- }
- return (ver, tableName, data)
- }
- dbMigrates.append(item1)
- }
- }
- */
 
 
 

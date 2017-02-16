@@ -9,6 +9,7 @@ import Foundation
 
 internal protocol MigrationOperationIX:MigrationOperationI{
     func commit()
+    var operationCount : Int {get}
 }
 
 internal protocol OperateAction {
@@ -54,6 +55,9 @@ class TestClassSimple2:NSObject , Storable{
 
 internal class MigrationPropertieOperation : NSObject, MigrationOperationIX{
     var db : SwiftyDb
+    var operationCount : Int {
+        return operQ.count
+    }
     var tableType :  MigrationProperties
     var operQ : [OperateAction] = []
     init(_ swiftyDB : SwiftyDb, _ tableType : MigrationProperties) {
@@ -169,10 +173,7 @@ internal class sqlite_master : NSObject, Storable{
 }
 
 extension SwiftyDb {
-    internal func tableNeedMigrate() ->Bool {
-        return true
-    }
-    public static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
+    internal static func tables(_ dbPath : String, _ cb:@escaping(([String:sqlite_master], SwiftyDb)->Void)){
         let db = SwiftyDb(path:dbPath)
         try! db.open()
         defer {db.close()}
@@ -180,24 +181,79 @@ extension SwiftyDb {
         let dataResults = db.objectsFor(sqlite_master(),matchingFilter:nil, false)
         Swift.print("result: \(dataResults)")
         
-        let old_version = db.user_version
+        var tables : [String:sqlite_master] = [:]
+        
         if dataResults.isSuccess{
+            for table in dataResults.value!{
+                if table.isTable(){
+                    tables[table.name] = table
+                }
+            }
+        }
+        cb(tables, db)
+    }
+    public static func CheckMigrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool{
+        var needMigrate = false
+        self.tables(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+            let old_version = db.user_version
+            for item in tables{
+                if (tables_sqlite[item.tableName()] != nil){
+                    let oper : MigrationOperationIX =  MigrationPropertieOperation(db, item)
+                    type(of:item).Migrate(old_version,oper)
+                    if oper.operationCount>0{
+                        needMigrate = true
+                        break
+                    }
+                }
+            }
+        })
+        return needMigrate
+    }
+    public static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
+        self.tables(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+            let old_version = db.user_version
             db.foreign_keys = false
             _=db.transaction { (sdb:SwiftyDb) in
-                for table in dataResults.value!{
-                    if table.isTable() && db.tableNeedMigrate(){
-                        for item in tables{
-                            let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
-                            type(of:item).Migrate(old_version,oper)
-                            oper.commit()
-                        }
+                for item in tables{
+                    if (tables_sqlite[item.tableName()] != nil){
+                        let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
+                        type(of:item).Migrate(old_version,oper)
+                        oper.commit()
                     }
                 }
             }
             db.foreign_keys = true
-        }
-        db.user_version = versionNew
+            db.user_version = versionNew
+        })
+        
+        
     }
+    //    public static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
+    //        let db = SwiftyDb(path:dbPath)
+    //        try! db.open()
+    //        defer {db.close()}
+    //
+    //        let dataResults = db.objectsFor(sqlite_master(),matchingFilter:nil, false)
+    //        Swift.print("result: \(dataResults)")
+    //
+    //        let old_version = db.user_version
+    //        if dataResults.isSuccess{
+    //            db.foreign_keys = false
+    //            _=db.transaction { (sdb:SwiftyDb) in
+    //                for table in dataResults.value!{
+    //                    if table.isTable(){
+    //                        for item in tables{
+    //                            let oper : MigrationOperationIX =  MigrationPropertieOperation(sdb, item)
+    //                            type(of:item).Migrate(old_version,oper)
+    //                            oper.commit()
+    //                        }
+    //                    }
+    //                }
+    //            }
+    //            db.foreign_keys = true
+    //        }
+    //        db.user_version = versionNew
+    //    }
 }
 
 extension SwiftyDb {

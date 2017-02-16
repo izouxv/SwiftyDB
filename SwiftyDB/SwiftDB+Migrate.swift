@@ -173,7 +173,7 @@ internal class sqlite_master : NSObject, Storable{
 }
 
 extension SwiftyDb {
-    internal static func tables(_ dbPath : String, _ cb:@escaping(([String:sqlite_master], SwiftyDb)->Void)){
+    internal static func tableInfos(_ dbPath : String, _ cb:@escaping(([String:sqlite_master], SwiftyDb)->Void)){
         let db = SwiftyDb(path:dbPath)
         try! db.open()
         defer {db.close()}
@@ -192,9 +192,9 @@ extension SwiftyDb {
         }
         cb(tables, db)
     }
-    public static func CheckMigrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool{
+    public static func MigrateCheck(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool{
         var needMigrate = false
-        self.tables(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+        self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
             let old_version = db.user_version
             for item in tables{
                 if (tables_sqlite[item.tableName()] != nil){
@@ -209,8 +209,8 @@ extension SwiftyDb {
         })
         return needMigrate
     }
-    public static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
-        self.tables(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+    public static func MigrateAction(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
+        self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
             let old_version = db.user_version
             db.foreign_keys = false
             _=db.transaction { (sdb:SwiftyDb) in
@@ -225,8 +225,6 @@ extension SwiftyDb {
             db.foreign_keys = true
             db.user_version = versionNew
         })
-        
-        
     }
     //    public static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
     //        let db = SwiftyDb(path:dbPath)

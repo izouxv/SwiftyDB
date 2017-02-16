@@ -64,13 +64,14 @@ public protocol SwiftDb{
     func key(_ key: String)throws
     func rekey(_ key: String)throws
     
-    static func Migrate(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])
+    //Migrate first : Check, second : Action
+    static func MigrateCheck(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool
+    static func MigrateAction(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])
     
     func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws
     func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
     
     func addObject<S: Storable> (_ object: S, update: Bool) -> Result<Bool>
-//    func addObjects<S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool>
     func addObjects<S: Storable> (_ objects: [S], update: Bool) -> Result<Bool>
     func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter?) -> Result<Bool>
     func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>

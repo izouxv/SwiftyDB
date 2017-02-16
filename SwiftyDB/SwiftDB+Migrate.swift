@@ -46,12 +46,6 @@ internal class OperationMigrate : NSObject, OperateAction{
         self.migrate = migrate
     }
 }
-class TestClassSimple2:NSObject , Storable{
-    var primaryKey: NSNumber = 1
-    var num: Int      = 0
-    
-    required override init() {}
-}
 
 internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
     var db : SwiftyDb

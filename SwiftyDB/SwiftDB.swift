@@ -80,6 +80,15 @@ public protocol SwiftyDb{
     func objectsFor<S> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
 }
 
+public func SwiftyDbInit(absPath: String)->SwiftyDb{
+    return swiftyDb(absPath:absPath)
+}
+public func SwiftyDbInit(databaseName: String)->SwiftyDb{
+    return swiftyDb(databaseName:databaseName)
+}
+public func SwiftyDbInit(userPath: String)->SwiftyDb{
+    return swiftyDb(userPath:userPath)
+}
 
 //// TODO: Allow queues working on different databases at the same time
 //private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
@@ -97,8 +106,19 @@ internal class swiftyDb : SwiftyDb {
     internal var existingTables: Set<String> = []
     
     /** Create a database queue for the database at the provided path */
-    public init(path: String) {
-        database = DatabaseConnection(path: path)
+    public init(absPath: String) {
+        database = DatabaseConnection(path: absPath)
+    }
+    public convenience init(databaseName: String) {
+        let documentsDir : String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
+        let  path = documentsDir+"/\(databaseName).sqlite"
+        
+        self.init(absPath:path)
+        //  try! self.open()
+    }
+    public convenience init(userPath: String) {
+        let  path1 = "\(userPath).sqlite"
+        self.init(absPath:path1)
     }
     deinit {
         self.close()
@@ -116,17 +136,7 @@ extension swiftyDb{
     public func close(){
         try! self.database.close()
     }
-    public convenience init(databaseName: String) {
-        let documentsDir : String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]
-        let  path = documentsDir+"/\(databaseName).sqlite"
-        
-        self.init(path:path)
-        //  try! self.open()
-    }
-    public convenience init(userPath: String) {
-        let  path1 = "\(userPath).sqlite"
-        self.init(path:path1)
-    }
+
 }
 
 extension swiftyDb{

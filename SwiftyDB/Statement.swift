@@ -66,10 +66,10 @@ public enum SQLiteDatatype: String {
 
 
 open class Statement {
-    public func printDesc(){ 
-        Swift.print("stat query: \(self.query)")
-        Swift.print("stat handle: \(self.handle)")
-    }
+//    public func printDesc(){ 
+//        Swift.print("stat query: \(self.query)")
+//        Swift.print("stat handle: \(self.handle)")
+//    }
     
     fileprivate var handle: OpaquePointer?
     var query: String
@@ -130,8 +130,27 @@ open class Statement {
         return id > 0 ? id : nil
     }
     
-// MARK: - Execute query
-    internal func executeUpdateOrQuery(_ update: Bool, _ values: ArraySQLiteValues = []) throws -> Statement {
+//// MARK: - Execute query
+//    internal func executeUpdateOrQuery(_ update: Bool, _ values: ArraySQLiteValues = []) throws -> Statement {
+//        if update{
+//            try bind(values)
+//            try step()
+//        }else{
+//            try bind(values)
+//        }
+//        return self
+//    }
+//    
+//    internal func executeUpdateOrQuery(_ update: Bool, _ namedValues: MapSQLiteValues) throws -> Statement {
+//        if update{
+//            try bind(namedValues)
+//            try step()
+//        }else{
+//            try bind(namedValues)
+//        }
+//        return self
+//    }
+    internal func executeUpdateOrQuery(_ update: Bool, _ values: SqlValues?) throws -> Statement {
         if update{
             try bind(values)
             try step()
@@ -141,28 +160,16 @@ open class Statement {
         return self
     }
     
-    internal func executeUpdateOrQuery(_ update: Bool, _ namedValues: MapSQLiteValues) throws -> Statement {
-        if update{
-            try bind(namedValues)
-            try step()
-        }else{
-            try bind(namedValues)
-        }
-        return self
-    }
-    
-    open func executeUpdate(_ values: ArraySQLiteValues = []) throws -> Statement {
+    public func executeUpdate(_ values: SqlValues? = nil) throws -> Statement {
         return try self.executeUpdateOrQuery(true, values)
     }
-    open func executeUpdate(_ namedValues: MapSQLiteValues) throws -> Statement {
-        return try self.executeUpdateOrQuery(true, namedValues)
-    }
-    open func execute(_ namedValues: MapSQLiteValues) throws -> Statement {
-        return try self.executeUpdateOrQuery(false, namedValues)
-    }
-    open func execute(_ values: ArraySQLiteValues = []) throws -> Statement {
+    
+    public func execute(_ values: SqlValues? = nil) throws -> Statement {
         return try self.executeUpdateOrQuery(false, values)
     }
+//    open func execute(_ values: ArraySQLiteValues = []) throws -> Statement {
+//        return try self.executeUpdateOrQuery(false, values)
+//    }
 //
 //    /**
 //    Execute a write-only update with an array of variables to bind to placeholders in the prepared query
@@ -238,7 +245,25 @@ open class Statement {
             forHandle: handle)
     }
     
-    internal func bind(_ namedValues: MapSQLiteValues) throws {
+    
+    
+    internal func bind(_ value2: SqlValues?) throws {
+        if let value = value2{
+            if let array = value.array{
+                try bindArray(array)
+                return
+            }
+            if let map = value.mapx{
+                try bindMap(map)
+                return
+            }
+        }else{
+            try bindArray([])
+            return
+        }
+    }
+    
+    internal func bindMap(_ namedValues: MapSQLiteValues) throws {
         var parameterNameToIndexMapping: [String: Int32] = [:]
         
         for (name, _) in namedValues {
@@ -250,10 +275,10 @@ open class Statement {
             parameterNameToIndexMapping[$0]! < parameterNameToIndexMapping[$1]!
             }.map {namedValues[$0]!}
         
-        try bind(values)
+        try bindArray(values)
     }
     
-    internal func bind(_ values: ArraySQLiteValues) throws {
+    internal func bindArray(_ values: ArraySQLiteValues) throws {
         try reset()
         try clearBindings()
         

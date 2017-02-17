@@ -71,7 +71,7 @@ extension SwiftyDb  {
             try sync { (database) -> Void in
                 let parameters = filter?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
-                    .execute(parameters)
+                    .execute(SqlValues(parameters))
                 
                 /* Create a dummy object used to extract property data */
                 let object =  type(of:obj).init()
@@ -175,7 +175,7 @@ extension SwiftyDb  {
             }
             
             let data = self.dataFromObject(object)
-            try statement.executeUpdate(data)
+            try statement.executeUpdate(SqlValues(data))
             
         } catch let error {
             return Result.Error(error)
@@ -221,7 +221,7 @@ extension SwiftyDb  {
             
             try sync { (database) -> Void in
                 try database.database.prepare(deleteStatement)
-                    .executeUpdate(filter?.parameters() ?? [:])
+                    .executeUpdate(SqlValues(filter?.parameters() ?? [:]))
                     .finalize()
             }
         } catch let error {
@@ -231,35 +231,15 @@ extension SwiftyDb  {
     }
 }
 extension SwiftyDb {
-    public func query(_ sql: String, _ values: ArraySQLiteValues? = nil, _ cb:((Statement)->Void)?=nil){
+    public func query(_ sql: String, _ values: SqlValues? = nil, _ cb:((Statement)->Void)?=nil){
         do {
-            var statement = try! self
-                .database
-                .prepare(sql)
-            if let v = values{
-                statement = try! statement.execute(v)
-            }
-            /* Finalize the statement if necessary */
-            defer {
-                try! statement.finalize()
-            }
-            
-            var stat : Statement? = statement.next()
-            if !(cb != nil){
-                return
-            }
-            while stat != nil{
-                cb!(stat!)
-                stat = stat!.next()
-            }
+            try database.query(sql, values, cb)
         } catch let error {
         }
     }
-    public func update(_ statement: String, _ data: MapSQLiteValues)-> Result<Bool>{
+    public func update(_ statement: String, _ data: SqlValues)-> Result<Bool>{
         do{
-            try database.prepare(statement)
-                .executeUpdate(data)
-                .finalize()
+            try database.update(statement, data)
         } catch let error {
             return Result.Error(error)
         }

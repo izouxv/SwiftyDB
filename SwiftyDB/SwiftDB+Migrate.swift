@@ -144,7 +144,7 @@ internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
             }
             Swift.print("data: \(data)")
             let insertStatement = StatementGenerator.insertStatementForType(self.tableType, update: false)
-            _=self.db.update(insertStatement, data)
+            _=self.db.update(insertStatement, SqlValues(data))
         })
         
         //drop template table

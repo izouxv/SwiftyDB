@@ -44,7 +44,7 @@ class DatabaseConnectionTests: XCTestCase {
         try! database.open()
         
         try! database.prepare("CREATE TABLE TestTable (integer INTEGER, text TEXT, date INTEGER)").executeUpdate().finalize()
-        XCTAssertNotNil(try? database.prepare("INSERT INTO TestTable VALUES (?, ?, ?)").executeUpdate([1, "text", 2]).finalize())
+        XCTAssertNotNil(try? database.prepare("INSERT INTO TestTable VALUES (?, ?, ?)").executeUpdate(SqlValues([1, "text", 2])).finalize())
         
         try! database.close()
     }
@@ -54,7 +54,7 @@ class DatabaseConnectionTests: XCTestCase {
         try! database.open()
         
         try! database.prepare("CREATE TABLE TestTable (integer INTEGER, text TEXT, date INTEGER)").executeUpdate().finalize()
-        XCTAssertNotNil(try? database.prepare("INSERT INTO TestTable VALUES (:int, :text, :date)").executeUpdate(["int": 1, "text": "text", "date": 2]).finalize())
+        XCTAssertNotNil(try? database.prepare("INSERT INTO TestTable VALUES (:int, :text, :date)").executeUpdate(SqlValues(["int": 1, "text": "text", "date": 2])).finalize())
         
         try! database.close()
     }

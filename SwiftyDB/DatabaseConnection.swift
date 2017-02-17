@@ -41,10 +41,22 @@ extension NSNumber: SQLiteValue {}
 public typealias ArraySQLiteValues = Array<SQLiteValue?>
 public typealias MapSQLiteValues = Dictionary<String, SQLiteValue?>
 
-//public protocol SQLiteQueryArgs {}
-//extension ArraySQLiteValues where Element : SQLiteValue{
+public class SqlValues{
+    var array : ArraySQLiteValues?
+    var mapx : MapSQLiteValues?
+    init(_ values: ArraySQLiteValues = []) {
+        self.array = values
+    }
+    init(_ values: MapSQLiteValues) {
+        self.mapx = values
+    }
+}
+
+//func = (inout left: SqlValues, right: ArraySQLiteValues)-> SqlValues {
+//    return SqlValues(right)
 //}
-//extension Dictionary where Key: String, Value: SQLiteValue {
+//func = (inout left: Vector2D, right: MapSQLiteValues) -> SqlValues{
+//    return SqlValues(right)
 //}
 
 // MARK: -
@@ -188,10 +200,8 @@ open class DatabaseConnection {
     
     public internal(set) var path: String
     
-    public internal(set) var  isOpen: Bool = false
-    
     public func IsOpen() -> Bool {
-        return self.isOpen
+        return handle == nil
     }
     
     public init(path: String) {
@@ -204,21 +214,19 @@ open class DatabaseConnection {
     
     /** Open the database connection */
     public func open() throws {
-        if isOpen{
+        if self.IsOpen(){
             return
         }
         try SQLiteResultHandler.verifyResultCode(sqlite3_open(path, &handle), forHandle: handle)
-        isOpen = true
     }
     
     /** Close the database connection */
     public func close() throws {
-        if !isOpen{
+        if !self.IsOpen(){
             return
         }
         try SQLiteResultHandler.verifyResultCode(sqlite3_close(handle), forHandle: handle)
         handle = nil
-        isOpen = false
     }
     
     /**
@@ -292,15 +300,16 @@ extension DatabaseConnection {
     public func containsTable(_ tableName: String) throws -> Bool {
         let query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
         
-        let statement = try prepare(query)
-            .execute([tableName])
-        
-        /* Finalize the statement if necessary */
-        defer {
-            try! statement.finalize()
-        }
-        
-        return statement.next() != nil
+        return try self.query(query, SqlValues([tableName]))
+//        let statement = try prepare(query)
+//            .execute([tableName])
+//        
+//        /* Finalize the statement if necessary */
+//        defer {
+//            try! statement.finalize()
+//        }
+//        
+//        return statement.next() != nil
     }
 }
 
@@ -317,27 +326,30 @@ extension DatabaseConnection {
     }
 }
 
-
 extension DatabaseConnection{
-    public func query(_ sql: String, _ values: ArraySQLiteValues? = nil, _ cb:((Statement)->Void)?=nil)throws{
+    internal func query(_ sql: String, _ values: SqlValues? = nil, _ cb:((Statement)->Void)?=nil) throws -> Bool{
         var statement = try prepare(sql)
         if let v = values{
             statement = try statement.execute(v)
         }
+        
+        /* Finalize the statement if necessary */
         defer {
             try! statement.finalize()
         }
         
         var stat : Statement? = statement.next()
-        if !(cb != nil){
-            return
+        let ret = stat != nil
+        if (cb == nil){
+            return ret
         }
         while stat != nil{
             cb!(stat!)
             stat = stat!.next()
         }
+        return ret
     }
-    public func update(_ statement: String, _ data: MapSQLiteValues) throws{
+    internal func update(_ statement: String, _ data: SqlValues) throws{
         try prepare(statement)
             .executeUpdate(data)
             .finalize()

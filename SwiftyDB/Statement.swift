@@ -65,7 +65,11 @@ public enum SQLiteDatatype: String {
 }
 
 
-open class Statement {
+public protocol StatementData {
+    var dictionary: MapSQLiteValues {get}
+}
+
+internal class Statement : StatementData{
 //    public func printDesc(){ 
 //        Swift.print("stat query: \(self.query)")
 //        Swift.print("stat handle: \(self.handle)")

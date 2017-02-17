@@ -44,10 +44,10 @@ public typealias MapSQLiteValues = Dictionary<String, SQLiteValue?>
 public class SqlValues{
     var arrayx : ArraySQLiteValues?
     var mapx : MapSQLiteValues?
-    init(_ values: ArraySQLiteValues = []) {
+    public init(_ values: ArraySQLiteValues = []) {
         self.arrayx = values
     }
-    init(_ values: MapSQLiteValues) {
+    public init(_ values: MapSQLiteValues) {
         self.mapx = values
     }
 }
@@ -194,7 +194,7 @@ internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.se
 
 
 /** Responsible for opening and closing database connections, executing queries, and managing transactions */
-open class DatabaseConnection {
+internal class DatabaseConnection {
     
     fileprivate var handle: OpaquePointer? = nil
     
@@ -330,7 +330,7 @@ extension DatabaseConnection {
 }
 
 extension DatabaseConnection{
-    internal func query(_ sql: String, _ values: SqlValues? = nil, _ cb:((Statement)->Void)?=nil) throws -> Bool{
+    internal func query(_ sql: String, _ values: SqlValues? = nil, _ cb:((StatementData)->Void)?=nil) throws -> Bool{
         var statement = try prepare(sql)
         if let v = values{
             statement = try statement.execute(v)

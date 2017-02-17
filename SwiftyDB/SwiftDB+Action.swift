@@ -31,7 +31,7 @@ extension SwiftyDb  {
         return true
     }
     /** Execute synchronous queries on the database in a sequential queue */
-    public func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
+    internal func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
         var thrownError: Error?
         /* Run the query in a sequential queue to avoid threading related problems */
         
@@ -231,13 +231,13 @@ extension SwiftyDb  {
     }
 }
 extension SwiftyDb {
-    public func query(_ sql: String, _ values: SqlValues? = nil, _ cb:((Statement)->Void)?=nil){
+    public func query(_ sql: String, _ data: SqlValues? = nil, _ cb:((StatementData)->Void)?=nil){
         do {
-            try database.query(sql, values, cb)
+            try database.query(sql, data, cb)
         } catch let error {
         }
     }
-    public func update(_ statement: String, _ data: SqlValues)-> Result<Bool>{
+    public func update(_ statement: String, _ data: SqlValues? = nil)-> Result<Bool>{
         do{
             try database.update(statement, data)
         } catch let error {

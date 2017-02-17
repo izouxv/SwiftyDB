@@ -65,18 +65,19 @@ public protocol SwiftDb{
     func rekey(_ key: String)throws
     
     //Migrate first : Check, second : Action
-    static func MigrateCheck(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool
-    static func MigrateAction(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])
+//    static func MigrateCheck(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool
+//    static func MigrateAction(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])
+    func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool
+    func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
     
-    func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws
     func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
     
     func addObject<S: Storable> (_ object: S, update: Bool) -> Result<Bool>
     func addObjects<S: Storable> (_ objects: [S], update: Bool) -> Result<Bool>
     func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter?) -> Result<Bool>
-    func update(_ insertStatement: String, _ data: MapSQLiteValues)-> Result<Bool>
+    func update(_ sql: String, _ data: SqlValues?)-> Result<Bool>
     
-    func query(_ sql: String, _ values: ArraySQLiteValues?, _ cb:((Statement)->Void)?)
+    func query(_ sql: String, _ values: SqlValues?, _ cb:((StatementData)->Void)?)
     func dataFor<S: Storable> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
 }
@@ -86,7 +87,7 @@ public protocol SwiftDb{
 //private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
 
 //需要继承NSObjec才会出现在SwiftDB－swift.h里面
-open class SwiftyDb {
+open class SwiftyDb : SwiftDb {
     //@nonobjc
     static let defaultDB : SwiftyDb = SwiftyDb.init(databaseName: "SwiftyDB")
     

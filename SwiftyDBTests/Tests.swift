@@ -4,13 +4,13 @@ import Quick
 @testable import SwiftyDB
 
 
-func SwiftXDb(databaseName: String)->SwiftyDb{
-    let database = SwiftyDb(databaseName: databaseName)
+func SwiftXDb(databaseName: String)->swiftyDb{
+    let database = swiftyDb(databaseName: databaseName)
     try! database.open()
     return database
 }
 
-func SwiftXDbReset(databaseName: String)->SwiftyDb{
+func SwiftXDbReset(databaseName: String)->swiftyDb{
     delDBfile(databaseName)
     return SwiftXDb(databaseName: databaseName)
 }

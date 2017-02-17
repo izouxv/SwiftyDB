@@ -8,14 +8,14 @@
 
 
 /** Support asynchronous queries */
-extension SwiftyDb {
+extension swiftyDb {
     /** A global, concurrent queue with default priority */
     internal var queueAsync: DispatchQueue {
         return DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated)
     }
     
     /** Execute synchronous queries on the database in a sequential queue */
-    public func databaseAsync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
+    public func databaseAsync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
         var thrownError: Error?
         
         /* Run the query in a sequential queue to avoid threading related problems */

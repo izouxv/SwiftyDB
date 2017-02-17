@@ -56,7 +56,7 @@ public protocol MigrationProperties : Storable{
     static func Migrate(_ verOld:Int, _ action:MigrationOperationI)
 }
 
-public protocol SwiftDb{
+public protocol SwiftyDb{
     var dbPath : String{get}
     func open() throws
     func close()
@@ -85,9 +85,9 @@ public protocol SwiftDb{
 //private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
 
 //需要继承NSObjec才会出现在SwiftDB－swift.h里面
-open class SwiftyDb : SwiftDb {
+internal class swiftyDb : SwiftyDb {
     //@nonobjc
-    static let defaultDB : SwiftyDb = SwiftyDb.init(databaseName: "SwiftyDB")
+    static let defaultDB : swiftyDb = swiftyDb.init(databaseName: "SwiftyDB")
     
     internal let queue: DispatchQueue = DispatchQueue(label: "swiftdb write or read queue", attributes: [])
     
@@ -105,7 +105,7 @@ open class SwiftyDb : SwiftDb {
     }
 }
 
-extension SwiftyDb{
+extension swiftyDb{
     public var dbPath : String{
         return database.path
     }
@@ -129,7 +129,7 @@ extension SwiftyDb{
     }
 }
 
-extension SwiftyDb{
+extension swiftyDb{
     public func key(_ key: String)throws{
         try self.database.key(key: key)
     }

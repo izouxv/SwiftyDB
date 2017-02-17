@@ -12,7 +12,7 @@ import Nimble
 
 class FilterSpec: SwiftyDBSpec {
     
-    func resetDatabase(_ database: SwiftyDb) {
+    func resetDatabase(_ database: swiftyDb) {
         let object = TestClass()
         _=database.deleteObjectsForType(TestClass())
         object.primaryKey = 1

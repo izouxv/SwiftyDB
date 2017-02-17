@@ -48,13 +48,13 @@ internal class OperationMigrate : NSObject, OperateAction{
 }
 
 internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
-    var db : SwiftyDb
+    var db : swiftyDb
     var operationCount : Int {
         return operQ.count
     }
     var tableType :  MigrationProperties
     var operQ : [OperateAction] = []
-    init(_ swiftyDB : SwiftyDb, _ tableType : MigrationProperties) {
+    init(_ swiftyDB : swiftyDb, _ tableType : MigrationProperties) {
         self.db = swiftyDB
         self.tableType = tableType
     }
@@ -167,8 +167,8 @@ internal class sqlite_master : NSObject, Storable{
     }
 }
 
-extension SwiftyDb {
-    internal func tableInfos(_ cb:@escaping(([String:sqlite_master], SwiftyDb)->Void)){
+extension swiftyDb {
+    internal func tableInfos(_ cb:@escaping(([String:sqlite_master], swiftyDb)->Void)){
         let dataResults = self.objectsFor(sqlite_master(),matchingFilter:nil, false)
         Swift.print("result: \(dataResults)")
         
@@ -185,7 +185,7 @@ extension SwiftyDb {
     }
     public func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool{
         var needMigrate = false
-        self.tableInfos({(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+        self.tableInfos({(tables_sqlite: [String:sqlite_master],db: swiftyDb) in
             let old_version = db.user_version
             for item in tables{
                 if (tables_sqlite[item.tableName()] != nil){
@@ -205,10 +205,11 @@ extension SwiftyDb {
     }
     public func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties]){
         //TODO remove old db data which not in tables
-        self.tableInfos({(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+        self.tableInfos({(tables_sqlite: [String:sqlite_master],db: swiftyDb) in
             let old_version = db.user_version
             db.foreign_keys = false
             _=db.transaction { (sdb:SwiftyDb) in
+                let sdb = sdb as! swiftyDb
                 for item in tables{
                     if (tables_sqlite[item.tableName()] != nil){
                         let oper : MigrationInnerX =  MigrationPropertieOperation(sdb, item)
@@ -227,9 +228,9 @@ extension SwiftyDb {
 }
 
 #if false
-extension SwiftyDb {
-    internal static func tableInfos(_ dbPath : String, _ cb:@escaping(([String:sqlite_master], SwiftyDb)->Void)){
-        let db = SwiftyDb(path:dbPath)
+extension swiftyDb {
+    internal static func tableInfos(_ dbPath : String, _ cb:@escaping(([String:sqlite_master], swiftyDb)->Void)){
+        let db = swiftyDb(path:dbPath)
         try! db.open()
         defer {db.close()}
         
@@ -249,7 +250,7 @@ extension SwiftyDb {
     }
     public static func MigrateCheck(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool{
         var needMigrate = false
-        self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+        self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: swiftyDb) in
             let old_version = db.user_version
             for item in tables{
                 if (tables_sqlite[item.tableName()] != nil){
@@ -270,10 +271,10 @@ extension SwiftyDb {
     public static func MigrateAction(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties]){
      
         //TODO remove old db data which not in tables
-        self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
+        self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: swiftyDb) in
             let old_version = db.user_version
             db.foreign_keys = false
-            _=db.transaction { (sdb:SwiftyDb) in
+            _=db.transaction { (sdb:swiftyDb) in
                 for item in tables{
                     if (tables_sqlite[item.tableName()] != nil){
                         let oper : MigrationInnerX =  MigrationPropertieOperation(sdb, item)
@@ -292,7 +293,7 @@ extension SwiftyDb {
 }
     #endif
 
-extension SwiftyDb {
+extension swiftyDb {
     internal var foreign_keys : Bool{
         get{
             var foreign_keys : Bool = false
@@ -309,7 +310,7 @@ extension SwiftyDb {
     }
 }
 
-extension SwiftyDb {
+extension swiftyDb {
     internal var user_version : Int{
         get{
             var version : Int = 0

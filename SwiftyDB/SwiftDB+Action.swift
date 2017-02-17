@@ -11,7 +11,7 @@ import Foundation
 //private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
 
 
-extension SwiftyDb  {
+extension swiftyDb  {
     
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
@@ -31,7 +31,7 @@ extension SwiftyDb  {
         return true
     }
     /** Execute synchronous queries on the database in a sequential queue */
-    internal func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
+    internal func sync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
         var thrownError: Error?
         /* Run the query in a sequential queue to avoid threading related problems */
         
@@ -52,7 +52,7 @@ extension SwiftyDb  {
 }
 
 
-extension SwiftyDb  {
+extension swiftyDb  {
     //!!! TODO need seperate Write and Read
     //need write queue, and read queue
     public func dataFor <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
@@ -98,7 +98,7 @@ extension SwiftyDb  {
 }
 
 
-extension SwiftyDb {
+extension swiftyDb {
     public func objectsFor <D> (_ obj: D, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
         let dataResults = dataFor(obj, matchingFilter: filter, checkTableExist)
         
@@ -150,7 +150,7 @@ extension SwiftyDb {
 
 
 
-extension SwiftyDb  {
+extension swiftyDb  {
     //by_zouxu need compare add & update
     internal func addObjectInner <S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
         //        guard objects.count > 0 else {
@@ -199,6 +199,7 @@ extension SwiftyDb  {
         }
         do{
             try self.transaction { (db:SwiftyDb) in
+                let db = db as! swiftyDb
                 for object in objects {
                     let result = db.addObjectInner(object, update: update)
                     if !result.isSuccess{
@@ -230,7 +231,7 @@ extension SwiftyDb  {
         return .success(true)
     }
 }
-extension SwiftyDb {
+extension swiftyDb {
     public func query(_ sql: String, _ data: SqlValues? = nil, _ cb:((StatementData)->Void)?=nil){
         do {
             try database.query(sql, data, cb)

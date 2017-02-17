@@ -16,7 +16,7 @@ import Foundation
 //    static let defaultDB : SwiftyDB = SwiftyDB.init(databaseName: "SwiftyDB")
 //}
 
-extension SwiftyDb  {
+extension swiftyDb  {
     
     
     // MARK: - Private functions

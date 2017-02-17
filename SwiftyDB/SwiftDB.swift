@@ -74,9 +74,9 @@ public protocol SwiftDb{
     func addObject<S: Storable> (_ object: S, update: Bool) -> Result<Bool>
     func addObjects<S: Storable> (_ objects: [S], update: Bool) -> Result<Bool>
     func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter?) -> Result<Bool>
-    func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>
+    func update(_ insertStatement: String, _ data: MapSQLiteValues)-> Result<Bool>
     
-    func query(_ sql: String, _ values: SQLiteValues?, _ cb:((Statement)->Void)?)
+    func query(_ sql: String, _ values: ArraySQLiteValues?, _ cb:((Statement)->Void)?)
     func dataFor<S: Storable> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
 }

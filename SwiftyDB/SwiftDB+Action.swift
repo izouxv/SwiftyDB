@@ -231,7 +231,7 @@ extension SwiftyDb  {
     }
 }
 extension SwiftyDb {
-    public func query(_ sql: String, _ values: SQLiteValues? = nil, _ cb:((Statement)->Void)?=nil){
+    public func query(_ sql: String, _ values: ArraySQLiteValues? = nil, _ cb:((Statement)->Void)?=nil){
         do {
             var statement = try! self
                 .database
@@ -255,7 +255,7 @@ extension SwiftyDb {
         } catch let error {
         }
     }
-    public func update(_ statement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
+    public func update(_ statement: String, _ data: MapSQLiteValues)-> Result<Bool>{
         do{
             try database.prepare(statement)
                 .executeUpdate(data)

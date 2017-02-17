@@ -131,58 +131,90 @@ open class Statement {
     }
     
 // MARK: - Execute query
-    
-    /**
-    Execute a write-only update with an array of variables to bind to placeholders in the prepared query
-    
-    - parameter value:  array of values that will be bound to parameters in the prepared query
-    
-    - returns:          `self`
-    */
-    open func executeUpdate(_ values: SQLiteValues = []) throws -> Statement {
-        try execute(values)
-        try step()
+    open func executeUpdateOrQuery(_ update: Bool, _ values: ArraySQLiteValues = []) throws -> Statement {
+        if update{
+            try bind(values)
+            try step()
+        }else{
+            try bind(values)
+        }
         return self
     }
     
-    /**
-    Execute a write-only update with a dictionary of variables to bind to placeholders in the prepared query
-     
-    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
-     
-    - returns:              `self`
-    */
-    open func executeUpdate(_ namedValues: NamedSQLiteValues) throws -> Statement {
-        try execute(namedValues)
-        try step()
+    open func executeUpdateOrQuery(_ update: Bool, _ namedValues: MapSQLiteValues) throws -> Statement {
+        if update{
+            try bind(namedValues)
+            try step()
+        }else{
+            try bind(namedValues)
+        }
         return self
     }
     
-    /**
-    Execute a query with a dictionary of variables to bind to placeholders in the prepared query
-    Finalize the statement when you are done by calling `finalize()`
-     
-    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
-     
-    - returns:              `self`
-    */
-    open func execute(_ namedValues: NamedSQLiteValues) throws -> Statement {
-        try bind(namedValues)
-        return self
+    open func executeUpdate(_ values: ArraySQLiteValues = []) throws -> Statement {
+        return try self.executeUpdateOrQuery(true, values)
     }
-    
-    /**
-    Execute a query with an array of variables to bind to placeholders in the prepared query
-    Finalize the statement when you are done by calling `finalize()`
-     
-    - parameter value:  array of values that will be bound to parameters in the prepared query
-     
-    - returns:          `self`
-    */
-    open func execute(_ values: SQLiteValues = []) throws -> Statement {
-        try bind(values)
-        return self
+    open func executeUpdate(_ namedValues: MapSQLiteValues) throws -> Statement {
+        return try self.executeUpdateOrQuery(true, namedValues)
     }
+    open func execute(_ namedValues: MapSQLiteValues) throws -> Statement {
+        return try self.executeUpdateOrQuery(false, namedValues)
+    }
+    open func execute(_ values: ArraySQLiteValues = []) throws -> Statement {
+        return try self.executeUpdateOrQuery(false, values)
+    }
+//
+//    /**
+//    Execute a write-only update with an array of variables to bind to placeholders in the prepared query
+//    
+//    - parameter value:  array of values that will be bound to parameters in the prepared query
+//    
+//    - returns:          `self`
+//    */
+//    open func executeUpdate(_ values: ArraySQLiteValues = []) throws -> Statement {
+//        try execute(values)
+//        try step()
+//        return self
+//    }
+//    
+//    /**
+//    Execute a write-only update with a dictionary of variables to bind to placeholders in the prepared query
+//     
+//    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
+//     
+//    - returns:              `self`
+//    */
+//    open func executeUpdate(_ namedValues: MapSQLiteValues) throws -> Statement {
+//        try execute(namedValues)
+//        try step()
+//        return self
+//    }
+//    
+//    /**
+//    Execute a query with a dictionary of variables to bind to placeholders in the prepared query
+//    Finalize the statement when you are done by calling `finalize()`
+//     
+//    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
+//     
+//    - returns:              `self`
+//    */
+//    open func execute(_ namedValues: MapSQLiteValues) throws -> Statement {
+//        try bind(namedValues)
+//        return self
+//    }
+//    
+//    /**
+//    Execute a query with an array of variables to bind to placeholders in the prepared query
+//    Finalize the statement when you are done by calling `finalize()`
+//     
+//    - parameter value:  array of values that will be bound to parameters in the prepared query
+//     
+//    - returns:          `self`
+//    */
+//    open func execute(_ values: ArraySQLiteValues = []) throws -> Statement {
+//        try bind(values)
+//        return self
+//    }
     
 // MARK: - Internal methods
     
@@ -206,7 +238,7 @@ open class Statement {
             forHandle: handle)
     }
     
-    internal func bind(_ namedValues: NamedSQLiteValues) throws {
+    internal func bind(_ namedValues: MapSQLiteValues) throws {
         var parameterNameToIndexMapping: [String: Int32] = [:]
         
         for (name, _) in namedValues {
@@ -214,14 +246,14 @@ open class Statement {
             parameterNameToIndexMapping[name] = index
         }
         
-        let values: SQLiteValues = namedValues.keys.sorted {
+        let values: ArraySQLiteValues = namedValues.keys.sorted {
             parameterNameToIndexMapping[$0]! < parameterNameToIndexMapping[$1]!
             }.map {namedValues[$0]!}
         
         try bind(values)
     }
     
-    internal func bind(_ values: SQLiteValues) throws {
+    internal func bind(_ values: ArraySQLiteValues) throws {
         try reset()
         try clearBindings()
         
@@ -556,8 +588,8 @@ extension Statement {
 extension Statement {
     
     /** A dictionary representation of the data contained in the row */
-    public var dictionary: NamedSQLiteValues {
-        var dictionary: NamedSQLiteValues = [:]
+    public var dictionary: MapSQLiteValues {
+        var dictionary: MapSQLiteValues = [:]
         
         for i in 0..<sqlite3_column_count(handle) {
             dictionary[indexToNameMapping[i]!] = valueForColumn(i)

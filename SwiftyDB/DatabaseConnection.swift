@@ -38,8 +38,14 @@ extension Data: SQLiteValue {}
 extension Date: SQLiteValue {}
 extension NSNumber: SQLiteValue {}
 
-public typealias SQLiteValues = Array<SQLiteValue?>
-public typealias NamedSQLiteValues = Dictionary<String, SQLiteValue?>
+public typealias ArraySQLiteValues = Array<SQLiteValue?>
+public typealias MapSQLiteValues = Dictionary<String, SQLiteValue?>
+
+//public protocol SQLiteQueryArgs {}
+//extension ArraySQLiteValues where Element : SQLiteValue{
+//}
+//extension Dictionary where Key: String, Value: SQLiteValue {
+//}
 
 // MARK: -
 
@@ -298,7 +304,6 @@ extension DatabaseConnection {
     }
 }
 
-
 extension DatabaseConnection {
     public func key(key: String) throws {
         #if SQLITE_HAS_CODEC
@@ -312,6 +317,32 @@ extension DatabaseConnection {
     }
 }
 
+
+extension DatabaseConnection{
+    public func query(_ sql: String, _ values: ArraySQLiteValues? = nil, _ cb:((Statement)->Void)?=nil)throws{
+        var statement = try prepare(sql)
+        if let v = values{
+            statement = try statement.execute(v)
+        }
+        defer {
+            try! statement.finalize()
+        }
+        
+        var stat : Statement? = statement.next()
+        if !(cb != nil){
+            return
+        }
+        while stat != nil{
+            cb!(stat!)
+            stat = stat!.next()
+        }
+    }
+    public func update(_ statement: String, _ data: MapSQLiteValues) throws{
+        try prepare(statement)
+            .executeUpdate(data)
+            .finalize()
+    }
+}
 
 
 

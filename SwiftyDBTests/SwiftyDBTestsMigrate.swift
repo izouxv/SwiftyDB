@@ -15,13 +15,16 @@ import Nimble
 class SwiftXDbMigrate: SwiftyDBSpec {
     override func spec() {
         super.spec()
-        let database = SwiftXDb(databaseName: "test_database")
-        describe("test db migrate") {
-            let obj1 = TestMigrateVer0()
-            obj1.name = "this is name"
-            obj1.age = "16"
-            obj1.email = "izouxv@gmail.com"
-            context("add version 1 obj to db") {
+        var database = SwiftXDb(databaseName: "test_database")
+        
+        let obj1 = TestMigrateVer0()
+        obj1.name = "this is name"
+        obj1.age = "16"
+        obj1.email = "izouxv@gmail.com"
+        
+        describe("test db migrate ver 0->1->2") {
+            
+            context("add version 0 obj to db") {
                _=database.addObject(obj1)
             }
             
@@ -37,6 +40,27 @@ class SwiftXDbMigrate: SwiftyDBSpec {
             newVersion = 2
             context("migrate version 1->2") {
                 SwiftyDb.MigrateAction(newVersion, database.dbPath, [TestMigrateVer2()])
+                
+                let database = SwiftXDb(databaseName: "test_database")
+                let res = database.objectsFor(TestMigrateVer2(), matchingFilter: ["name": obj1.name])
+                
+                expect(res.value?.count) == 1
+                let item = res.value![0]
+                expect(item.age) == 100
+                expect(item.nikeName) == "default"
+                expect(item.Address) == "Add"
+            }
+        }
+        
+        database = SwiftXDbReset(databaseName: "test_database")
+        describe("test db migrate ver 0->2") {
+            context("add version 0 obj to db") {
+                _=database.addObject(obj1)
+            }
+            
+            let newVersion = 2
+            context("migrate version 0->2") {
+                SwiftyDb.MigrateAction(newVersion, database.dbPath, [TestMigrateVer0_2()])
                 
                 let database = SwiftXDb(databaseName: "test_database")
                 let res = database.objectsFor(TestMigrateVer2(), matchingFilter: ["name": obj1.name])

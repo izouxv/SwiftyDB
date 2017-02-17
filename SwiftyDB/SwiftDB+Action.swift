@@ -125,21 +125,21 @@ extension SwiftyDb {
         let object = type.init()
         
         #if false
-        var validData: [String: Any] = [:]
-        
-        data.forEach { (name, value) -> () in
-            if let numValue = value as? UInt64{
-                validData[name] = Int(numValue)
-            }else if let validValue = value as? String {
-                validData[name] =  String(validValue)
-                //            }else if let validValue = value as? AnyObject {
-                //                validData[name] = validValue
-            }else{
-                Swift.print("not support name: \(name) \(type(of:value))")
+            var validData: [String: Any] = [:]
+            
+            data.forEach { (name, value) -> () in
+                if let numValue = value as? UInt64{
+                    validData[name] = Int(numValue)
+                }else if let validValue = value as? String {
+                    validData[name] =  String(validValue)
+                    //            }else if let validValue = value as? AnyObject {
+                    //                validData[name] = validValue
+                }else{
+                    Swift.print("not support name: \(name) \(type(of:value))")
+                }
             }
-        }
-        object.setValuesForKeys(validData)
-            #endif
+            object.setValuesForKeys(validData)
+        #endif
         object.setValuesForKeys(data)
         return object
     }
@@ -173,7 +173,7 @@ extension SwiftyDb  {
             
             let data = self.dataFromObject(object)
             try statement.executeUpdate(data)
-       
+            
         } catch let error {
             return Result.Error(error)
         }
@@ -187,9 +187,9 @@ extension SwiftyDb  {
         }
         return resut
     }
-//    public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {
-//        return addObjects([object] + moreObjects)
-//    }
+    //    public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {
+    //        return addObjects([object] + moreObjects)
+    //    }
     public func addObjects <S: Storable> (_ objects: [S], update: Bool = true) -> Result<Bool> {
         guard objects.count > 0 else {
             return Result.success(true)
@@ -198,7 +198,7 @@ extension SwiftyDb  {
             try self.transaction { (db:SwiftyDb) in
                 for object in objects {
                     let result = db.addObjectInner(object, update: update)
-                    if !result.isSuccess{ 
+                    if !result.isSuccess{
                     }
                 }
             }
@@ -255,12 +255,22 @@ extension SwiftyDb {
     public func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
         do{
             let statement = try! database.prepare(insertStatement)
-             
+            
             defer {
                 /* If an error occurs, try to finalize the statement */
                 let _ = try? statement.finalize()
             }
             try! statement.executeUpdate(data)
+        } catch let error {
+            return Result.Error(error)
+        }
+        return Result.success(true)
+    }
+    public func update2(_ statement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
+        do{
+            try database.prepare(statement)
+                .executeUpdate(data)
+                .finalize()
         } catch let error {
             return Result.Error(error)
         }

@@ -138,7 +138,7 @@ internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
                         let sqlType = SQLiteDatatype(type:type)!
                         data[item.name] = sqlType.value()
                     }else{
-                        data[item.name] = nil
+                        data[item.name] = ""
                     }
                 }
             }

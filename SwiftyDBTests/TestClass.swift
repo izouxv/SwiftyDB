@@ -143,7 +143,7 @@ extension TestClassSimple: PrimaryKeys {
     }
 }
 
-class TestMigrateVer0 : NSObject, TableNameSet{
+class TestMigrateVer0 : NSObject, TableName{
     var name : String = ""
     var age : String = ""
     var email : String = ""
@@ -152,7 +152,7 @@ class TestMigrateVer0 : NSObject, TableNameSet{
     }
 }
 
-class TestMigrateVer1 : NSObject, MigrationProperties, TableNameSet{
+class TestMigrateVer1 : NSObject, MigrationProperties, TableName{
     var name : String = ""
     var age : Int = 0  //retype
     var address : String = ""//add
@@ -175,7 +175,7 @@ class TestMigrateVer1 : NSObject, MigrationProperties, TableNameSet{
 }
 
 
-class TestMigrateVer2 : NSObject, MigrationProperties, TableNameSet{
+class TestMigrateVer2 : NSObject, MigrationProperties, TableName{
     var name : String = ""
     var age : Int = 0//update data
     var Address : String = ""//rename
@@ -194,6 +194,21 @@ class TestMigrateVer2 : NSObject, MigrationProperties, TableNameSet{
                     return "default"
                 })
         }
+    }
+}
+
+
+class TestMigrateVer0_2 : NSObject, MigrationProperties, TableName{
+    var name : String = ""
+    var age : Int = 0//update data
+    var Address : String = ""//rename
+    var nikeName : String = ""//add and init
+    static  func tableName()->String{
+        return "testMigrate"
+    }
+    static func Migrate(_ verOld:Int, _ action:MigrationOperationI){
+        TestMigrateVer1.Migrate(verOld, action)
+        TestMigrateVer2.Migrate(verOld, action)
     }
 }
 

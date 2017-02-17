@@ -12,10 +12,29 @@ import Foundation
 
 
 extension SwiftyDb  {
+    
+    /** Execute a synchronous transaction on the database in a sequential queue */
+    public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
+        do{
+            try sync{(database) in
+                do {
+                    try database.database.beginTransaction()
+                    try block(self)
+                    try database.database.endTransaction()
+                } catch let error {
+                    try database.database.rollback()
+                }
+            }
+        } catch let error {
+            return false
+        }
+        return true
+    }
     /** Execute synchronous queries on the database in a sequential queue */
     public func sync(_ block: @escaping ((_ database: SwiftyDb) throws -> Void)) throws {
         var thrownError: Error?
         /* Run the query in a sequential queue to avoid threading related problems */
+        
         queue.sync { () -> Void in
             do {
                 try block(self)
@@ -23,6 +42,7 @@ extension SwiftyDb  {
                 thrownError = error
             }
         }
+        
         /* If an error was thrown during execution, rethrow it */
         // TODO: Improve the process of passing along the error
         guard thrownError == nil else {
@@ -75,23 +95,6 @@ extension SwiftyDb  {
         return .success(results)
     }
     
-    /** Execute a synchronous transaction on the database in a sequential queue */
-    public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
-        do{
-            try sync{(database) in
-                do {
-                    try database.database.beginTransaction()
-                    try block(self)
-                    try database.database.endTransaction()
-                } catch let error {
-                    try database.database.rollback()
-                }
-            }
-        } catch let error {
-            return false
-        }
-        return true
-    }
 }
 
 
@@ -252,20 +255,6 @@ extension SwiftyDb {
         } catch let error {
         }
     }
-//    public func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
-//        do{
-//            let statement = try! database.prepare(insertStatement)
-//            
-//            defer {
-//                /* If an error occurs, try to finalize the statement */
-//                let _ = try? statement.finalize()
-//            }
-//            try! statement.executeUpdate(data)
-//        } catch let error {
-//            return Result.Error(error)
-//        }
-//        return Result.success(true)
-//    }
     public func update(_ statement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
         do{
             try database.prepare(statement)

@@ -12,7 +12,7 @@ import Foundation
 //This issue arises because Swift is trying to generate a dynamic accessor for the static property for Obj-C compatibility, since the class inherits from NSObject.
 //If your project is in Swift only, rather than using a var accessor you can avoid the issue via the @nonobjc attribute in Swift 2.0
 //extension SwiftyDB  {
-    //@nonobjc
+//@nonobjc
 //    static let defaultDB : SwiftyDB = SwiftyDB.init(databaseName: "SwiftyDB")
 //}
 
@@ -36,11 +36,9 @@ extension SwiftyDb  {
         let statement = StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
         
         do {
-          //  try sync({ (database) -> Void in
-                try database.prepare(statement)
-                    .executeUpdate()
-                    .finalize()
-          //  })
+            try database.prepare(statement)
+                .executeUpdate()
+                .finalize()
         } catch let error {
             return .Error(error)
         }
@@ -76,10 +74,10 @@ extension SwiftyDb  {
      - returns:         boolean indicating if the table exists
      */
     
-//    internal func tableExistsForType(_ type: Storable.Type) throws -> Bool {
-//        let tableName = tableNameForType(type)
-//        return try self.tableExistsForName(tableName)
-//    }
+    //    internal func tableExistsForType(_ type: Storable.Type) throws -> Bool {
+    //        let tableName = tableNameForType(type)
+    //        return try self.tableExistsForName(tableName)
+    //    }
     
     
     internal func tableExistsForObj(_ obj: Storable) throws -> Bool {
@@ -97,9 +95,9 @@ extension SwiftyDb  {
         }
         
         //TODO 需要优先判断
-      //  try sync({ (database) in
-            exists = try database.containsTable(tableName)
-      //  })
+        //  try sync({ (database) in
+        exists = try database.containsTable(tableName)
+        //  })
         
         /* Cache the result */
         if exists {

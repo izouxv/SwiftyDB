@@ -248,23 +248,26 @@ extension DatabaseConnection {
     
     /** Begin a transaction */
     public  func beginTransaction() throws {
-        try self.prepare("BEGIN TRANSACTION")
-            .executeUpdate()
-            .finalize()
+//        try self.prepare("BEGIN TRANSACTION")
+//            .executeUpdate()
+//            .finalize()
+        try self.update("BEGIN TRANSACTION")
     }
     
     /** End an ongoing transaction */
     public  func endTransaction() throws {
-        try self.prepare("END TRANSACTION")
-            .executeUpdate()
-            .finalize()
+//        try self.prepare("END TRANSACTION")
+//            .executeUpdate()
+//            .finalize()
+        try self.update("END TRANSACTION")
     }
     
     /** Rollback a transaction */
     public func rollback() throws {
-        try self.prepare("ROLLBACK TRANSACTION")
-            .executeUpdate()
-            .finalize()
+//        try self.prepare("ROLLBACK TRANSACTION")
+//            .executeUpdate()
+//            .finalize()
+        try self.update("ROLLBACK TRANSACTION")
     }
 }
 
@@ -349,7 +352,7 @@ extension DatabaseConnection{
         }
         return ret
     }
-    internal func update(_ statement: String, _ data: SqlValues) throws{
+    internal func update(_ statement: String, _ data: SqlValues?=nil) throws{
         try prepare(statement)
             .executeUpdate(data)
             .finalize()

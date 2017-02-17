@@ -131,7 +131,7 @@ open class Statement {
     }
     
 // MARK: - Execute query
-    open func executeUpdateOrQuery(_ update: Bool, _ values: ArraySQLiteValues = []) throws -> Statement {
+    internal func executeUpdateOrQuery(_ update: Bool, _ values: ArraySQLiteValues = []) throws -> Statement {
         if update{
             try bind(values)
             try step()
@@ -141,7 +141,7 @@ open class Statement {
         return self
     }
     
-    open func executeUpdateOrQuery(_ update: Bool, _ namedValues: MapSQLiteValues) throws -> Statement {
+    internal func executeUpdateOrQuery(_ update: Bool, _ namedValues: MapSQLiteValues) throws -> Statement {
         if update{
             try bind(namedValues)
             try step()

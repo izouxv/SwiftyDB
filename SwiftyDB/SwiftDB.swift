@@ -65,8 +65,6 @@ public protocol SwiftDb{
     func rekey(_ key: String)throws
     
     //Migrate first : Check, second : Action
-//    static func MigrateCheck(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])->Bool
-//    static func MigrateAction(_ versionNew : Int, _ dbPath : String, _ tables : [MigrationProperties])
     func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool
     func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
     

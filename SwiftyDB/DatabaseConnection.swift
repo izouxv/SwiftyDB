@@ -42,10 +42,10 @@ public typealias ArraySQLiteValues = Array<SQLiteValue?>
 public typealias MapSQLiteValues = Dictionary<String, SQLiteValue?>
 
 public class SqlValues{
-    var array : ArraySQLiteValues?
+    var arrayx : ArraySQLiteValues?
     var mapx : MapSQLiteValues?
     init(_ values: ArraySQLiteValues = []) {
-        self.array = values
+        self.arrayx = values
     }
     init(_ values: MapSQLiteValues) {
         self.mapx = values

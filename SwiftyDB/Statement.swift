@@ -249,7 +249,7 @@ open class Statement {
     
     internal func bind(_ value2: SqlValues?) throws {
         if let value = value2{
-            if let array = value.array{
+            if let array = value.arrayx{
                 try bindArray(array)
                 return
             }

@@ -201,7 +201,7 @@ open class DatabaseConnection {
     public internal(set) var path: String
     
     public func IsOpen() -> Bool {
-        return handle == nil
+        return handle != nil
     }
     
     public init(path: String) {

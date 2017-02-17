@@ -211,6 +211,7 @@ extension SwiftyDb {
 //        if !self.MigrateCheck(versionNew, dbPath, tables){
 //            return
 //        }
+        //TODO remove old db data which not in tables
         self.tableInfos(dbPath, {(tables_sqlite: [String:sqlite_master],db: SwiftyDb) in
             let old_version = db.user_version
             db.foreign_keys = false
@@ -222,6 +223,7 @@ extension SwiftyDb {
                         oper.commit()
                     }else{
                         //craete table
+                        _=sdb.createTableForTypeRepresentedByObject(item)
                     }
                 }
             }

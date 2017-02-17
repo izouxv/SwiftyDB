@@ -199,6 +199,9 @@ extension SwiftyDb {
                         needMigrate = true
                         break
                     }
+                }else{ 
+                    needMigrate = true
+                    break
                 }
             }
         })
@@ -217,6 +220,8 @@ extension SwiftyDb {
                         let oper : MigrationInnerX =  MigrationPropertieOperation(sdb, item)
                         type(of:item).Migrate(old_version,oper)
                         oper.commit()
+                    }else{
+                        //craete table
                     }
                 }
             }

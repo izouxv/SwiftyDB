@@ -252,21 +252,21 @@ extension SwiftyDb {
         } catch let error {
         }
     }
-    public func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
-        do{
-            let statement = try! database.prepare(insertStatement)
-            
-            defer {
-                /* If an error occurs, try to finalize the statement */
-                let _ = try? statement.finalize()
-            }
-            try! statement.executeUpdate(data)
-        } catch let error {
-            return Result.Error(error)
-        }
-        return Result.success(true)
-    }
-    public func update2(_ statement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
+//    public func update(_ insertStatement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
+//        do{
+//            let statement = try! database.prepare(insertStatement)
+//            
+//            defer {
+//                /* If an error occurs, try to finalize the statement */
+//                let _ = try? statement.finalize()
+//            }
+//            try! statement.executeUpdate(data)
+//        } catch let error {
+//            return Result.Error(error)
+//        }
+//        return Result.success(true)
+//    }
+    public func update(_ statement: String, _ data: NamedSQLiteValues)-> Result<Bool>{
         do{
             try database.prepare(statement)
                 .executeUpdate(data)

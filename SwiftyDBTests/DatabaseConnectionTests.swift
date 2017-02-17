@@ -1,6 +1,6 @@
 import UIKit
 import XCTest
-import SwiftyDB
+@testable import SwiftyDB
 
 class DatabaseConnectionTests: XCTestCase {
     

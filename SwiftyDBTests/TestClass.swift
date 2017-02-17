@@ -8,7 +8,7 @@
 
 import Foundation
 
-import SwiftyDB
+@testable import SwiftyDB
 
 class DynamicTestClass: NSObject {
     

@@ -7,7 +7,7 @@
 
 import Quick
 import Nimble
-import SwiftyDB
+@testable import SwiftyDB
 
 
 class FilterSpec: SwiftyDBSpec {

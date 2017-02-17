@@ -34,7 +34,7 @@
 //}
 
 
-import SwiftyDB
+@testable import SwiftyDB
 import Quick
 import Nimble
 

@@ -1,7 +1,7 @@
 // https://github.com/Quick/Quick
 
 import Quick
-import SwiftyDB
+@testable import SwiftyDB
 
 
 func SwiftXDb(databaseName: String)->SwiftyDb{

@@ -55,7 +55,7 @@ extension swiftyDb  {
 extension swiftyDb  {
     //!!! TODO need seperate Write and Read
     //need write queue, and read queue
-    public func dataFor <S: Storable> (_ obj: S, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
+    public func dataFor <S: Storable> (_ obj: S, _ filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
         
         var results: [[String: Value?]] = []
         do {
@@ -99,8 +99,8 @@ extension swiftyDb  {
 
 
 extension swiftyDb {
-    public func objectsFor <D> (_ obj: D, matchingFilter filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
-        let dataResults = dataFor(obj, matchingFilter: filter, checkTableExist)
+    public func objectsFor <D> (_ obj: D, _ filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
+        let dataResults = dataFor(obj, filter, checkTableExist)
         
         if !dataResults.isSuccess {
             return .Error(dataResults.error!)
@@ -183,7 +183,7 @@ extension swiftyDb  {
         return Result.success(true)
     }
     
-    public func addObject<S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
+    public func addObject<S: Storable> (_ object: S, _ update: Bool = true) -> Result<Bool> {
         var resut : Result<Bool> = Result.success(true)
         try! sync { (database) -> Void in
             resut = self.addObjectInner(object, update:update)
@@ -193,7 +193,7 @@ extension swiftyDb  {
     //    public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {
     //        return addObjects([object] + moreObjects)
     //    }
-    public func addObjects <S: Storable> (_ objects: [S], update: Bool = true) -> Result<Bool> {
+    public func addObjects <S: Storable> (_ objects: [S], _ update: Bool = true) -> Result<Bool> {
         guard objects.count > 0 else {
             return Result.success(true)
         }
@@ -212,7 +212,7 @@ extension swiftyDb  {
         return Result.success(true)
     }
     
-    public func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter? = nil) -> Result<Bool> {
+    public func deleteObjectsForType (_ type: Storable, _ filter: Filter? = nil) -> Result<Bool> {
         do {
             guard try tableExistsForObj(type) else {
                 return Result.success(true)

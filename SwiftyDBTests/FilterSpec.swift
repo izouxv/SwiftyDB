@@ -33,7 +33,7 @@ class FilterSpec: SwiftyDBSpec {
           
                 
                 func countForFilter(_ filter: SwiftyDB.Filter) -> Int {
-                    return database.dataFor(TestClass(), matchingFilter: filter).value!.count
+                    return database.dataFor(TestClass(), filter).value!.count
                 }
                 
                 it("should filter equal") {

@@ -75,7 +75,7 @@ class SwiftDBTestsNew: XCTestCase {
  
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
-        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
+        XCTAssertTrue(database.addObjects(dogs, true).isSuccess)
         XCTAssertTrue(database.dataFor(BigDog()).value?.count == 1)
     }
     
@@ -88,7 +88,7 @@ class SwiftDBTestsNew: XCTestCase {
  
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
-        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
+        XCTAssertTrue(database.addObjects(dogs, true).isSuccess)
         XCTAssertTrue(database.dataFor(Dog()).value?.count == 1)
     }
     
@@ -105,18 +105,18 @@ class SwiftDBTestsNew: XCTestCase {
   
         try! database.key("123123")
         
-        XCTAssertTrue(database.addObject(dog1, update: true).isSuccess)
+        XCTAssertTrue(database.addObject(dog1, true).isSuccess)
         XCTAssertTrue(database.dataFor(Dog()).value?.count == 1)
-        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
+        XCTAssertTrue(database.addObjects(dogs, true).isSuccess)
         XCTAssertTrue(database.dataFor(Dog()).value?.count == 3)
-        XCTAssertTrue(database.dataFor(Dog(), matchingFilter: ["id": 1]).value?.count == 1)
+        XCTAssertTrue(database.dataFor(Dog(), ["id": 1]).value?.count == 1)
         
         dog2.name = "dog222"
-        XCTAssertTrue(database.addObject(dog2, update: true).isSuccess)
+        XCTAssertTrue(database.addObject(dog2, true).isSuccess)
    
-        XCTAssertTrue(database.deleteObjectsForType(Dog(), matchingFilter: ["name": "dog1"]).isSuccess)
+        XCTAssertTrue(database.deleteObjectsForType(Dog(), ["name": "dog1"]).isSuccess)
        
-        let result = database.dataFor(Dog(), matchingFilter: ["id": 2])
+        let result = database.dataFor(Dog(), ["id": 2])
         XCTAssertTrue(result.value![0]["name"] as! String == dog2.name)
          XCTAssertTrue( database.deleteObjectsForType(Dog()).isSuccess)
     }

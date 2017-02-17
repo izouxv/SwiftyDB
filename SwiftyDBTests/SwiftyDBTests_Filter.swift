@@ -55,20 +55,20 @@ class SwiftXDbFilter: SwiftyDBSpec {
                 }
                 it("limit greate than data") {
                     let filter = Filter.greaterThan("primaryKey", value: 3).orderBy(["num DESC"]).limit(3)
-                    let value = database.dataFor(TestClassSimple(), matchingFilter: filter).value
+                    let value = database.dataFor(TestClassSimple(), filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 3
                 }
                 it("limit greate than data") {
                     let filter = Filter.greaterThan("primaryKey", value: 3).orderBy(["num"]).limit(3)
-                    let value = database.dataFor(TestClassSimple(), matchingFilter: filter).value
+                    let value = database.dataFor(TestClassSimple(), filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 3
                 }
                 
                 it("limit less than data") {
                     let filter = Filter.greaterThan("primaryKey", value: 8).orderBy(["num DESC"]).limit(3)
-                    let value = database.dataFor(TestClassSimple(), matchingFilter: filter).value
+                    let value = database.dataFor(TestClassSimple(), filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 1
                 } 

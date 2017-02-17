@@ -169,7 +169,7 @@ internal class sqlite_master : NSObject, Storable{
 
 extension swiftyDb {
     internal func tableInfos(_ cb:@escaping(([String:sqlite_master], swiftyDb)->Void)){
-        let dataResults = self.objectsFor(sqlite_master(),matchingFilter:nil, false)
+        let dataResults = self.objectsFor(sqlite_master(),nil, false)
         Swift.print("result: \(dataResults)")
         
         var tables : [String:sqlite_master] = [:]

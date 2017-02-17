@@ -70,14 +70,14 @@ public protocol SwiftyDb{
     
     func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
     
-    func addObject<S: Storable> (_ object: S, update: Bool) -> Result<Bool>
-    func addObjects<S: Storable> (_ objects: [S], update: Bool) -> Result<Bool>
-    func deleteObjectsForType (_ type: Storable, matchingFilter filter: Filter?) -> Result<Bool>
+    func addObject<S: Storable> (_ object: S,_ update: Bool) -> Result<Bool>
+    func addObjects<S: Storable> (_ objects: [S],_ update: Bool) -> Result<Bool>
+    func deleteObjectsForType (_ type: Storable,_ filter: Filter?) -> Result<Bool>
     func update(_ sql: String, _ data: SqlValues?)-> Result<Bool>
     
     func query(_ sql: String, _ values: SqlValues?, _ cb:((StatementData)->Void)?)
-    func dataFor<S: Storable> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
-    func objectsFor<S> (_ obj: S, matchingFilter filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
+    func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
+    func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
 }
 
 public func SwiftyDbInit(absPath: String)->SwiftyDb{

@@ -41,14 +41,35 @@ extension NSNumber: SQLiteValue {}
 public typealias ArraySQLiteValues = Array<SQLiteValue?>
 public typealias MapSQLiteValues = Dictionary<String, SQLiteValue?>
 
-public class SqlValues{
+public class SqlValues : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiteral{
     var arrayx : ArraySQLiteValues?
     var mapx : MapSQLiteValues?
-    public init(_ values: ArraySQLiteValues = []) {
+    public init(_ values: ArraySQLiteValues) {
         self.arrayx = values
     }
     public init(_ values: MapSQLiteValues) {
         self.mapx = values
+    }
+    public required init(arrayLiteral elements: SQLiteValue?...){
+        self.arrayx = elements
+    }
+    public required init(dictionaryLiteral elements: (String, SQLiteValue?)...){
+        var mapxx : MapSQLiteValues = [:]
+        elements.forEach { (propertyName, value) in
+            mapxx[propertyName] = value
+        }
+        self.mapx = mapxx
+    }
+    internal func asdf() {
+        test(["a":123])
+        test([1])
+//        var numarray: ArraySQLiteValues = [1]
+//        test(numarray)
+//        let xxx : MapSQLiteValues = ["a":123]
+//        test(xxx)
+    }
+    internal func test(_ s : SqlValues){
+        
     }
 }
 
@@ -303,7 +324,8 @@ extension DatabaseConnection {
     public func containsTable(_ tableName: String) throws -> Bool {
         let query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
         
-        return try self.query(query, SqlValues([tableName]))
+        return try self.query(query, [tableName])
+//        return try self.query(query, SqlValues([tableName]))
 //        let statement = try prepare(query)
 //            .execute([tableName])
 //        

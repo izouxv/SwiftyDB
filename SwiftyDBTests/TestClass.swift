@@ -125,7 +125,6 @@ extension TestClass: PrimaryKeys {
         return ["primaryKey"]
     }
 }
-
 extension TestClass: IgnoredProperties {
     static func ignoredProperties() -> Set<String> {
         return ["ignored"]
@@ -143,10 +142,19 @@ extension TestClassSimple: PrimaryKeys {
     }
 }
 
-class TestMigrateVer0 : NSObject, TableName{
+class TestMigrateVer0 : NSObject{
     var name : String = ""
     var age : String = ""
     var email : String = ""
+    var ignored : String = ""
+}
+extension TestMigrateVer0: PrimaryKeys,IgnoredProperties,TableName {
+    static func primaryKeys() -> Set<String> {
+        return ["name"]
+    }
+    static func ignoredProperties() -> Set<String> {
+        return ["ignored"]
+    }
     static func tableName()->String{
         return "testMigrate"
     }
@@ -211,17 +219,6 @@ class TestMigrateVer0_2 : NSObject, MigrationProperties, TableName{
         TestMigrateVer2.Migrate(verOld, action)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

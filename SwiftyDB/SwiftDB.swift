@@ -17,7 +17,7 @@ public protocol Storable {
 }
 
 extension Storable {
-    func tableName()->String{
+    internal func tableName()->String{
         if let sss = self as? TableName{
             return (type(of:sss)).tableName()
         }

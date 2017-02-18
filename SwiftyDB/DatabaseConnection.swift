@@ -17,9 +17,7 @@ public protocol SQLiteValue {}
 extension String: SQLiteValue {}
 extension NSString: SQLiteValue {}
 extension Character: SQLiteValue {}
-
 extension Bool: SQLiteValue {}
-
 extension Int: SQLiteValue {}
 extension Int8: SQLiteValue {}
 extension Int16: SQLiteValue {}
@@ -30,10 +28,8 @@ extension UInt8: SQLiteValue {}
 extension UInt16: SQLiteValue {}
 extension UInt32: SQLiteValue {}
 extension UInt64: SQLiteValue {}
-
 extension Float: SQLiteValue {}
 extension Double: SQLiteValue {}
-
 extension Data: SQLiteValue {}
 extension Date: SQLiteValue {}
 extension NSNumber: SQLiteValue {}
@@ -68,8 +64,7 @@ public class SqlValues : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiter
 //        let xxx : MapSQLiteValues = ["a":123]
 //        test(xxx)
     }
-    internal func test(_ s : SqlValues){
-        
+    internal func test(_ s : SqlValues){ 
     }
 }
 

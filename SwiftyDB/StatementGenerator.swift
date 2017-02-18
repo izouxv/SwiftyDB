@@ -9,6 +9,11 @@ import Foundation
 
 internal class StatementGenerator {
     
+    //CREATE INDEX salary_index ON COMPANY (salary);
+    internal class func createTableIndex (_ object: Storable, _ name:String) -> String {
+        return "CREATE INDEX \(name)_index ON \(object.tableName()) \(name)"
+    }
+    
     internal class func createTableStatementForTypeRepresentedByObject (_ object: Storable) -> String {
         let tableName =   tableNameForObj(object)
         

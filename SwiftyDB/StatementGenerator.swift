@@ -10,11 +10,14 @@ import Foundation
 internal class StatementGenerator {
     
     //CREATE INDEX salary_index ON COMPANY (salary);
-    internal class func createTableIndex (_ object: Storable, _ name:String) -> String {
+    internal class func createTableIndex (_ object: Storable, _ name:String)throws -> String {
+        guard !keyWordSet.contains(name.uppercased()) else {
+            throw SQLError.error
+        }
         return "CREATE INDEX \(name)_index ON \(object.tableName()) \(name)"
     }
     
-    internal class func createTableStatementForTypeRepresentedByObject (_ object: Storable) -> String {
+    internal class func createTableStatementForTypeRepresentedByObject (_ object: Storable)throws -> String {
         let tableName =  object.tableName() //  tableNameForObj(object)
         
         var statement = "CREATE TABLE " + tableName + " ("
@@ -22,6 +25,9 @@ internal class StatementGenerator {
         let items = PropertyData.validPropertyDataForObject(object)
         for i in 0..<items.count{
             let propertyData = items[i]
+            guard !keyWordSet.contains(propertyData.name!.uppercased()) else {
+                throw SQLError.error
+            }
             statement += "\(propertyData.name!) \(SQLiteDatatype(type: propertyData.type!)!.rawValue)"
             statement += propertyData.isOptional ? "" : " NOT NULL"
             if i<items.count-1{

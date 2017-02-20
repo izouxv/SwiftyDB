@@ -147,7 +147,7 @@ class TestMigrateVer0 : NSObject{
     var age : String = ""
     var email : String = ""
     var ignored : String = ""
-    var indexed : String = ""
+    var indexeddd : String = ""
 }
 extension TestMigrateVer0: PrimaryKeys,IgnoredProperties,TableName,IndexProperties {
     static func primaryKeys() -> Set<String> {
@@ -160,7 +160,7 @@ extension TestMigrateVer0: PrimaryKeys,IgnoredProperties,TableName,IndexProperti
         return "testMigrate"
     }
     static func indexProperties() -> Set<String>{
-        return ["indexed"]
+        return ["indexeddd"]
     }
 }
 
@@ -174,7 +174,7 @@ class TestMigrateVer1 : NSObject, MigrationProperties, TableName{
     }
     static func Migrate(_ verOld:Int, _ action:MigrationOperationI){
         if verOld < 1{
-            _=action.remove("email").remove("indexed")
+            _=action.remove("email").remove("indexeddd")
                 .migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in
                     return Int(oldData as! String)
                 })

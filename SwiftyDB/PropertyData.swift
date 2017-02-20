@@ -30,7 +30,7 @@ extension EnumCollection {
 }
 
 //judge table attr is correct
-enum SqliteKeyWord : String, EnumCollection{
+public enum SqliteKeyWord : String, EnumCollection{
     case
     ABORT,
     ACTION,

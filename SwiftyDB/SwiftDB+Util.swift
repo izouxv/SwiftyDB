@@ -33,13 +33,13 @@ extension swiftyDb  {
      */
     
     internal func createTableForTypeRepresentedByObject(_ object: Storable) -> Result<Bool> {
-        let table = StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
         do {
+            let table = try StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
             try database.update(table)
             if let sss = self as? IndexProperties{
                 let indexNames = (type(of:sss)).indexProperties()
                 for name in indexNames{
-                    let index = StatementGenerator.createTableIndex(object, name)
+                    let index = try StatementGenerator.createTableIndex(object, name)
                     try database.update(index)
                 }
             }

@@ -47,6 +47,7 @@ extension filter{
         return self.db.deleteObjectsForTableName(table.tableName(), self)
     }
     public func get()->Result<[[String: Value?]]>{
+        self.db.objectsFor(self.table, nil, true)
         return self.db.objectsFor(self.table, self, true)
     }
 }

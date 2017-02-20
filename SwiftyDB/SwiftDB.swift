@@ -107,7 +107,7 @@ public protocol SwiftyDb{
     //    func on(_ obj: Storable)->Filter.get()
     //    func on(_ obj: Storable)->Filter.delete()
     
-    func with(_ obj: Storable)->Filter//because get need alloc object, so tablename not support
+    func with(_ obj: Storable)->Filter
 //    func with(_ tableName: String)->Filter
 }
 

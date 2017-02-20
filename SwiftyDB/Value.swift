@@ -15,7 +15,9 @@ extension NSDictionary: Value {}
 extension String: Value {}
 extension NSString: Value {}
 extension Character: Value {}
+
 extension Bool: Value {}
+
 extension Int: Value {}
 extension Int8: Value {}
 extension Int16: Value {}
@@ -26,8 +28,10 @@ extension UInt8: Value {}
 extension UInt16: Value {}
 extension UInt32: Value {}
 extension UInt64: Value {}
+
 extension Float: Value {}
 extension Double: Value {}
+
 extension Data: Value {}
 extension Date: Value {}
 extension NSNumber: Value {}

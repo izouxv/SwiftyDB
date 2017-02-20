@@ -7,8 +7,30 @@
 
 import Foundation
 
+//https://theswiftdev.com/2017/01/05/18-swift-gist-generic-allvalues-for-enums/
+protocol EnumCollection: Hashable {
+    static var allValues: [Self] { get }
+}
+extension EnumCollection {
+    static func cases() -> AnySequence<Self> {
+        typealias S = Self
+        return AnySequence { () -> AnyIterator<S> in
+            var raw = 0
+            return AnyIterator {
+                let current : Self = withUnsafePointer(to: &raw) { $0.withMemoryRebound(to: S.self, capacity: 1) { $0.pointee } }
+                guard current.hashValue == raw else { return nil }
+                raw += 1
+                return current
+            }
+        }
+    }
+    static var allValues: [Self] {
+        return Array(self.cases())
+    }
+}
+
 //judge table attr is correct
-enum SqliteKeyWord : String{
+enum SqliteKeyWord : String, EnumCollection{
     case
     ABORT,
     ACTION,
@@ -131,12 +153,16 @@ enum SqliteKeyWord : String{
     VIRTUAL,
     WHEN,
     WHERE
-    
-//    func Set()->Set<String>{
-////       SqliteKeyWord.Set(<#T##SqliteKeyWord#>)
-//        SqliteKeyWord.
-//    }
 }
+
+internal var keyWordSet : Set<String> = {
+    let values = SqliteKeyWord.allValues
+    var keys : Set<String> = []
+    for item in values{
+        keys.insert(item.rawValue)
+    }
+    return keys
+}()
 
 
 
@@ -204,7 +230,7 @@ internal struct PropertyData {
             
         case is Optional<NSArray>.Type:     return NSArray.self
         case is Optional<NSDictionary>.Type: return NSDictionary.self
-
+            
         default:                            return nil
         }
     }
@@ -226,7 +252,7 @@ internal struct PropertyData {
         if mirror.displayStyle == .dictionary {
             return NSKeyedArchiver.archivedData(withRootObject: value as! NSDictionary)
         }
-
+        
         /* Raw value */
         if mirror.displayStyle != .optional {
             return value
@@ -262,7 +288,7 @@ extension PropertyData {
         
         /* Map children to property data and filter out ignored or invalid properties */
         propertyData += mirror.children.map { PropertyData(property: $0) }
-                                       .filter { $0.isValid && !ignoredProperties.contains($0.name!) }
+            .filter { $0.isValid && !ignoredProperties.contains($0.name!) }
         
         return propertyData
     }

@@ -15,6 +15,9 @@ import Nimble
 class SwiftXDbMigrate: SwiftyDBSpec {
     override func spec() {
         super.spec()
+        
+        expect(keyWordSet.count) == 121
+        
         var database = SwiftXDb(databaseName: "test_database")
         
         let obj1 = TestMigrateVer0()

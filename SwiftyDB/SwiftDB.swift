@@ -57,9 +57,6 @@ public protocol MigrationProperties : Storable{
 }
 
 public protocol SwiftyDb{
-    static func Init(absPath: String)->SwiftyDb
-    static func Init(databaseName: String)->SwiftyDb
-    static func Init(userPath: String)->SwiftyDb
     
     var path : String{get}
     func open() throws
@@ -82,8 +79,19 @@ public protocol SwiftyDb{
     func query(_ sql: String, _ values: SqlValues?, _ cb:((StatementData)->Void)?)
     func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
+    
 }
 
+
+public func SwiftyDb_Init(absPath: String)->SwiftyDb{
+    return swiftyDb(absPath:absPath)
+}
+public func SwiftyDb_Init(databaseName: String)->SwiftyDb{
+    return swiftyDb(databaseName:databaseName)
+}
+public func SwiftyDb_Init(userPath: String)->SwiftyDb{
+    return swiftyDb(userPath:userPath)
+}
 
 
 //// TODO: Allow queues working on different databases at the same time
@@ -121,17 +129,7 @@ internal class swiftyDb : SwiftyDb {
     }
 }
 
-extension swiftyDb{
-    static func Init(absPath: String)->SwiftyDb{
-        return swiftyDb(absPath:absPath)
-    }
-    static func Init(databaseName: String)->SwiftyDb{
-        return swiftyDb(databaseName:databaseName)
-    }
-    static func Init(userPath: String)->SwiftyDb{
-        return swiftyDb(userPath:userPath)
-    }
-}
+
 
 extension swiftyDb{
     public var path : String{
@@ -144,7 +142,7 @@ extension swiftyDb{
     public func close(){
         try! self.database.close()
     }
-
+    
 }
 
 extension swiftyDb{

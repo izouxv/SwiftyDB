@@ -57,7 +57,11 @@ public protocol MigrationProperties : Storable{
 }
 
 public protocol SwiftyDb{
-    var dbPath : String{get}
+    static func Init(absPath: String)->SwiftyDb
+    static func Init(databaseName: String)->SwiftyDb
+    static func Init(userPath: String)->SwiftyDb
+    
+    var path : String{get}
     func open() throws
     func close()
     
@@ -80,15 +84,7 @@ public protocol SwiftyDb{
     func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
 }
 
-public func SwiftyDbInit(absPath: String)->SwiftyDb{
-    return swiftyDb(absPath:absPath)
-}
-public func SwiftyDbInit(databaseName: String)->SwiftyDb{
-    return swiftyDb(databaseName:databaseName)
-}
-public func SwiftyDbInit(userPath: String)->SwiftyDb{
-    return swiftyDb(userPath:userPath)
-}
+
 
 //// TODO: Allow queues working on different databases at the same time
 //private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
@@ -126,7 +122,19 @@ internal class swiftyDb : SwiftyDb {
 }
 
 extension swiftyDb{
-    public var dbPath : String{
+    static func Init(absPath: String)->SwiftyDb{
+        return swiftyDb(absPath:absPath)
+    }
+    static func Init(databaseName: String)->SwiftyDb{
+        return swiftyDb(databaseName:databaseName)
+    }
+    static func Init(userPath: String)->SwiftyDb{
+        return swiftyDb(userPath:userPath)
+    }
+}
+
+extension swiftyDb{
+    public var path : String{
         return database.path
     }
     public func open() throws {

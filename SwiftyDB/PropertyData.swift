@@ -8,7 +8,7 @@
 import Foundation
 
 //judge table attr is correct
-enum SqliteKeyWork : String{
+enum SqliteKeyWord : String{
     case
     ABORT,
     ACTION,
@@ -131,7 +131,13 @@ enum SqliteKeyWork : String{
     VIRTUAL,
     WHEN,
     WHERE
+    
+//    func Set()->Set<String>{
+////       SqliteKeyWord.Set(<#T##SqliteKeyWord#>)
+//        SqliteKeyWord.
+//    }
 }
+
 
 
 

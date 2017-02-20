@@ -80,6 +80,8 @@ public protocol SwiftyDb{
     func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
+//    func delete(_ obj: Storable)->Filter
+//    func get(_ obj: Storable)->Filter
     //swifty.delete(Stark()).filter("name" == "Eddard").sort("name").skip(2).max(4)
     //swifty.get(Stark()).filter("name" == "Eddard").sort("name").skip(2).max(4)
 }

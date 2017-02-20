@@ -32,7 +32,7 @@ extension swiftyDb  {
      - returns:          Result type indicating the success of the query
      */
     
-    internal func createTableForTypeRepresentedByObject(_ object: Storable) -> Result<Bool> {
+    internal func createTableByObject(_ object: Storable) -> Result<Bool> {
         do {
             let table = try StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
             try database.update(table)
@@ -87,13 +87,9 @@ extension swiftyDb  {
     //    }
     
     
-    internal func tableExistsForObj(_ object: Storable) throws -> Bool {
-        let tableName = object.tableName() // StatementGenerator.tableNameForObj(obj)
-        Swift.print("tableName: \(tableName)")
-        return try self.tableExistsForName(tableName)
-    }
+ 
     
-    internal func tableExistsForName(_ tableName: String) throws -> Bool {
+    internal func tableExistsForName(_ tableName: String) -> Bool {
         var exists: Bool = existingTables.contains(tableName)
         
         /* Return true if the result is cached */
@@ -103,7 +99,7 @@ extension swiftyDb  {
         
         //TODO 需要优先判断
         //  try sync({ (database) in
-        exists = try database.containsTable(tableName)
+        exists = database.containsTable(tableName)
         //  })
         
         /* Cache the result */

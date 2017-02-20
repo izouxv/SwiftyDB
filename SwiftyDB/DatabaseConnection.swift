@@ -316,20 +316,10 @@ extension DatabaseConnection {
      
      - returns:              boolean indicating whether the table exists, or not
      */
-    public func containsTable(_ tableName: String) throws -> Bool {
+    public func containsTable(_ tableName: String) -> Bool {
         let query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
         
-        return try self.query(query, [tableName])
-//        return try self.query(query, SqlValues([tableName]))
-//        let statement = try prepare(query)
-//            .execute([tableName])
-//        
-//        /* Finalize the statement if necessary */
-//        defer {
-//            try! statement.finalize()
-//        }
-//        
-//        return statement.next() != nil
+        return try! self.query(query, [tableName]) 
     }
 }
 

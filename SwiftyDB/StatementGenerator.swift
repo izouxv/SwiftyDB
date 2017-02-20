@@ -63,36 +63,34 @@ internal class StatementGenerator {
         return statement
     }
     
-    internal class func selectStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
-        
-        let tableName =  type.tableName() // tableNameForObj(type)
+    internal class func selectStatementForTableName(_ tableName: String,_ filtex: filter?) -> String {
         
         var statement = "SELECT ALL * FROM \(tableName)"
         
-        guard filter != nil else {
+        guard filtex != nil else {
             return statement
         }
         
-        statement += " " + filter!.whereStatement()
+        statement += " " + filtex!.whereStatement()
         
-        statement += " " + filter!.extraStatement()
+        statement += " " + filtex!.extraStatement()
         
         return statement
     }
     
-    internal class func deleteStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
+    internal class func deleteStatementForName(_ tableName: String, matchingFilter filtex: filter?) -> String {
         
-        let tableName = type.tableName() // tableNameForObj(type)
+//        let tableName = type.tableName()
         
         var statement = "DELETE FROM \(tableName)"
         
-        guard filter != nil else {
+        guard filtex != nil else {
             return statement
         }
                 
-        statement += " \(filter!.whereStatement())"
+        statement += " \(filtex!.whereStatement())"
         
-        statement += filter!.extraStatement()
+        statement += filtex!.extraStatement()
         
         return statement
     }

@@ -113,7 +113,7 @@ internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
         db.query("ALTER TABLE \(tableName) RENAME TO \(tmpTableName);")
         
         // create new table
-        _=db.createTableForTypeRepresentedByObject(tableType)
+        _=db.createTableByObject(tableType)
         
         //migrate
         let statement = "SELECT ALL * FROM \(tmpTableName)"
@@ -217,7 +217,7 @@ extension swiftyDb {
                         oper.commit()
                     }else{
                         //craete table
-                        _=sdb.createTableForTypeRepresentedByObject(item)
+                        _=sdb.createTableByObject(item)
                     }
                 }
             }

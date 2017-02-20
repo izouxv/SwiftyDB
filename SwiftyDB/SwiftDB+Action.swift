@@ -55,21 +55,21 @@ extension swiftyDb  {
 extension swiftyDb  {
     //!!! TODO need seperate Write and Read
     //need write queue, and read queue
-    public func dataFor <S: Storable> (_ obj: S, _ filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
+    public func dataFor <S: Storable> (_ obj: S, _ fiter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
         
         var results: [[String: Value?]] = []
         do {
             if checkTableExist{
-                guard try tableExistsForObj(obj) else {
+                guard try tableExistsForName(obj.tableName()) else {
                     return Result.success([])
                 }
             }
             
             /* Generate statement */
-            let query = StatementGenerator.selectStatementForType(obj, matchingFilter: filter)
+            let query = StatementGenerator.selectStatementForTableName(obj.tableName(),  fiter as! filter?)
             
             try sync { (database) -> Void in
-                let parameters = filter?.parameters() ?? [:]
+                let parameters = (fiter as! filter?)?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
                     .execute(SqlValues(parameters))
                 
@@ -160,8 +160,8 @@ extension swiftyDb  {
         //        try database{ (database) -> Void in
         //        }
         do {
-            if !(try tableExistsForObj(object)) {
-                createTableForTypeRepresentedByObject(object)
+            if !(tableExistsForName(object.tableName())) {
+                createTableByObject(object)
             }
             
             let insertStatement = StatementGenerator.insertStatementForType(object, update: update)
@@ -213,12 +213,15 @@ extension swiftyDb  {
     }
     
     public func deleteObjectsForType (_ type: Storable, _ filter: Filter? = nil) -> Result<Bool> {
+        return self.deleteObjectsForTableName(type.tableName(), filter as! filter)
+    }
+    internal func deleteObjectsForTableName (_ tableName: String, _ filter: filter? = nil) -> Result<Bool> {
         do {
-            guard try tableExistsForObj(type) else {
+            guard try tableExistsForName(tableName) else {
                 return Result.success(true)
             }
             
-            let deleteStatement = StatementGenerator.deleteStatementForType(type, matchingFilter: filter)
+            let deleteStatement = StatementGenerator.deleteStatementForName(tableName, matchingFilter: filter)
             
             try sync { (database) -> Void in
                 try database.database.prepare(deleteStatement)
@@ -249,7 +252,11 @@ extension swiftyDb {
 }
 
 
-
+extension swiftyDb {
+    func with(_ obj: Storable)->Filter{
+        return filter.init(self, obj)
+    }
+}
 
 
 

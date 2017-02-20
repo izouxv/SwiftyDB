@@ -57,7 +57,7 @@ public protocol MigrationProperties : Storable{
 }
 
 
-public protocol Filterx{
+public protocol Filter{
     func equal(_ propertyName: String, value: Value?) -> Filter
     func lessThan(_ propertyName: String, value: Value?) -> Filter
     func lessOrEqual(_ propertyName: String, value: Value?) -> Filter
@@ -107,7 +107,8 @@ public protocol SwiftyDb{
     //    func on(_ obj: Storable)->Filter.get()
     //    func on(_ obj: Storable)->Filter.delete()
     
-    
+    func with(_ obj: Storable)->Filter//because get need alloc object, so tablename not support
+//    func with(_ tableName: String)->Filter
 }
 
 

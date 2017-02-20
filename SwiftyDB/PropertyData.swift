@@ -159,7 +159,7 @@ internal var keyWordSet : Set<String> = {
     let values = SqliteKeyWord.allValues
     var keys : Set<String> = []
     for item in values{
-        keys.insert(item.rawValue)
+        keys.insert(item.rawValue.uppercased())
     }
     return keys
 }()

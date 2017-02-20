@@ -100,7 +100,6 @@ extension Filter {
         case GreaterOrEqual =   ">="
     }
     
-    
     /** Represent a part of the total filters (e.g. 'id = 2') */
     fileprivate struct FilterComponent {
         let propertyName: String

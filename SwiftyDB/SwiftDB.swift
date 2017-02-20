@@ -56,6 +56,26 @@ public protocol MigrationProperties : Storable{
     static func Migrate(_ verOld:Int, _ action:MigrationOperationI)
 }
 
+
+public protocol Filterx{
+    func equal(_ propertyName: String, value: Value?) -> Filter
+    func lessThan(_ propertyName: String, value: Value?) -> Filter
+    func lessOrEqual(_ propertyName: String, value: Value?) -> Filter
+    func greaterThan(_ propertyName: String, value: Value?) -> Filter
+    func greaterOrEqual(_ propertyName: String, value: Value?) -> Filter
+    func notEqual(_ propertyName: String, value: Value?) -> Filter
+    func contains(_ propertyName: String, array: [Value?]) -> Filter
+    func notContains(_ propertyName: String, array: [Value?]) -> Filter
+    func like(_ propertyName: String, pattern: String) -> Filter
+    func notLike(_ propertyName: String, pattern: String) -> Filter
+    func orderBy(_ propertyNames: [String]) -> Filter
+    func limit(_ limit: Int) -> Filter
+    func offset(_ offset: Int) -> Filter
+    
+    func delete()->Result<Bool>
+    func get()->Result<[[String: Value?]]>
+}
+
 public protocol SwiftyDb{
     
     var path : String{get}
@@ -73,17 +93,21 @@ public protocol SwiftyDb{
     
     func addObject<S: Storable> (_ object: S,_ update: Bool) -> Result<Bool>
     func addObjects<S: Storable> (_ objects: [S],_ update: Bool) -> Result<Bool>
-    func deleteObjectsForType (_ type: Storable,_ filter: Filter?) -> Result<Bool>
     func update(_ sql: String, _ data: SqlValues?)-> Result<Bool>
-    
     func query(_ sql: String, _ values: SqlValues?, _ cb:((StatementData)->Void)?)
+    
+    func deleteObjectsForType (_ type: Storable,_ filter: Filter?) -> Result<Bool>
     func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
-//    func delete(_ obj: Storable)->Filter
-//    func get(_ obj: Storable)->Filter
+    //    func delete(_ obj: Storable)->Filter
+    //    func get(_ obj: Storable)->Filter
     //swifty.delete(Stark()).filter("name" == "Eddard").sort("name").skip(2).max(4)
     //swifty.get(Stark()).filter("name" == "Eddard").sort("name").skip(2).max(4)
+    //    func on(_ obj: Storable)->Filter.get()
+    //    func on(_ obj: Storable)->Filter.delete()
+    
+    
 }
 
 

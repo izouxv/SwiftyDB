@@ -15,7 +15,7 @@ internal class StatementGenerator {
     }
     
     internal class func createTableStatementForTypeRepresentedByObject (_ object: Storable) -> String {
-        let tableName =   tableNameForObj(object)
+        let tableName =  object.tableName() //  tableNameForObj(object)
         
         var statement = "CREATE TABLE " + tableName + " ("
         
@@ -41,7 +41,7 @@ internal class StatementGenerator {
     }
     
     internal class func insertStatementForType(_ obj: Storable, update: Bool) -> String {
-        var statement = "INSERT OR " + (update ? "REPLACE" : "ABORT") + " INTO " + tableNameForObj(obj)
+        var statement = "INSERT OR " + (update ? "REPLACE" : "ABORT") + " INTO " + obj.tableName() // tableNameForObj(obj)
         
         let propertyData = PropertyData.validPropertyDataForObject(type(of:obj).init())
         
@@ -59,7 +59,7 @@ internal class StatementGenerator {
     
     internal class func selectStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
         
-        let tableName =  tableNameForObj(type)
+        let tableName =  type.tableName() // tableNameForObj(type)
         
         var statement = "SELECT ALL * FROM \(tableName)"
         
@@ -76,7 +76,7 @@ internal class StatementGenerator {
     
     internal class func deleteStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
         
-        let tableName =  tableNameForObj(type)
+        let tableName = type.tableName() // tableNameForObj(type)
         
         var statement = "DELETE FROM \(tableName)"
         
@@ -92,16 +92,16 @@ internal class StatementGenerator {
     }
 }
 
-extension StatementGenerator {
-    /** Name of the table representing a class */
-    internal  class func tableNameForObj(_ obj: Storable) -> String {
-        return obj.tableName()
-//        return type(of:obj).tableName()
-//        if let tableName = type(of:obj).tableName(){
-//            return tableName
-//        }
-//        return String(describing: type(of:obj))
-    }
-}
+//extension StatementGenerator {
+//    /** Name of the table representing a class */
+//    internal  class func tableNameForObj(_ obj: Storable) -> String {
+//        return obj.tableName()
+////        return type(of:obj).tableName()
+////        if let tableName = type(of:obj).tableName(){
+////            return tableName
+////        }
+////        return String(describing: type(of:obj))
+//    }
+//}
 
 

@@ -50,7 +50,7 @@ extension swiftyDb  {
             return .Error(error)
         }
          
-        existingTables.insert(StatementGenerator.tableNameForObj(object))
+        existingTables.insert(object.tableName())
         
         return .success(true)
     }
@@ -87,8 +87,8 @@ extension swiftyDb  {
     //    }
     
     
-    internal func tableExistsForObj(_ obj: Storable) throws -> Bool {
-        let tableName = StatementGenerator.tableNameForObj(obj)
+    internal func tableExistsForObj(_ object: Storable) throws -> Bool {
+        let tableName = object.tableName() // StatementGenerator.tableNameForObj(obj)
         Swift.print("tableName: \(tableName)")
         return try self.tableExistsForName(tableName)
     }

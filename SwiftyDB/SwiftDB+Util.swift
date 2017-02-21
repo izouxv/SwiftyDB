@@ -73,19 +73,6 @@ extension swiftyDb  {
         return dictionary
     }
     
-    /**
-     Check whether a table representing a type exists, or not
-     
-     - parameter type:  type implementing the Storable protocol
-     
-     - returns:         boolean indicating if the table exists
-     */
-    
-    //    internal func tableExistsForType(_ type: Storable.Type) throws -> Bool {
-    //        let tableName = tableNameForType(type)
-    //        return try self.tableExistsForName(tableName)
-    //    }
-    
     
  
     
@@ -125,6 +112,18 @@ extension swiftyDb  {
         for propertyData in propertyData {
             let value = valueForProperty(propertyData, inRow: row)
             rowData[propertyData.name!] = value
+        }
+        
+        return rowData
+    }
+    
+    
+    internal func parsedDataForRow2(_ row: Statement) -> [String: SQLiteValue?] {
+        var rowData: [String: SQLiteValue?] = [:]
+        
+        for (index, name) in row.indexToNameMapping {
+            let value = row.valueForColumn(index)
+            rowData[name] = value
         }
         
         return rowData

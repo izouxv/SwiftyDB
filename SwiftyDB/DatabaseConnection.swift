@@ -318,7 +318,6 @@ extension DatabaseConnection {
      */
     public func containsTable(_ tableName: String) -> Bool {
         let query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
-        
         return try! self.query(query, [tableName]) 
     }
 }

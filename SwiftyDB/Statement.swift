@@ -171,61 +171,6 @@ internal class Statement : StatementData{
     public func execute(_ values: SqlValues? = nil) throws -> Statement {
         return try self.executeUpdateOrQuery(false, values)
     }
-//    open func execute(_ values: ArraySQLiteValues = []) throws -> Statement {
-//        return try self.executeUpdateOrQuery(false, values)
-//    }
-//
-//    /**
-//    Execute a write-only update with an array of variables to bind to placeholders in the prepared query
-//    
-//    - parameter value:  array of values that will be bound to parameters in the prepared query
-//    
-//    - returns:          `self`
-//    */
-//    open func executeUpdate(_ values: ArraySQLiteValues = []) throws -> Statement {
-//        try execute(values)
-//        try step()
-//        return self
-//    }
-//    
-//    /**
-//    Execute a write-only update with a dictionary of variables to bind to placeholders in the prepared query
-//     
-//    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
-//     
-//    - returns:              `self`
-//    */
-//    open func executeUpdate(_ namedValues: MapSQLiteValues) throws -> Statement {
-//        try execute(namedValues)
-//        try step()
-//        return self
-//    }
-//    
-//    /**
-//    Execute a query with a dictionary of variables to bind to placeholders in the prepared query
-//    Finalize the statement when you are done by calling `finalize()`
-//     
-//    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
-//     
-//    - returns:              `self`
-//    */
-//    open func execute(_ namedValues: MapSQLiteValues) throws -> Statement {
-//        try bind(namedValues)
-//        return self
-//    }
-//    
-//    /**
-//    Execute a query with an array of variables to bind to placeholders in the prepared query
-//    Finalize the statement when you are done by calling `finalize()`
-//     
-//    - parameter value:  array of values that will be bound to parameters in the prepared query
-//     
-//    - returns:          `self`
-//    */
-//    open func execute(_ values: ArraySQLiteValues = []) throws -> Statement {
-//        try bind(values)
-//        return self
-//    }
     
 // MARK: - Internal methods
     
@@ -238,8 +183,6 @@ internal class Statement : StatementData{
     }
     
     internal func prepareForDatabase(_ databaseHandle: OpaquePointer) throws {
-      
-        //var tmp :  OpaquePointer? = handle
         try SQLiteResultHandler.verifyResultCode(
             sqlite3_prepare_v2(databaseHandle,
                                query,
@@ -248,8 +191,6 @@ internal class Statement : StatementData{
                                nil),
             forHandle: handle)
     }
-    
-    
     
     internal func bind(_ value2: SqlValues?) throws {
         if let value = value2{

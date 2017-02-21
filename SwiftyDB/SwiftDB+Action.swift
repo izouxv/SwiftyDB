@@ -60,7 +60,7 @@ extension swiftyDb  {
         var results: [[String: Value?]] = []
         do {
             if checkTableExist{
-                guard try tableExistsForName(obj.tableName()) else {
+                guard tableExistsForName(obj.tableName()) else {
                     return Result.success([])
                 }
             }
@@ -95,6 +95,40 @@ extension swiftyDb  {
         return .success(results)
     }
     
+    public func dataFor (_ tableName: String, _ fiter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: SQLiteValue?]]> {
+        
+        var results: [[String: SQLiteValue?]] = []
+        do {
+            if checkTableExist{
+                guard tableExistsForName(tableName) else {
+                    return Result.success([])
+                }
+            }
+            
+            /* Generate statement */
+            let query = StatementGenerator.selectStatementForTableName(tableName,  fiter as! filter?)
+            
+            try sync { (database) -> Void in
+                let parameters = (fiter as! filter?)?.parameters() ?? [:]
+                let statement = try! database.database.prepare(query)
+                    .execute(SqlValues(parameters))
+                
+                results = statement.map { row in
+                    self.parsedDataForRow2(row)
+                }
+                
+                Swift.print("query: \(query)")
+                Swift.print("results: \(results.count)") 
+                
+                try statement.finalize()
+            }
+        } catch let error {
+            return .Error(error)
+        }
+        
+        // print(results)
+        return .success(results)
+    }
 }
 
 
@@ -217,7 +251,7 @@ extension swiftyDb  {
     }
     internal func deleteObjectsForTableName (_ tableName: String, _ filter: filter? = nil) -> Result<Bool> {
         do {
-            guard try tableExistsForName(tableName) else {
+            guard tableExistsForName(tableName) else {
                 return Result.success(true)
             }
             

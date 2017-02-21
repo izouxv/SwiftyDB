@@ -8,113 +8,6 @@
 import Foundation
 
 
-/** All objects in the database must conform to the 'Storable' protocol */
-public protocol Storable {
-    /** Used to initialize an object to get information about its properties */
-    init()
-    func setValuesForKeys(_ keyedValues: [String : Any])
-    func value(forKey key: String) -> Any?
-}
-
-extension Storable {
-    internal func tableName()->String{
-        if let sss = self as? TableName{
-            return (type(of:sss)).tableName()
-        }
-        let name = String(describing: type(of: self))
-        return name
-    }
-}
-
-public protocol TableName {
-    static func tableName()->String
-}
-
-/** Implement this protocol to use primary keys */
-public protocol PrimaryKeys {
-    static func primaryKeys() -> Set<String>
-}
-
-/** Implement this protocol to ignore arbitrary properties */
-public protocol IgnoredProperties {
-    static func ignoredProperties() -> Set<String>
-}
-
-/** Implement this protocol to ignore arbitrary properties */
-public protocol IndexProperties {
-    static func indexProperties() -> Set<String>
-}
-
-public protocol MigrationOperationI{
-    func add(_ name: String)->MigrationOperationI
-    func remove(_ name: String)->MigrationOperationI
-    func rename(_ name: String,_ newName: String)->MigrationOperationI
-    func migrate(_ name: String,_ dataMigrate:@escaping((_ data: SQLiteValue?)->SQLiteValue?))->MigrationOperationI
-}
-
-public protocol MigrationProperties : Storable{
-    static func Migrate(_ verOld:Int, _ action:MigrationOperationI)
-}
-
-
-public protocol FilteerX{
-    func equal(_ propertyName: String, value: Value?) -> FilteerX
-    func lessThan(_ propertyName: String, value: Value?) -> FilteerX
-    func lessOrEqual(_ propertyName: String, value: Value?) -> FilteerX
-    func greaterThan(_ propertyName: String, value: Value?) -> FilteerX
-    func greaterOrEqual(_ propertyName: String, value: Value?) -> FilteerX
-    func notEqual(_ propertyName: String, value: Value?) -> FilteerX
-    func contains(_ propertyName: String, array: [Value?]) -> FilteerX
-    func notContains(_ propertyName: String, array: [Value?]) -> FilteerX
-    func like(_ propertyName: String, pattern: String) -> FilteerX
-    func notLike(_ propertyName: String, pattern: String) -> FilteerX
-    func orderBy(_ propertyNames: [String]) -> FilteerX
-    func limit(_ limit: Int) -> FilteerX
-    func offset(_ offset: Int) -> FilteerX
-    
-//    func delete()->Result<Bool>
-//    func get()->Result<[[String: Value?]]>
-//    func update()->Result<Bool>
-//    func count()->Result<Bool> //count,avg,max,min,sum,total 
-}
-
-public protocol SwiftyDb{
-    
-    var path : String{get}
-    func open() throws
-    func close()
-    
-    func key(_ key: String)throws
-    func rekey(_ key: String)throws
-    
-    //Migrate first : Check, second : Action
-    func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool
-    func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
-    
-    func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
-    
-    func addObject<S: Storable> (_ object: S,_ update: Bool) -> Result<Bool>
-    func addObjects<S: Storable> (_ objects: [S],_ update: Bool) -> Result<Bool>
-    func update(_ sql: String, _ data: SqlValues?)-> Result<Bool>
-    func query(_ sql: String, _ values: SqlValues?, _ cb:((StatementData)->Void)?)
-    
-    func deleteObjectsForType (_ type: Storable,_ filter: FilteerX?) -> Result<Bool>
-    func dataFor<S: Storable> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
-    func objectsFor<S> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
-    
-//    func with(_ obj: Storable)->FilteerX 
-}
-
-
-public func SwiftyDb_Init(absPath: String)->SwiftyDb{
-    return swiftyDb(absPath:absPath)
-}
-public func SwiftyDb_Init(databaseName: String)->SwiftyDb{
-    return swiftyDb(databaseName:databaseName)
-}
-public func SwiftyDb_Init(userPath: String)->SwiftyDb{
-    return swiftyDb(userPath:userPath)
-}
 
 
 //// TODO: Allow queues working on different databases at the same time
@@ -176,6 +69,8 @@ extension swiftyDb{
         try self.database.rekey(key: key)
     }
 }
+
+
 
 
 

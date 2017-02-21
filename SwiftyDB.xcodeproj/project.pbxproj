@@ -34,6 +34,7 @@
 		4283E3EE1D0FDFB200E7966A /* SwiftyDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 4283E3E21D0FDFB200E7966A /* SwiftyDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4283E3F31D0FE1A700E7966A /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283E3E71D0FDFB200E7966A /* Value.swift */; };
 		42CF57671E5AEBE0006D6084 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CF57661E5AEBE0006D6084 /* Filter.swift */; };
+		42CF57691E5BE493006D6084 /* SwiftDB+Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */; };
 		42D080261DF94DCD00417D77 /* SwiftyDBTests_New.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D080251DF94DCD00417D77 /* SwiftyDBTests_New.swift */; };
 		42F1E0C11D0E5C68008527EB /* DatabaseConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F1E09A1D0E5BFE008527EB /* DatabaseConnectionTests.swift */; };
 		42F1E0C31D0E70E1008527EB /* Nimble.framework in Resources */ = {isa = PBXBuildFile; fileRef = 4281182C1D0E581500DD680B /* Nimble.framework */; };
@@ -100,6 +101,7 @@
 		4283E3E21D0FDFB200E7966A /* SwiftyDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftyDB.h; sourceTree = "<group>"; };
 		4283E3E71D0FDFB200E7966A /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		42CF57661E5AEBE0006D6084 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
+		42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Interface.swift"; sourceTree = "<group>"; };
 		42D080251DF94DCD00417D77 /* SwiftyDBTests_New.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_New.swift; sourceTree = "<group>"; };
 		42D080311DF9661600417D77 /* Other.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Other.md; sourceTree = "<group>"; };
 		42F1E0991D0E5BFE008527EB /* SwiftyDBTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SwiftyDBTests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 		428117EA1D0E56D800DD680B /* SwiftyDB */ = {
 			isa = PBXGroup;
 			children = (
+				42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */,
 				425D99441D8292DC00969025 /* SwiftDB.swift */,
 				425D99451D8292DC00969025 /* SwiftDB+Action.swift */,
 				425D99461D8292DC00969025 /* SwiftDB+Util.swift */,
@@ -336,6 +339,7 @@
 				4283E3EB1D0FDFB200E7966A /* StatementGenerator.swift in Sources */,
 				427D4C5F1E4DB5A200D4D285 /* SwiftDB+Migrate.swift in Sources */,
 				4283E3E91D0FDFB200E7966A /* PropertyData.swift in Sources */,
+				42CF57691E5BE493006D6084 /* SwiftDB+Interface.swift in Sources */,
 				4283E3F31D0FE1A700E7966A /* Value.swift in Sources */,
 				425D994B1D8292DC00969025 /* SwiftDB+Util.swift in Sources */,
 				425D99491D8292DC00969025 /* SwiftDB.swift in Sources */,

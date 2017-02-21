@@ -57,26 +57,25 @@ public protocol MigrationProperties : Storable{
 }
 
 
-public protocol Filter{
-    func equal(_ propertyName: String, value: Value?) -> Filter
-    func lessThan(_ propertyName: String, value: Value?) -> Filter
-    func lessOrEqual(_ propertyName: String, value: Value?) -> Filter
-    func greaterThan(_ propertyName: String, value: Value?) -> Filter
-    func greaterOrEqual(_ propertyName: String, value: Value?) -> Filter
-    func notEqual(_ propertyName: String, value: Value?) -> Filter
-    func contains(_ propertyName: String, array: [Value?]) -> Filter
-    func notContains(_ propertyName: String, array: [Value?]) -> Filter
-    func like(_ propertyName: String, pattern: String) -> Filter
-    func notLike(_ propertyName: String, pattern: String) -> Filter
-    func orderBy(_ propertyNames: [String]) -> Filter
-    func limit(_ limit: Int) -> Filter
-    func offset(_ offset: Int) -> Filter
+public protocol FilteerX{
+    func equal(_ propertyName: String, value: Value?) -> FilteerX
+    func lessThan(_ propertyName: String, value: Value?) -> FilteerX
+    func lessOrEqual(_ propertyName: String, value: Value?) -> FilteerX
+    func greaterThan(_ propertyName: String, value: Value?) -> FilteerX
+    func greaterOrEqual(_ propertyName: String, value: Value?) -> FilteerX
+    func notEqual(_ propertyName: String, value: Value?) -> FilteerX
+    func contains(_ propertyName: String, array: [Value?]) -> FilteerX
+    func notContains(_ propertyName: String, array: [Value?]) -> FilteerX
+    func like(_ propertyName: String, pattern: String) -> FilteerX
+    func notLike(_ propertyName: String, pattern: String) -> FilteerX
+    func orderBy(_ propertyNames: [String]) -> FilteerX
+    func limit(_ limit: Int) -> FilteerX
+    func offset(_ offset: Int) -> FilteerX
     
     func delete()->Result<Bool>
     func get()->Result<[[String: Value?]]>
 //    func update()->Result<Bool> 
-//    func count()->Result<Bool> //count,avg,max,min,sum,total
-    
+//    func count()->Result<Bool> //count,avg,max,min,sum,total 
 }
 
 public protocol SwiftyDb{
@@ -99,11 +98,11 @@ public protocol SwiftyDb{
     func update(_ sql: String, _ data: SqlValues?)-> Result<Bool>
     func query(_ sql: String, _ values: SqlValues?, _ cb:((StatementData)->Void)?)
     
-    func deleteObjectsForType (_ type: Storable,_ filter: Filter?) -> Result<Bool>
-    func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
-    func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
+    func deleteObjectsForType (_ type: Storable,_ filter: FilteerX?) -> Result<Bool>
+    func dataFor<S: Storable> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
+    func objectsFor<S> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
-    func with(_ obj: Storable)->Filter 
+    func with(_ obj: Storable)->FilteerX 
 }
 
 

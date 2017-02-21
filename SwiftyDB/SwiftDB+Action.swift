@@ -55,7 +55,7 @@ extension swiftyDb  {
 extension swiftyDb  {
     //!!! TODO need seperate Write and Read
     //need write queue, and read queue
-    public func dataFor <S: Storable> (_ obj: S, _ fiter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
+    public func dataFor <S: Storable> (_ obj: S, _ fiter: FilteerX? = nil, _ checkTableExist:Bool=true) -> Result<[[String: Value?]]> {
         
         var results: [[String: Value?]] = []
         do {
@@ -66,10 +66,10 @@ extension swiftyDb  {
             }
             
             /* Generate statement */
-            let query = StatementGenerator.selectStatementForTableName(obj.tableName(),  fiter as! filter?)
+            let query = StatementGenerator.selectStatementForTableName(obj.tableName(),  fiter as! Filter?)
             
             try sync { (database) -> Void in
-                let parameters = (fiter as! filter?)?.parameters() ?? [:]
+                let parameters = (fiter as! Filter?)?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
                     .execute(SqlValues(parameters))
                 
@@ -95,7 +95,7 @@ extension swiftyDb  {
         return .success(results)
     }
     
-    public func dataFor (_ tableName: String, _ fiter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[[String: SQLiteValue?]]> {
+    public func dataFor (_ tableName: String, _ fiter: FilteerX? = nil, _ checkTableExist:Bool=true) -> Result<[[String: SQLiteValue?]]> {
         
         var results: [[String: SQLiteValue?]] = []
         do {
@@ -106,10 +106,10 @@ extension swiftyDb  {
             }
             
             /* Generate statement */
-            let query = StatementGenerator.selectStatementForTableName(tableName,  fiter as! filter?)
+            let query = StatementGenerator.selectStatementForTableName(tableName,  fiter as! Filter?)
             
             try sync { (database) -> Void in
-                let parameters = (fiter as! filter?)?.parameters() ?? [:]
+                let parameters = (fiter as! Filter?)?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
                     .execute(SqlValues(parameters))
                 
@@ -133,7 +133,7 @@ extension swiftyDb  {
 
 
 extension swiftyDb {
-    public func objectsFor <D> (_ obj: D, _ filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
+    public func objectsFor <D> (_ obj: D, _ filter: FilteerX? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
         let dataResults = dataFor(obj, filter, checkTableExist)
         
         if !dataResults.isSuccess {
@@ -246,10 +246,10 @@ extension swiftyDb  {
         return Result.success(true)
     }
     
-    public func deleteObjectsForType (_ type: Storable, _ filter: Filter? = nil) -> Result<Bool> {
-        return self.deleteObjectsForTableName(type.tableName(), filter as! filter)
+    public func deleteObjectsForType (_ type: Storable, _ filter: FilteerX? = nil) -> Result<Bool> {
+        return self.deleteObjectsForTableName(type.tableName(), filter as! Filter? )
     }
-    internal func deleteObjectsForTableName (_ tableName: String, _ filter: filter? = nil) -> Result<Bool> {
+    internal func deleteObjectsForTableName (_ tableName: String, _ filter: Filter? = nil) -> Result<Bool> {
         do {
             guard tableExistsForName(tableName) else {
                 return Result.success(true)
@@ -287,8 +287,8 @@ extension swiftyDb {
 
 
 extension swiftyDb {
-    func with(_ obj: Storable)->Filter{
-        return filter.init(self, obj)
+    func with(_ obj: Storable)->FilteerX{
+        return Filter.init(self, obj)
     }
 }
 

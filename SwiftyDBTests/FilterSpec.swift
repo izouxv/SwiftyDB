@@ -32,15 +32,17 @@ class FilterSpec: SwiftyDBSpec {
                 let database = SwiftXDb(databaseName: "test_database")
           
                 
-                func countForFilter(_ filter: SwiftyDB.Filter) -> Int {
+                func countForFilter(_ filter: SwiftyDB.FilteerX) -> Int {
                     return database.dataFor(TestClass(), filter).value!.count
                 }
                 
                 it("should filter equal") {
                     self.resetDatabase(database)
                     
-                    expect(countForFilter(["primaryKey": 2])) == 1
-                    expect(countForFilter(["primaryKey": "dsa"])) == 0
+                    let fff1 : SwiftyDB.Filter =  ["primaryKey": 2]
+                    let fff2 : SwiftyDB.Filter =  ["primaryKey": "dsa"]
+                    expect(countForFilter(fff1)) == 1
+                    expect(countForFilter(fff2)) == 0
                 }
                 
                 it("should filter not equal") {

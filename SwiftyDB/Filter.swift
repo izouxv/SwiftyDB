@@ -1,5 +1,5 @@
 //
-//  filter.swift
+//  Filter.swift
 //  SwiftyDB
 //
 //  Created by Øyvind Grimnes on 17/01/16.
@@ -9,30 +9,31 @@
 import Foundation
 
 /**
- An instance of the filter class is used to filter query results
- All filters are automatically converted into SQLite statements when querying the database.
+ An instance of the Filter class is used to Filter query results
+ All Filters are automatically converted into SQLite statements when querying the database.
  
- To make filtering easier, and backwards compatibility, it is possible to instantiate a filter object as a dictionary literal
+ To make Filtering easier, and backwards compatibility, it is possible to instantiate a Filter object as a dictionary literal
  
  **Example:**
  
  Return any objects with the name 'Ghost'
  
  ```
- let filter: filter = ["name": "Ghost"]
+ let Filter: Filter = ["name": "Ghost"]
  
- let filter = filter.equal("name", value: "Ghost")
+ let Filter = Filter.equal("name", value: "Ghost")
  ```
  */
 
-open class filter: Filter {
-//    public typealias Key = String
+public class Filter: FilteerX,ExpressibleByDictionaryLiteral {
+    public typealias Key = String
+ 
     
-    fileprivate var db : swiftyDb
+    fileprivate var db : swiftyDb!
     
-    fileprivate var table : Storable
+    fileprivate var table : Storable!
     
-    fileprivate var components: [filterComponent] = []
+    fileprivate var components: [FilterComponent] = []
     
     fileprivate var extraComponents: [ExtraRelationship:Any] = [:]
  
@@ -41,8 +42,14 @@ open class filter: Filter {
         self.table = table
     }
     
+    public required init(dictionaryLiteral elements: (Key, Value)...) {
+        elements.forEach { (propertyName, value) in
+            components.append(FilterComponent(propertyName: propertyName, relationship: .Equal, value: value))
+        }
+    }
+    public init() {}
 }
-extension filter{
+extension Filter{
     public func delete()->Result<Bool>{
         return self.db.deleteObjectsForTableName(table.tableName(), self)
     }
@@ -53,7 +60,7 @@ extension filter{
         return ss!
     }
 }
-extension filter {
+extension Filter {
     //DISTINCT and GRUOP BY , HAVING , MAX, SUM
     fileprivate enum ExtraRelationship: String {
         case Limit   =   "LIMIT"   //[String]
@@ -61,15 +68,15 @@ extension filter {
         case Offset  =   "OFFSET"  //[int]
         //    case JoinTo  =   "LEFTJOIN"
     }
-    open func orderBy(_ propertyNames: [String]) -> Filter {
+    open func orderBy(_ propertyNames: [String]) -> FilteerX {
         extraComponents[.OrderBy] = propertyNames
         return self
     }
-    open func limit(_ limit: Int) -> Filter {
+    open func limit(_ limit: Int) -> FilteerX {
         extraComponents[.Limit] = limit
         return self
     }
-    open func offset(_ offset: Int) -> Filter {
+    open func offset(_ offset: Int) -> FilteerX {
         extraComponents[.Offset] = offset
         return self
     }
@@ -91,7 +98,7 @@ extension filter {
     }
 }
 
-extension filter {
+extension Filter {
     
     fileprivate enum Relationship: String {
         case Equal =            "="
@@ -106,8 +113,8 @@ extension filter {
         case GreaterOrEqual =   ">="
     }
     
-    /** Represent a part of the total filters (e.g. 'id = 2') */
-    fileprivate struct filterComponent {
+    /** Represent a part of the total Filters (e.g. 'id = 2') */
+    fileprivate struct FilterComponent {
         let propertyName: String
         let relationship: Relationship
         let value: Any?
@@ -142,13 +149,13 @@ extension filter {
     internal func parameters() -> [String: SQLiteValue?] {
         var parameters: [String: SQLiteValue?] = [:]
         
-        for filterComponent in components {
-            if let arrayValue = filterComponent.value as? [Value?] {
+        for FilterComponent in components {
+            if let arrayValue = FilterComponent.value as? [Value?] {
                 for (index, value) in arrayValue.enumerated() {
-                    parameters["\(filterComponent.uniquePropertyName)\(index)"] = value as? SQLiteValue
+                    parameters["\(FilterComponent.uniquePropertyName)\(index)"] = value as? SQLiteValue
                 }
             } else {
-                parameters[filterComponent.uniquePropertyName] = filterComponent.value as? SQLiteValue
+                parameters[FilterComponent.uniquePropertyName] = FilterComponent.value as? SQLiteValue
             }
         }
         
@@ -156,38 +163,38 @@ extension filter {
     }
 }
 
-extension filter {
-    // MARK: - filters
-    open func equal(_ propertyName: String, value: Value?) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .Equal, value: value))
+extension Filter {
+    // MARK: - Filters
+    open func equal(_ propertyName: String, value: Value?) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .Equal, value: value))
         return self
     }
-    open func lessThan(_ propertyName: String, value: Value?) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .Less, value: value))
+    open func lessThan(_ propertyName: String, value: Value?) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .Less, value: value))
         return self
     }
-    open func lessOrEqual(_ propertyName: String, value: Value?) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .LessOrEqual, value: value))
+    open func lessOrEqual(_ propertyName: String, value: Value?) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .LessOrEqual, value: value))
         return self
     }
-    open func greaterThan(_ propertyName: String, value: Value?) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .Greater, value: value))
+    open func greaterThan(_ propertyName: String, value: Value?) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .Greater, value: value))
         return self
     }
-    open func greaterOrEqual(_ propertyName: String, value: Value?) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .GreaterOrEqual, value: value))
+    open func greaterOrEqual(_ propertyName: String, value: Value?) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .GreaterOrEqual, value: value))
         return self
     }
-    open func notEqual(_ propertyName: String, value: Value?) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .NotEqual, value: value))
+    open func notEqual(_ propertyName: String, value: Value?) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .NotEqual, value: value))
         return self
     }
-    open func contains(_ propertyName: String, array: [Value?]) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .In, value: array))
+    open func contains(_ propertyName: String, array: [Value?]) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .In, value: array))
         return self
     }
-    open func notContains(_ propertyName: String, array: [Value?]) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .NotIn, value: array))
+    open func notContains(_ propertyName: String, array: [Value?]) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .NotIn, value: array))
         return self
     }
     
@@ -208,8 +215,8 @@ extension filter {
      
      - returns:                 `self`, to enable chaining of statements
      */
-    open func like(_ propertyName: String, pattern: String) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .Like, value: pattern))
+    open func like(_ propertyName: String, pattern: String) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .Like, value: pattern))
         return self
     }
     
@@ -228,14 +235,47 @@ extension filter {
      - parameter propertyName:  name of the property to be evaluated
      - parameter array:         array that should contain the property value
      
-     - returns:                 `filter` intance
+     - returns:                 `Filter` intance
      */
-    open func notLike(_ propertyName: String, pattern: String) -> Filter {
-        components.append(filterComponent(propertyName: propertyName, relationship: .NotLike, value: pattern))
+    open func notLike(_ propertyName: String, pattern: String) -> FilteerX {
+        components.append(FilterComponent(propertyName: propertyName, relationship: .NotLike, value: pattern))
         return self
     }
 }
 
 
+/** Convenience methods */
+extension Filter {
+    public static func equal(_ propertyName: String, value: Value?) -> FilteerX {
+        return Filter().equal(propertyName, value: value)
+    }
+    public static func lessThan(_ propertyName: String, value: Value?) -> FilteerX {
+        return Filter().lessThan(propertyName, value: value)
+    }
+    public static func lessOrEqual(_ propertyName: String, value: Value?) -> FilteerX {
+        return Filter().lessOrEqual(propertyName, value: value)
+    }
+    public static func greaterThan(_ propertyName: String, value: Value?) -> FilteerX {
+        return Filter().greaterThan(propertyName, value: value)
+    }
+    public static func greaterOrEqual(_ propertyName: String, value: Value?) -> FilteerX {
+        return Filter().greaterOrEqual(propertyName, value: value)
+    }
+    public static func notEqual(_ propertyName: String, value: Value?) -> FilteerX {
+        return Filter().notEqual(propertyName, value: value)
+    }
+    public static func contains(_ propertyName: String, array: [Value?]) -> FilteerX {
+        return Filter().contains(propertyName, array: array)
+    }
+    public static func notContains(_ propertyName: String, array: [Value?]) -> FilteerX {
+        return Filter().notContains(propertyName, array: array)
+    }
+    public static func like(_ propertyName: String, pattern: String) -> FilteerX {
+        return Filter().like(propertyName, pattern: pattern)
+    }
+    public static func notLike(_ propertyName: String, pattern: String) -> FilteerX {
+        return Filter().notLike(propertyName, pattern: pattern)
+    }
+}
 
 

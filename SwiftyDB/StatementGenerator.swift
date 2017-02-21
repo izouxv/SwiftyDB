@@ -63,7 +63,7 @@ internal class StatementGenerator {
         return statement
     }
     
-    internal class func selectStatementForTableName(_ tableName: String,_ filtex: filter?) -> String {
+    internal class func selectStatementForTableName(_ tableName: String,_ filtex: Filter?) -> String {
         
         var statement = "SELECT ALL * FROM \(tableName)"
         
@@ -78,7 +78,7 @@ internal class StatementGenerator {
         return statement
     }
     
-    internal class func deleteStatementForName(_ tableName: String, matchingFilter filtex: filter?) -> String {
+    internal class func deleteStatementForName(_ tableName: String, matchingFilter filtex: Filter?) -> String {
         
 //        let tableName = type.tableName()
         

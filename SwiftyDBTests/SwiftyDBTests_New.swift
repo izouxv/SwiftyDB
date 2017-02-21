@@ -109,14 +109,19 @@ class SwiftDBTestsNew: XCTestCase {
         XCTAssertTrue(database.dataFor(Dog()).value?.count == 1)
         XCTAssertTrue(database.addObjects(dogs, true).isSuccess)
         XCTAssertTrue(database.dataFor(Dog()).value?.count == 3)
-        XCTAssertTrue(database.dataFor(Dog(), ["id": 1]).value?.count == 1)
+        
+        
+        let fff1 : SwiftyDB.Filter = ["id": 1]
+        XCTAssertTrue(database.dataFor(Dog(), fff1).value?.count == 1)
         
         dog2.name = "dog222"
         XCTAssertTrue(database.addObject(dog2, true).isSuccess)
-   
-        XCTAssertTrue(database.deleteObjectsForType(Dog(), ["name": "dog1"]).isSuccess)
-       
-        let result = database.dataFor(Dog(), ["id": 2])
+        
+        let fff2 : SwiftyDB.Filter = ["name": "dog1"]
+        XCTAssertTrue(database.deleteObjectsForType(Dog(), fff2).isSuccess)
+        
+        let fff3 : SwiftyDB.Filter = ["id": 2]
+        let result = database.dataFor(Dog(), fff3)
         XCTAssertTrue(result.value![0]["name"] as! String == dog2.name)
          XCTAssertTrue( database.deleteObjectsForType(Dog()).isSuccess)
     }

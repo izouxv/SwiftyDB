@@ -72,9 +72,9 @@ public protocol FilteerX{
     func limit(_ limit: Int) -> FilteerX
     func offset(_ offset: Int) -> FilteerX
     
-    func delete()->Result<Bool>
-    func get()->Result<[[String: Value?]]>
-//    func update()->Result<Bool> 
+//    func delete()->Result<Bool>
+//    func get()->Result<[[String: Value?]]>
+//    func update()->Result<Bool>
 //    func count()->Result<Bool> //count,avg,max,min,sum,total 
 }
 
@@ -102,7 +102,7 @@ public protocol SwiftyDb{
     func dataFor<S: Storable> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
-    func with(_ obj: Storable)->FilteerX 
+//    func with(_ obj: Storable)->FilteerX 
 }
 
 

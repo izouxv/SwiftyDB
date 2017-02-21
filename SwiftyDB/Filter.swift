@@ -25,7 +25,7 @@ import Foundation
  ```
  */
 
-public class Filter: FilteerX,ExpressibleByDictionaryLiteral {
+internal class Filter: FilteerX,ExpressibleByDictionaryLiteral {
     public typealias Key = String
  
     
@@ -54,8 +54,6 @@ extension Filter{
         return self.db.deleteObjectsForTableName(table.tableName(), self)
     }
     public func get()->Result<[[String: Value?]]>{
-//        self.db.objectsFor(self.table, nil, true)
-//        return self.db.objectsFor(self.table, self, true)
         let ss : Result<[[String: Value?]]>? = nil
         return ss!
     }

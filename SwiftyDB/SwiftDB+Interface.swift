@@ -56,28 +56,6 @@ public protocol MigrationProperties : Storable{
     static func Migrate(_ verOld:Int, _ action:MigrationOperationI)
 }
 
-
-public protocol FilteerX{
-    func equal(_ propertyName: String, value: Value?) -> FilteerX
-    func lessThan(_ propertyName: String, value: Value?) -> FilteerX
-    func lessOrEqual(_ propertyName: String, value: Value?) -> FilteerX
-    func greaterThan(_ propertyName: String, value: Value?) -> FilteerX
-    func greaterOrEqual(_ propertyName: String, value: Value?) -> FilteerX
-    func notEqual(_ propertyName: String, value: Value?) -> FilteerX
-    func contains(_ propertyName: String, array: [Value?]) -> FilteerX
-    func notContains(_ propertyName: String, array: [Value?]) -> FilteerX
-    func like(_ propertyName: String, pattern: String) -> FilteerX
-    func notLike(_ propertyName: String, pattern: String) -> FilteerX
-    func orderBy(_ propertyNames: [String]) -> FilteerX
-    func limit(_ limit: Int) -> FilteerX
-    func offset(_ offset: Int) -> FilteerX
-    
-//    func delete()->Result<Bool>
-//    func get()->Result<[[String: Value?]]>
-//    func update()->Result<Bool>
-//    func count()->Result<Bool> //count,avg,max,min,sum,total 
-}
-
 public protocol SwiftyDb{
     
     var path : String{get}
@@ -98,11 +76,11 @@ public protocol SwiftyDb{
     func update(_ sql: String, _ data: SqlValues?)-> Result<Bool>
     func query(_ sql: String, _ values: SqlValues?, _ cb:((StatementData)->Void)?)
     
-    func deleteObjectsForType (_ type: Storable,_ filter: FilteerX?) -> Result<Bool>
-    func dataFor<S: Storable> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
-    func objectsFor<S> (_ obj: S,_ filter: FilteerX? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
+    func deleteObjectsForType (_ type: Storable,_ filter: Filter?) -> Result<Bool>
+    func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
+    func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
-//    func with(_ obj: Storable)->FilteerX 
+//    func with(_ obj: Storable)->Filter 
 }
 
 

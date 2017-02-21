@@ -100,7 +100,7 @@
 		4283E3E11D0FDFB200E7966A /* SwiftDB+Asynchronous.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Asynchronous.swift"; sourceTree = "<group>"; };
 		4283E3E21D0FDFB200E7966A /* SwiftyDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftyDB.h; sourceTree = "<group>"; };
 		4283E3E71D0FDFB200E7966A /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
-		42CF57661E5AEBE0006D6084 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filter.swift; sourceTree = "<group>"; };
+		42CF57661E5AEBE0006D6084 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Filter.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Interface.swift"; sourceTree = "<group>"; };
 		42D080251DF94DCD00417D77 /* SwiftyDBTests_New.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_New.swift; sourceTree = "<group>"; };
 		42D080311DF9661600417D77 /* Other.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Other.md; sourceTree = "<group>"; };

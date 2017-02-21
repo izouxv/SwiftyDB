@@ -32,7 +32,7 @@ class FilterSpec: SwiftyDBSpec {
                 let database = SwiftXDb(databaseName: "test_database")
           
                 
-                func countForFilter(_ filter: SwiftyDB.FilteerX) -> Int {
+                func countForFilter(_ filter: SwiftyDB.Filter) -> Int {
                     return database.dataFor(TestClass(), filter).value!.count
                 }
                 

@@ -225,9 +225,7 @@ class TestMigrateVer0_2 : NSObject, MigrationProperties, TableName{
 }
 
 
-
-
-
+ 
 
 
 

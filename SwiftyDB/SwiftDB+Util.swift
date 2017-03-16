@@ -43,13 +43,13 @@ extension swiftyDb  {
                     try database.update(index)
                 }
             }
-//            try database.prepare(statement)
-//                .executeUpdate()
-//                .finalize()
+            //            try database.prepare(statement)
+            //                .executeUpdate()
+            //                .finalize()
         } catch let error {
             return .Error(error)
         }
-         
+        
         existingTables.insert(object.tableName())
         
         return .success(true)
@@ -73,8 +73,11 @@ extension swiftyDb  {
         return dictionary
     }
     
-    
- 
+    public func synchronized<T>(_ lockObj: Any!,_ closure: () throws -> T) rethrows ->  T{
+        objc_sync_enter(lockObj)
+        defer {objc_sync_exit(lockObj)}
+        return try closure()
+    }
     
     internal func tableExistsForName(_ tableName: String) -> Bool {
         var exists: Bool = existingTables.contains(tableName)
@@ -95,6 +98,28 @@ extension swiftyDb  {
         }
         
         return exists
+    }
+    
+    internal func checkOrCreateTable(_ object: Storable){
+        let tableName = object.tableName()
+        objc_sync_enter(self)
+        defer {objc_sync_exit(self)}
+        
+        var exists: Bool = existingTables.contains(tableName)
+        /* Return true if the result is cached */
+        guard !exists else {
+            return
+        }
+        exists = database.containsTable(tableName)
+        if exists {
+            existingTables.insert(tableName)
+        }else{
+            if createTableByObject(object).isSuccess{
+                existingTables.insert(tableName)
+            }else{
+                exit(-1)
+            }
+        }
     }
     
     /**

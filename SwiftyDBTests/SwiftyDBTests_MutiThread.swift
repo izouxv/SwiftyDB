@@ -66,6 +66,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                         dataOrg.insert(Int(object.primaryKey))
                         DispatchQueue.global().async{
                             let done = OSAtomicAdd32(Int32(1), &doneCount)
+                            Swift.print("start: \(done)")
                             expect(database.addObject(object).isSuccess).to(beTrue())
                             Swift.print("done: \(done)")
                             if done == Int32(maxItem){

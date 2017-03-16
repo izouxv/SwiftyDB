@@ -34,14 +34,15 @@ extension swiftyDb  {
     internal func sync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
         var thrownError: Error?
         /* Run the query in a sequential queue to avoid threading related problems */
-        
-        queue.sync { () -> Void in
-            do {
-                try block(self)
-            } catch let error {
-                thrownError = error
-            }
-        }
+        try block(self)
+        return
+//        queue.sync { () -> Void in
+//            do {
+//                try block(self)
+//            } catch let error {
+//                thrownError = error
+//            }
+//        }
         
         /* If an error was thrown during execution, rethrow it */
         // TODO: Improve the process of passing along the error
@@ -194,9 +195,10 @@ extension swiftyDb  {
         //        try database{ (database) -> Void in
         //        }
         do {
-            if !(tableExistsForName(object.tableName())) {
-                createTableByObject(object)
-            }
+//            if !(tableExistsForName(object.tableName())) {
+//                createTableByObject(object)
+//            }
+            self.checkOrCreateTable(object)
             
             let insertStatement = StatementGenerator.insertStatementForType(object, update: update)
             

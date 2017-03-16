@@ -33,6 +33,7 @@
 		4283E3EB1D0FDFB200E7966A /* StatementGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283E3DF1D0FDFB200E7966A /* StatementGenerator.swift */; };
 		4283E3EE1D0FDFB200E7966A /* SwiftyDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 4283E3E21D0FDFB200E7966A /* SwiftyDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4283E3F31D0FE1A700E7966A /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283E3E71D0FDFB200E7966A /* Value.swift */; };
+		42CB29331E7A35880015436B /* SwiftyDBTests_MutiThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */; };
 		42CF57671E5AEBE0006D6084 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CF57661E5AEBE0006D6084 /* Filter.swift */; };
 		42CF57691E5BE493006D6084 /* SwiftDB+Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */; };
 		42D080261DF94DCD00417D77 /* SwiftyDBTests_New.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D080251DF94DCD00417D77 /* SwiftyDBTests_New.swift */; };
@@ -100,6 +101,7 @@
 		4283E3E11D0FDFB200E7966A /* SwiftDB+Asynchronous.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Asynchronous.swift"; sourceTree = "<group>"; };
 		4283E3E21D0FDFB200E7966A /* SwiftyDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftyDB.h; sourceTree = "<group>"; };
 		4283E3E71D0FDFB200E7966A /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
+		42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_MutiThread.swift; sourceTree = "<group>"; };
 		42CF57661E5AEBE0006D6084 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Filter.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Interface.swift"; sourceTree = "<group>"; };
 		42D080251DF94DCD00417D77 /* SwiftyDBTests_New.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_New.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 		428117F61D0E56D800DD680B /* SwiftyDBTests */ = {
 			isa = PBXGroup;
 			children = (
+				42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */,
 				42F9AB291E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift */,
 				427D4C601E4DB77100D4D285 /* SwiftyDBTests_Migrate.swift */,
 				42D080251DF94DCD00417D77 /* SwiftyDBTests_New.swift */,
@@ -377,6 +380,7 @@
 				4215A5D11DFA5DB30098830A /* OCBase.m in Sources */,
 				42F1E0C11D0E5C68008527EB /* DatabaseConnectionTests.swift in Sources */,
 				42D080261DF94DCD00417D77 /* SwiftyDBTests_New.swift in Sources */,
+				42CB29331E7A35880015436B /* SwiftyDBTests_MutiThread.swift in Sources */,
 				42F9AB2A1E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift in Sources */,
 				4215A5D31DFA5E680098830A /* SwiftyDBTests_BaseOC.swift in Sources */,
 			);

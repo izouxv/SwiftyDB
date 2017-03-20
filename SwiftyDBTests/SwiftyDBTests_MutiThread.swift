@@ -33,6 +33,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
 //                            expect(database.addObject(object).isSuccess).to(beTrue())
                             database.transaction({ (db:SwiftyDb) in
                                 expect(db.addObject(object, true).isSuccess).to(beTrue())
+                                expect(db.addObject(object, true).isSuccess).to(beTrue())
                             })
                             Swift.print("add done: \(done)")
                             if done == Int32(maxItem){

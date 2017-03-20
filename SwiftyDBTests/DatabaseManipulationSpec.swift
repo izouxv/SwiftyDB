@@ -14,7 +14,7 @@ class DatabaseManipulationSpec: SwiftyDBSpec {
     override func spec() {
         super.spec()
         
-        let database = SwiftXDb(databaseName: "test_database")
+        let database = SwiftXDbReset(databaseName: "test_database")
        // defer database.close()
         
         describe("Data in database is updated") {

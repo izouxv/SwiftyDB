@@ -16,7 +16,7 @@ extension swiftyDb  {
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
         do{
-            try sync{(database) in
+            try sync {(database) in
                 do {
                     try database.database.beginTransaction()
                     try block(self)
@@ -34,10 +34,11 @@ extension swiftyDb  {
     internal func sync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
        
         /* Run the query in a sequential queue to avoid threading related problems */
-        try block(self)
-        return
+  
         
         #if false
+            try block(self) 
+      #else
         var thrownError: Error?
         queue.sync { () -> Void in
             do {
@@ -225,9 +226,9 @@ extension swiftyDb  {
     
     public func addObject<S: Storable> (_ object: S, _ update: Bool = true) -> Result<Bool> {
         var resut : Result<Bool> = Result.success(true)
-        try! sync { (database) -> Void in
+       // try! sync { (database) -> Void in
             resut = self.addObjectInner(object, update:update)
-        }
+      //  }
         return resut
     }
     //    public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {

@@ -21,7 +21,7 @@ extension swiftyDb  {
                     try database.database.beginTransaction()
                     try block(self)
                     try database.database.endTransaction()
-                } catch let error {
+                } catch _ {
                     try database.database.rollback()
                 }
             }
@@ -32,23 +32,27 @@ extension swiftyDb  {
     }
     /** Execute synchronous queries on the database in a sequential queue */
     internal func sync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
-        var thrownError: Error?
+       
         /* Run the query in a sequential queue to avoid threading related problems */
         try block(self)
         return
-//        queue.sync { () -> Void in
-//            do {
-//                try block(self)
-//            } catch let error {
-//                thrownError = error
-//            }
-//        }
+        
+        #if false
+        var thrownError: Error?
+        queue.sync { () -> Void in
+            do {
+                try block(self)
+            } catch let error {
+                thrownError = error
+            }
+        }
         
         /* If an error was thrown during execution, rethrow it */
         // TODO: Improve the process of passing along the error
         guard thrownError == nil else {
             throw thrownError!
         }
+        #endif
     }
 }
 
@@ -67,10 +71,10 @@ extension swiftyDb  {
             }
             
             /* Generate statement */
-            let query = StatementGenerator.selectStatementForTableName(obj.tableName(),  fiter as! Filter?)
+            let query = StatementGenerator.selectStatementForTableName(obj.tableName(),  fiter)
             
             try sync { (database) -> Void in
-                let parameters = (fiter as! Filter?)?.parameters() ?? [:]
+                let parameters = fiter?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
                     .execute(SqlValues(parameters))
                 
@@ -82,8 +86,8 @@ extension swiftyDb  {
                     self.parsedDataForRow(row, forPropertyData: objectPropertyData)
                 }
                 
-                Swift.print("query: \(query)")
-                Swift.print("results: \(results.count)")
+                //Swift.print("query: \(query)")
+                //Swift.print("results: \(results.count)")
                 //print("statement: \(statement)")
                 
                 try statement.finalize()
@@ -107,10 +111,10 @@ extension swiftyDb  {
             }
             
             /* Generate statement */
-            let query = StatementGenerator.selectStatementForTableName(tableName,  fiter as! Filter?)
+            let query = StatementGenerator.selectStatementForTableName(tableName,  fiter)
             
             try sync { (database) -> Void in
-                let parameters = (fiter as! Filter?)?.parameters() ?? [:]
+                let parameters = fiter?.parameters() ?? [:]
                 let statement = try! database.database.prepare(query)
                     .execute(SqlValues(parameters))
                 
@@ -274,7 +278,7 @@ extension swiftyDb {
     public func query(_ sql: String, _ data: SqlValues? = nil, _ cb:((StatementData)->Void)?=nil){
         do {
             try database.query(sql, data, cb)
-        } catch let error {
+        } catch let _ {
         }
     }
     public func update(_ statement: String, _ data: SqlValues? = nil)-> Result<Bool>{

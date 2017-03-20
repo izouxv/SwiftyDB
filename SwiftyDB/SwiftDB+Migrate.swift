@@ -118,7 +118,7 @@ internal class MigrationPropertieOperation : NSObject, MigrationInnerX{
         //migrate
         let statement = "SELECT ALL * FROM \(tmpTableName)"
         db.query(statement, nil, {(stat:StatementData)->Void in
-            Swift.print("stat: \(stat.dictionary)")
+            //Swift.print("stat: \(stat.dictionary)")
             var data = stat.dictionary
             for itemx in self.operQ{
                 if let item = itemx as? OperationMigrate{

@@ -5,9 +5,9 @@ import Quick
 
 
 func SwiftXDb(databaseName: String)->swiftyDb{
-    let database = swiftyDb(databaseName: databaseName)
+    let database = SwiftyDb_Init(databaseName: databaseName)
     try! database.open()
-    return database
+    return database as! swiftyDb
 }
 
 func SwiftXDbReset(databaseName: String)->swiftyDb{

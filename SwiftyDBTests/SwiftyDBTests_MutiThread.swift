@@ -123,10 +123,11 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                             DispatchQueue.global().async{
                                 let done = OSAtomicAdd32(Int32(1), &addDoneCount)
                                 //Swift.print("add start: \(done)")
-                                database.transaction({(db:SwiftyDb) in
+                                let ok = database.transaction({(db:SwiftyDb) in
                                     expect(db.addObject(object, true).isSuccess).to(beTrue())
                                     expect(db.addObject(object, true).isSuccess).to(beTrue())
                                 })
+                                expect(ok) == true
                                 //Swift.print("add done: \(iii)")
                                 if done == Int32(maxItem){
                                     CFRunLoopStop(curRunloop)

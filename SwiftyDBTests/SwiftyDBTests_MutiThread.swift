@@ -15,9 +15,9 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
     override func spec() {
         super.spec()
         let database = SwiftXDbReset(databaseName: "test_database")
-        describe("Data in database is updated") {
-            context("object added test sample data") {
-                it("only muti thread add, add in a queue") {
+        describe("muti thread") {
+            context("sample 1000") {
+                it("add in queue") {
                     var dataOrg : Set<Int> = []
                     let maxItem = 1000
                     var doneCount : Int32 = 0
@@ -49,7 +49,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                 }
                 
                 
-                it("only muti thread get, get not in queue") {
+                it("get not in queue") {
                     var dataOrg : Set<Int> = []
                     let maxItem = 1000
                     var doneCount : Int32 = 0
@@ -82,7 +82,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                 }
                 
                 
-                it("muti thread get and add") {
+                it("get and add") {
                     var dataOrg : Set<Int> = []
                     let maxItem = 1000
                     var addDoneCount : Int32 = 0

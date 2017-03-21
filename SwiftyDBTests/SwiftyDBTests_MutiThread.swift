@@ -14,12 +14,12 @@ import Nimble
 class SwiftXDbMutiThread: SwiftyDBSpec {
     override func spec() {
         super.spec()
+        let maxItem = 5
         let database = SwiftXDbReset(databaseName: "test_database")
         describe("muti thread") {
             context("sample 1000") {
                 it("add in queue") {
                     var dataOrg : Set<Int> = []
-                    let maxItem = 1000
                     var doneCount : Int32 = 0
                     let curRunloop = CFRunLoopGetCurrent()
                     for i in 0..<maxItem{
@@ -52,7 +52,6 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                 
                 it("get not in queue") {
                     var dataOrg : Set<Int> = []
-                    let maxItem = 1000
                     var doneCount : Int32 = 0
                     let curRunloop = CFRunLoopGetCurrent()
                     for i in 0..<maxItem{
@@ -85,7 +84,6 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                 
                 it("get and add") {
                     var dataOrg : Set<Int> = []
-                    let maxItem = 1000
                     var addDoneCount : Int32 = 0
                     var getDoneCount : Int32 = 0
                     let curRunloop = CFRunLoopGetCurrent()
@@ -116,7 +114,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                         }
                         
                         if write{
-                            let iii = 2000+i
+                            let iii = 200000+i
                             let object = TestClassSimple()
                             object.primaryKey = NSNumber(value:iii)
                             object.num = NSNumber(value:iii)

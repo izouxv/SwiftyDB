@@ -29,12 +29,13 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                         dataOrg.insert(Int(object.primaryKey))
                         DispatchQueue.global().async{
                             let done = OSAtomicAdd32(Int32(1), &doneCount)
-                            Swift.print("add start: \(done)")
-                            database.transaction({(db:SwiftyDb) in
+                            //Swift.print("add start: \(done)")
+                            let ok = database.transaction({(db:SwiftyDb) in
                                 expect(db.addObject(object, true).isSuccess).to(beTrue())
                                 expect(db.addObject(object, true).isSuccess).to(beTrue())
                             })
-                            Swift.print("add done: \(done)")
+                            expect(ok) == true
+                           // Swift.print("add done: \(done)")
                             if done == Int32(maxItem){
                                 CFRunLoopStop(curRunloop)
                             }
@@ -56,18 +57,18 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                     for i in 0..<maxItem{
                         let object = TestClassSimple()
                         object.primaryKey = NSNumber(value:i)
-                        // object.num = NSNumber(value:i)
+                        object.num = NSNumber(value:i)
                         dataOrg.insert(Int(object.primaryKey))
                         DispatchQueue.global().async{
                             let done = OSAtomicAdd32(Int32(1), &doneCount)
-                            Swift.print("get start: \(done)")
+                            //Swift.print("get start: \(done)")
                             let filter = Filter.equal("primaryKey", value:object.primaryKey)
                             let ret = database.objectsFor(object, filter)
                             expect(ret.isSuccess).to(beTrue())
                             expect(ret.value?.count) == 1
                             expect(ret.value?[0].num) == object.primaryKey
                             expect(database.objectsFor(object).isSuccess).to(beTrue())
-                            Swift.print("get done: \(done)")
+                            //Swift.print("get done: \(done)")
                             if done == Int32(maxItem){
                                 CFRunLoopStop(curRunloop)
                             }
@@ -94,18 +95,19 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                         if read{
                             let object = TestClassSimple()
                             object.primaryKey = NSNumber(value:i)
+                            object.num = NSNumber(value:i)
                             dataOrg.insert(Int(object.primaryKey))
                             
                             DispatchQueue.global().async{
                                 let done = OSAtomicAdd32(Int32(1), &getDoneCount)
-                                Swift.print("get start: \(done)")
+                               // Swift.print("get start: \(done)")
                                 let filter = Filter.equal("primaryKey", value:object.primaryKey)
                                 let ret = database.objectsFor(object, filter)
                                 expect(ret.isSuccess).to(beTrue())
                                 expect(ret.value?.count) == 1
                                 expect(ret.value?[0].num) == object.primaryKey
                                 expect(database.objectsFor(object).isSuccess).to(beTrue())
-                                Swift.print("get done: \(done)")
+                             //   Swift.print("get done: \(done)")
                                 if done == Int32(maxItem){
                                     CFRunLoopStop(curRunloop)
                                 }
@@ -120,12 +122,12 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                             dataOrg.insert(Int(object.primaryKey))
                             DispatchQueue.global().async{
                                 let done = OSAtomicAdd32(Int32(1), &addDoneCount)
-                                Swift.print("add start: \(done)")
+                                //Swift.print("add start: \(done)")
                                 database.transaction({(db:SwiftyDb) in
                                     expect(db.addObject(object, true).isSuccess).to(beTrue())
                                     expect(db.addObject(object, true).isSuccess).to(beTrue())
                                 })
-                                Swift.print("add done: \(iii)")
+                                //Swift.print("add done: \(iii)")
                                 if done == Int32(maxItem){
                                     CFRunLoopStop(curRunloop)
                                 }

@@ -41,7 +41,7 @@ import Nimble
 class SwiftXDbFilter: SwiftyDBSpec {
     override func spec() {
         super.spec()
-        let database = SwiftXDb(databaseName: "test_database")
+        let database = SwiftXDbReset(databaseName: "test_database")
         describe("Data in database is updated") {
             context("object added test sample data") {
                 it("should contain the object after it is added") {

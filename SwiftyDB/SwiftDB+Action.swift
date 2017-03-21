@@ -25,7 +25,7 @@ extension swiftyDb  {
                     try database.database.rollback()
                 }
             }
-        } catch let error {
+        } catch _ {
             return false
         }
         return true

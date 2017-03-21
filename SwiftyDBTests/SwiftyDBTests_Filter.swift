@@ -48,7 +48,7 @@ class SwiftXDbFilter: SwiftyDBSpec {
                     for i in 0..<10{
                         let object = TestClassSimple()
                         object.primaryKey = NSNumber(value:i)
-                        object.num = Int(arc4random()%20)
+                        object.num = NSNumber(value:i)
                         expect(database.addObject(object).isSuccess).to(beTrue())
                     }
                     expect(database.dataFor(TestClassSimple()).value?.count) == 10

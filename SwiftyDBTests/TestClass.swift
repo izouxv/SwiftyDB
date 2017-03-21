@@ -133,7 +133,7 @@ extension TestClass: IgnoredProperties {
 
 class TestClassSimple:NSObject {
     var primaryKey: NSNumber = 1
-    var num: Int      = 0
+    var num: NSNumber = 1
 }
 
 extension TestClassSimple: PrimaryKeys {

@@ -50,8 +50,6 @@ extension swiftyDb  {
             return .Error(error)
         }
         
-        existingTables.insert(object.tableName())
-        
         return .success(true)
     }
     
@@ -73,31 +71,32 @@ extension swiftyDb  {
         return dictionary
     }
     
-    public func synchronized<T>(_ lockObj: Any!,_ closure: () throws -> T) rethrows ->  T{
-        objc_sync_enter(lockObj)
-        defer {objc_sync_exit(lockObj)}
-        return try closure()
+//    public func synchronized<T>(_ lockObj: Any!,_ closure: () throws -> T) rethrows ->  T{
+//        objc_sync_enter(lockObj)
+//        defer {objc_sync_exit(lockObj)}
+//        return try closure()
+//    }
+
+    
+    fileprivate func tableExist(_ tableName: String)->Bool{
+        var exists: Bool = existingTables.contains(tableName)
+        /* Return true if the result is cached */
+        guard !exists else {
+            return true
+        }
+        exists = database.containsTable(tableName)
+        if exists {
+            existingTables.insert(tableName)
+            return true
+        }else{
+            return false
+        }
     }
     
     internal func tableExistsForName(_ tableName: String) -> Bool {
-        var exists: Bool = existingTables.contains(tableName)
-        
-        /* Return true if the result is cached */
-        guard !exists else {
-            return exists
-        }
-        
-        //TODO 需要优先判断
-        //  try sync({ (database) in
-        exists = database.containsTable(tableName)
-        //  })
-        
-        /* Cache the result */
-        if exists {
-            existingTables.insert(tableName)
-        }
-        
-        return exists
+        objc_sync_enter(self)
+        defer {objc_sync_exit(self)}
+        return tableExist(tableName)
     }
     
     internal func checkOrCreateTable(_ object: Storable){
@@ -105,15 +104,8 @@ extension swiftyDb  {
         objc_sync_enter(self)
         defer {objc_sync_exit(self)}
         
-        var exists: Bool = existingTables.contains(tableName)
-        /* Return true if the result is cached */
-        guard !exists else {
-            return
-        }
-        exists = database.containsTable(tableName)
-        if exists {
-            existingTables.insert(tableName)
-        }else{
+        let exist = tableExist(tableName)
+        if !exist{
             if createTableByObject(object).isSuccess{
                 existingTables.insert(tableName)
             }else{

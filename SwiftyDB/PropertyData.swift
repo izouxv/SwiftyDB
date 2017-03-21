@@ -265,12 +265,24 @@ internal struct PropertyData {
             return nil
         }
     }
+//    fileprivate  static var  propertyMaps : [String:[PropertyData]] = [:]
 }
 
 extension PropertyData {
-    
     internal static func validPropertyDataForObject (_ object: Storable) -> [PropertyData] {
-        return validPropertyDataForMirror(Mirror(reflecting: object))
+         return validPropertyDataForMirror(Mirror(reflecting: object))
+        
+//        objc_sync_enter(self)
+//        defer {objc_sync_exit(self)}
+//        
+//        let tableName = object.tableName()
+//        if let exist = propertyMaps[tableName]{
+//            return exist
+//        }else{
+//            let datas = validPropertyDataForMirror(Mirror(reflecting: object))
+//            propertyMaps[tableName] = datas
+//            return datas
+//        }
     }
     
     fileprivate static func validPropertyDataForMirror(_ mirror: Mirror, ignoredProperties: Set<String> = []) -> [PropertyData] {

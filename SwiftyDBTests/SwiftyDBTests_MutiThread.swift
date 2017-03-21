@@ -36,6 +36,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                             })
                             expect(ok) == true
                            // Swift.print("add done: \(done)")
+                            Swift.print("add done: \(done): \(maxItem)")
                             if done == Int32(maxItem){
                                 CFRunLoopStop(curRunloop)
                             }

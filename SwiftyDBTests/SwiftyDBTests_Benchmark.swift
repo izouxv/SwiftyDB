@@ -15,9 +15,10 @@ import Nimble
 class SwiftXDb_Benchmark: XCTestCase {
     
     var database : swiftyDb!
+    var maxItem : Int = 10000
     
     override func setUp() {
-        //每个韩式的执行都会调用这个
+        //每个函数的执行都会调用这个
         database = SwiftXDb(databaseName: "test_database")
         super.setUp()
     }
@@ -27,7 +28,6 @@ class SwiftXDb_Benchmark: XCTestCase {
     }
     
     func testAdd(){
-        let maxItem = 1000
         for i in 0..<maxItem{
             let object = TestClassSimple()
             object.primaryKey = NSNumber(value:i)
@@ -40,8 +40,7 @@ class SwiftXDb_Benchmark: XCTestCase {
         }
     }
     
-    func testGet(){
-        let maxItem = 1000
+    func testGet(){ 
         for i in 0..<maxItem{
             let object = TestClassSimple()
             object.primaryKey = NSNumber(value:i)

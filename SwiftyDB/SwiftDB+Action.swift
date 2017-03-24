@@ -139,7 +139,7 @@ extension swiftyDb  {
 
 
 extension swiftyDb {
-    public func objectsFor <D> (_ obj: D, _ filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
+    public func objectsFor<D> (_ obj: D, _ filter: Filter? = nil, _ checkTableExist:Bool=true) -> Result<[D]> where D: Storable  {
         let dataResults = dataFor(obj, filter, checkTableExist)
         
         if !dataResults.isSuccess {

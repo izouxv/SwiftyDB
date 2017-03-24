@@ -14,7 +14,7 @@ import Nimble
 class SwiftXDbMutiThread: SwiftyDBSpec {
     override func spec() {
         super.spec()
-        let maxItem = 5
+        let maxItem = 1000
         let database = SwiftXDbReset(databaseName: "test_database")
         describe("muti thread") {
             context("sample 1000") {
@@ -27,12 +27,13 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                         object.primaryKey = NSNumber(value:i)
                         object.num = NSNumber(value:i)
                         dataOrg.insert(Int(object.primaryKey))
+                        
                         DispatchQueue.global().async{
                             let done = OSAtomicAdd32(Int32(1), &doneCount)
                             //Swift.print("add start: \(done)")
                             let ok = database.transaction({(db:SwiftyDb) in
                                 expect(db.addObject(object, true).isSuccess).to(beTrue())
-                                expect(db.addObject(object, true).isSuccess).to(beTrue())
+                              //  expect(db.addObject(object, true).isSuccess).to(beTrue())
                             })
                             expect(ok) == true
                            // Swift.print("add done: \(done)")
@@ -49,8 +50,38 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                     expect(names == dataOrg) == true
                 }
                 
+                it("get data in queue") {
+                    var dataOrg : Set<Int> = []
+                    var doneCount : Int32 = 0
+                    let curRunloop = CFRunLoopGetCurrent()
+                    for i in 0..<maxItem{
+                        let object = TestClassSimple()
+                        object.primaryKey = NSNumber(value:i)
+                        object.num = NSNumber(value:i)
+                        dataOrg.insert(Int(object.primaryKey))
+                        DispatchQueue.global().async{
+                            let done = OSAtomicAdd32(Int32(1), &doneCount)
+                            //Swift.print("get start: \(done)")
+                            let filter = Filter.equal("primaryKey", value:object.primaryKey)
+                            let ret = database.dataFor(object, filter)
+                            expect(ret.isSuccess).to(beTrue())
+                            expect(ret.value?.count) == 1 
+                            expect(database.objectsFor(object).isSuccess).to(beTrue())
+                            //Swift.print("get done: \(done)")
+                            if done == Int32(maxItem){
+                                CFRunLoopStop(curRunloop)
+                            }
+                        }
+                    }
+                    CFRunLoopRun();
+                    expect(database.dataFor(TestClassSimple()).value?.count) == maxItem
+                    let items = database.objectsFor(TestClassSimple()).value
+                    let names : Set<Int> = Set(items!.map{Int($0.primaryKey)})
+                    expect(names == dataOrg) == true
+                }
                 
-                it("get not in queue") {
+                
+                it("get obj in queue") {
                     var dataOrg : Set<Int> = []
                     var doneCount : Int32 = 0
                     let curRunloop = CFRunLoopGetCurrent()

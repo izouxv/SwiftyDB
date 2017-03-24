@@ -34,6 +34,7 @@
 		4283E3EB1D0FDFB200E7966A /* StatementGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283E3DF1D0FDFB200E7966A /* StatementGenerator.swift */; };
 		4283E3EE1D0FDFB200E7966A /* SwiftyDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 4283E3E21D0FDFB200E7966A /* SwiftyDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4283E3F31D0FE1A700E7966A /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4283E3E71D0FDFB200E7966A /* Value.swift */; };
+		42ABE6181E852AD60067B219 /* SwiftyDBTests_Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ABE6171E852AD60067B219 /* SwiftyDBTests_Benchmark.swift */; };
 		42CB29331E7A35880015436B /* SwiftyDBTests_MutiThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */; };
 		42CF57671E5AEBE0006D6084 /* Filter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CF57661E5AEBE0006D6084 /* Filter.swift */; };
 		42CF57691E5BE493006D6084 /* SwiftDB+Interface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */; };
@@ -101,6 +102,7 @@
 		4283E3E11D0FDFB200E7966A /* SwiftDB+Asynchronous.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Asynchronous.swift"; sourceTree = "<group>"; };
 		4283E3E21D0FDFB200E7966A /* SwiftyDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftyDB.h; sourceTree = "<group>"; };
 		4283E3E71D0FDFB200E7966A /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
+		42ABE6171E852AD60067B219 /* SwiftyDBTests_Benchmark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_Benchmark.swift; sourceTree = "<group>"; };
 		42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_MutiThread.swift; sourceTree = "<group>"; };
 		42CF57661E5AEBE0006D6084 /* Filter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Filter.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		42CF57681E5BE493006D6084 /* SwiftDB+Interface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SwiftDB+Interface.swift"; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 		428117F61D0E56D800DD680B /* SwiftyDBTests */ = {
 			isa = PBXGroup;
 			children = (
+				42ABE6171E852AD60067B219 /* SwiftyDBTests_Benchmark.swift */,
 				422472B71E8501A200FA0FCC /* Property_Test.swift */,
 				42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */,
 				42F9AB291E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift */,
@@ -382,6 +385,7 @@
 				42F1E0C11D0E5C68008527EB /* DatabaseConnectionTests.swift in Sources */,
 				42D080261DF94DCD00417D77 /* SwiftyDBTests_New.swift in Sources */,
 				42CB29331E7A35880015436B /* SwiftyDBTests_MutiThread.swift in Sources */,
+				42ABE6181E852AD60067B219 /* SwiftyDBTests_Benchmark.swift in Sources */,
 				42F9AB2A1E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift in Sources */,
 				422472B81E8501A200FA0FCC /* Property_Test.swift in Sources */,
 				4215A5D31DFA5E680098830A /* SwiftyDBTests_BaseOC.swift in Sources */,

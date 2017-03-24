@@ -31,6 +31,26 @@ class SwiftXDb_Property: XCTestCase {
             }
         }
     }
+    func testProperty_MirrorChildren() {
+        let object = TestClass()
+        object.loadSampleData()
+        self.measure() {
+            for _ in 0...100{
+                for property in Mirror(reflecting: object).children {
+                    //   print("name: \(property.label) type: \(type(of: property.value)) value: \(property.value)")
+                }
+            }
+        }
+    }
+    func testProperty_Mirror() {
+        let object = TestClass()
+        object.loadSampleData()
+        self.measure() {
+            for _ in 0...100{
+               Mirror(reflecting: object)
+            }
+        }
+    }
 }
 
 

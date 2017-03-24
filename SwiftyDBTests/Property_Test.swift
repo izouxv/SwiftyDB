@@ -14,12 +14,37 @@ import Nimble
 
 class SwiftXDb_Property: XCTestCase {
     
+    let database = SwiftXDbReset(databaseName: "test_database")
     override func setUp() {
         super.setUp()
     }
-    
     override func tearDown() {
         super.tearDown()
+    }
+    
+    func testAdd(){
+        let maxItem = 1000
+        var dataOrg : Set<Int> = []
+        for i in 0..<maxItem{
+            let object = TestClassSimple()
+            object.primaryKey = NSNumber(value:i)
+            object.num = NSNumber(value:i)
+            dataOrg.insert(Int(object.primaryKey))
+            
+            let ok = database.transaction({(db:SwiftyDb) in
+                db.addObject(object, true).isSuccess
+            })
+        }
+    }
+    
+    func testGet(){
+        let maxItem = 1000
+        for i in 0..<maxItem{
+            let object = TestClassSimple()
+            object.primaryKey = NSNumber(value:i)
+            let filter = Filter.equal("primaryKey", value:object.primaryKey)
+            let ret = database.objectsFor(object, filter)
+        }
     }
     
     func testProperty() {
@@ -52,13 +77,6 @@ class SwiftXDb_Property: XCTestCase {
         }
     }
 }
-
-
-
-
-
-
-
 
 
 

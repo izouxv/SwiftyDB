@@ -38,10 +38,10 @@ class SwiftXDb_Benchmark: SwiftyDBSpec {
                         object.primaryKey = NSNumber(value:i)
                         let filter = Filter.equal("primaryKey", value:object.primaryKey)
                         let ret = database.objectsFor(object, filter)
-//                        expect(ret.isSuccess).to(beTrue())
-//                        expect(ret.value?.count) == 1
-//                        expect(ret.value?[0].num) == object.primaryKey
-//                        expect(database.objectsFor(object).isSuccess).to(beTrue())
+                        expect(ret.isSuccess).to(beTrue())
+                        expect(ret.value?.count) == 1
+                        expect(ret.value?[0].num) == object.primaryKey
+                        expect(database.objectsFor(object).isSuccess).to(beTrue())
                     }
                 }
 //                it("get") {

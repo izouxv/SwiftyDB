@@ -55,7 +55,26 @@ extension DynamicTestClass: PrimaryKeys {
 
 class TestClass:NSObject {
     
-    
+    func loadSampleData(){
+          optionalString = "123"
+          optionalNSString = "123"
+          optionalNumber = 123
+          optionalInt = 123
+          optionalInt8 = 123
+          optionalInt16 = 123
+          optionalInt32 = 123
+          optionalInt64 = 123
+          optionalUint = 123
+          optionalUint8 = 123
+          optionalUint16 = 123
+          optionalUint32 = 123
+          optionalUint64 = 123
+        
+          optionalBool = true
+        
+          optionalFloat = 123
+          optionalDouble = 123
+    }
     
     var primaryKey: NSNumber = 1
     var ignored: Int = -1
@@ -114,11 +133,14 @@ class TestClass:NSObject {
     var optionalArray: NSArray? = ["1","2"]
     var dictionary: NSDictionary = ["1":1,"2":2]
     var optionalDictionary: NSDictionary? = ["1":1,"2":2]
+    var set : NSSet =  ["1","2"]
     
     required override init() {}
     
     
 }
+
+
 
 extension TestClass: PrimaryKeys {
     static func primaryKeys() -> Set<String> {

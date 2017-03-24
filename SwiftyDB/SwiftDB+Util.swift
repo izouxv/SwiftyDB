@@ -189,6 +189,8 @@ extension swiftyDb  {
             return NSKeyedUnarchiver.unarchiveObject(with: row.dataForColumn(propertyData.name!)!) as? NSArray
         case is NSDictionary.Type:
             return NSKeyedUnarchiver.unarchiveObject(with: row.dataForColumn(propertyData.name!)!) as? NSDictionary
+        case is NSSet.Type:
+            return NSKeyedUnarchiver.unarchiveObject(with: row.dataForColumn(propertyData.name!)!) as? NSSet
             
             
         default:                return nil

@@ -38,7 +38,7 @@ public enum SQLiteDatatype: String {
             self.init(rawValue: "NUMERIC")
         case is String.Type, is NSString.Type, is Character.Type:
             self.init(rawValue: "TEXT")
-        case is NSArray.Type, is NSDictionary.Type:
+        case is NSArray.Type, is NSDictionary.Type, is NSSet.Type:
             self.init(rawValue: "BLOB")
         default:
             fatalError("DSADSASA")

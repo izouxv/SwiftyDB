@@ -12,6 +12,8 @@ public protocol Value {}
 
 extension NSArray: Value {}
 extension NSDictionary: Value {}
+extension NSSet: Value {}
+
 extension String: Value {}
 extension NSString: Value {}
 extension Character: Value {}

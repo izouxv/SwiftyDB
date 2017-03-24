@@ -97,6 +97,9 @@ class RetrievedDataSpec: SwiftyDBSpec {
                 it("should return NSDictionary") {
                     expect(data["dictionary"]! is NSDictionary).to(beTrue())
                 }
+                it("should return NSSSet") {
+                    expect(data["set"]! is NSSet).to(beTrue())
+                }
             }
         }
     }

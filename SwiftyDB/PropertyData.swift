@@ -197,6 +197,9 @@ internal struct PropertyData {
             if mirror.displayStyle == .dictionary {
                 return NSDictionary.self
             }
+            if mirror.displayStyle == .set {
+                return NSSet.self
+            }
             return mirror.subjectType as? Value.Type
         }
         
@@ -230,6 +233,7 @@ internal struct PropertyData {
             
         case is Optional<NSArray>.Type:     return NSArray.self
         case is Optional<NSDictionary>.Type: return NSDictionary.self
+        case is Optional<NSSet>.Type:       return NSSet.self
             
         default:                            return nil
         }
@@ -252,6 +256,9 @@ internal struct PropertyData {
         if mirror.displayStyle == .dictionary {
             return NSKeyedArchiver.archivedData(withRootObject: value as! NSDictionary)
         }
+        if mirror.displayStyle == .set {
+            return NSKeyedArchiver.archivedData(withRootObject: value as! NSSet)
+        }
         
         /* Raw value */
         if mirror.displayStyle != .optional {
@@ -265,24 +272,24 @@ internal struct PropertyData {
             return nil
         }
     }
-//    fileprivate  static var  propertyMaps : [String:[PropertyData]] = [:]
+    //    fileprivate  static var  propertyMaps : [String:[PropertyData]] = [:]
 }
 
 extension PropertyData {
     internal static func validPropertyDataForObject (_ object: Storable) -> [PropertyData] {
-         return validPropertyDataForMirror(Mirror(reflecting: object))
+        return validPropertyDataForMirror(Mirror(reflecting: object))
         
-//        objc_sync_enter(self)
-//        defer {objc_sync_exit(self)}
-//        
-//        let tableName = object.tableName()
-//        if let exist = propertyMaps[tableName]{
-//            return exist
-//        }else{
-//            let datas = validPropertyDataForMirror(Mirror(reflecting: object))
-//            propertyMaps[tableName] = datas
-//            return datas
-//        }
+        //        objc_sync_enter(self)
+        //        defer {objc_sync_exit(self)}
+        //
+        //        let tableName = object.tableName()
+        //        if let exist = propertyMaps[tableName]{
+        //            return exist
+        //        }else{
+        //            let datas = validPropertyDataForMirror(Mirror(reflecting: object))
+        //            propertyMaps[tableName] = datas
+        //            return datas
+        //        }
     }
     
     fileprivate static func validPropertyDataForMirror(_ mirror: Mirror, ignoredProperties: Set<String> = []) -> [PropertyData] {
@@ -299,7 +306,8 @@ extension PropertyData {
         }
         
         /* Map children to property data and filter out ignored or invalid properties */
-        propertyData += mirror.children.map { PropertyData(property: $0) }
+        propertyData += mirror.children
+            .map { PropertyData(property: $0) }
             .filter { $0.isValid && !ignoredProperties.contains($0.name!) }
         
         return propertyData

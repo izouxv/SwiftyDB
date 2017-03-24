@@ -133,7 +133,8 @@ class TestClass:NSObject {
     var optionalArray: NSArray? = ["1","2"]
     var dictionary: NSDictionary = ["1":1,"2":2]
     var optionalDictionary: NSDictionary? = ["1":1,"2":2]
-    var set : NSSet =  ["1","2"]
+    var setttt : NSSet =  ["1","2"]
+//    var set : NSSet =  ["1","2"]
     
     required override init() {}
     

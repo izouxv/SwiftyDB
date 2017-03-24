@@ -12,6 +12,7 @@ internal class StatementGenerator {
     //CREATE INDEX salary_index ON COMPANY (salary);
     internal class func createTableIndex (_ object: Storable, _ name:String)throws -> String {
         guard !keyWordSet.contains(name.uppercased()) else {
+            Swift.print("!!! [\(object.tableName())] has sqlKeyWork: [\(name)], you need rename")
             throw SQLError.error
         }
         return "CREATE INDEX \(name)_index ON \(object.tableName()) \(name)"
@@ -26,6 +27,7 @@ internal class StatementGenerator {
         for i in 0..<items.count{
             let propertyData = items[i]
             guard !keyWordSet.contains(propertyData.name!.uppercased()) else {
+                Swift.print("!!! [\(object.tableName())] has sqlKeyWork: [\(propertyData.name!)], you need rename")
                 throw SQLError.error
             }
             statement += "\(propertyData.name!) \(SQLiteDatatype(type: propertyData.type!)!.rawValue)"

@@ -208,7 +208,7 @@ extension swiftyDb {
         self.tableInfos({(tables_sqlite: [String:sqlite_master],db: swiftyDb) in
             let old_version = db.user_version
             db.foreign_keys = false
-            _=db.transaction { (sdb:SwiftyDb) in
+            _=db.transaction { (sdb:SwiftyDb, rollback:inout Bool) in
                 let sdb = sdb as! swiftyDb
                 for item in tables{
                     if (tables_sqlite[item.tableName()] != nil){

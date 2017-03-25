@@ -70,7 +70,9 @@ public protocol SwiftyDb{
     func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
     
     //can nested
-    func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
+//    func transaction(_ block:@escaping ((SwiftyDb, _:inout Bool) throws -> Void)) ->Bool
+//    func transaction(_ block: @escaping ((SwiftyDb, _:inout Bool) throws -> Void)) ->Bool
+    func transaction(_ block: @escaping (( _ db: SwiftyDb, _ rollback: inout Bool) throws -> Void)) ->Bool
     
     func addObject<S: Storable> (_ object: S,_ update: Bool) -> Result<Bool>
     func addObjects<S: Storable> (_ objects: [S],_ update: Bool) -> Result<Bool>
@@ -81,6 +83,7 @@ public protocol SwiftyDb{
     func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
+//    func with(_ obj: Storable)->Filter 
 }
 
 

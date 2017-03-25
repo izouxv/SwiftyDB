@@ -16,7 +16,7 @@ internal class swiftyDbTxn : swiftyDb {
     }
     internal override var transactioning : Bool{
         return true
-    } 
+    }
     //internal override var existingTables: Set<String> = []
     //数据会在txn完成之后丢失。这是正确的
     //为什么不把这个代理到db里面去呢？因为这是一个txn，如果代理进去可能会导致数据错误。
@@ -57,14 +57,20 @@ internal class swiftyDbTxn : swiftyDb {
 
 extension swiftyDb  {
     /** Execute a synchronous transaction on the database in a sequential queue */
-    public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
+    public func transaction(_ block: @escaping ((_ db: SwiftyDb,_ rollback:inout Bool) throws -> Void)) ->Bool{
+        //    public func transaction(_ block: @escaping ((_ db: SwiftyDb, _ rollback : inout Bool) throws -> Void)) ->Bool {
         do{
+            var rollback = false
             if transactioning{//transaction in transaction
                 let startName : String = "POINT\(arc4random())"//UUID().uuidString
                 do {
                     try database.startSavepoint(startName)
-                    try block(self)
-                    try database.releaseSavepoint(startName)
+                    try block(self, &rollback)
+                    if rollback{
+                        try database.rollbackSavepoint(startName)
+                    }else{
+                        try database.releaseSavepoint(startName)
+                    }
                 } catch _ {
                     try database.rollbackSavepoint(startName)
                 }
@@ -72,18 +78,23 @@ extension swiftyDb  {
                 try sync {(database) in
                     do {
                         try database.database.beginTransaction()
-                        try block(swiftyDbTxn(swiftyDb:self))
-                        try database.database.endTransaction()
+                        try block(swiftyDbTxn(swiftyDb:self), &rollback)
+                        if rollback{
+                            try database.database.rollback()
+                        }else{
+                            try database.database.endTransaction()
+                        }
                     } catch _ {
                         try database.database.rollback()
                     }
                 }
             }
+            return rollback == false
         } catch _ {
             return false
         }
-        return true
     }
+    
     /** Execute synchronous queries on the database in a sequential queue */
     internal func sync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
         /* Run the query in a sequential queue to avoid threading related problems */
@@ -91,7 +102,7 @@ extension swiftyDb  {
             try block(self)
         }else{
             var thrownError: Error?
-            queue.sync { () -> Void in
+            queue.sync{() -> Void in
                 do {
                     try block(self)
                 } catch let error {
@@ -289,11 +300,13 @@ extension swiftyDb  {
             return Result.success(true)
         }
         do{
-            try self.transaction { (db:SwiftyDb) in
+            try self.transaction { (db:SwiftyDb, rollback:inout Bool) in
                 let db = db as! swiftyDb
                 for object in objects {
                     let result = db.addObjectInner(object, update: update)
                     if !result.isSuccess{
+                        rollback = true
+                        return
                     }
                 }
             }

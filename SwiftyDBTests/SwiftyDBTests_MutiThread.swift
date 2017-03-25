@@ -31,7 +31,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                         DispatchQueue.global().async{
                             let done = OSAtomicAdd32(Int32(1), &doneCount)
                             //Swift.print("add start: \(done)")
-                            let ok = database.transaction({(db:SwiftyDb) in
+                            let ok = database.transaction({(db:SwiftyDb, rollback:inout Bool) in
                                 expect(db.addObject(object, true).isSuccess).to(beTrue())
                               //  expect(db.addObject(object, true).isSuccess).to(beTrue())
                             })
@@ -153,7 +153,7 @@ class SwiftXDbMutiThread: SwiftyDBSpec {
                             DispatchQueue.global().async{
                                 let done = OSAtomicAdd32(Int32(1), &addDoneCount)
                                 //Swift.print("add start: \(done)")
-                                let ok = database.transaction({(db:SwiftyDb) in
+                                let ok = database.transaction({(db:SwiftyDb, rollback:inout Bool) in
                                     expect(db.addObject(object, true).isSuccess).to(beTrue())
                                     expect(db.addObject(object, true).isSuccess).to(beTrue())
                                 })

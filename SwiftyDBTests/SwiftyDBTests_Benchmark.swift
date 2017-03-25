@@ -33,7 +33,7 @@ class SwiftXDb_Benchmark: XCTestCase {
             object.primaryKey = NSNumber(value:i)
             object.num = NSNumber(value:i)
             
-            let ok = database.transaction({(db:SwiftyDb) in
+            let ok = database.transaction({(db:SwiftyDb, rollback:inout Bool) in
                 let suc = db.addObject(object, true).isSuccess
                 XCTAssertTrue(suc == true)
             })
@@ -52,6 +52,17 @@ class SwiftXDb_Benchmark: XCTestCase {
             XCTAssertTrue(ret.value?.count == 1, "count: \(ret.value?.count)")
             XCTAssertTrue(ret.value?[0].num == object.primaryKey)
         }
+    }
+    
+    func testClose(){
+        var success = false
+        let closure = { ( flag: inout Bool) -> () in
+            flag = true
+            print(flag)
+        }
+        
+        closure(&success)  //prints "true"
+        print(success)     //prints "true"
     }
 }
 

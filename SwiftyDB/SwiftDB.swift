@@ -18,16 +18,24 @@ internal class swiftyDb : SwiftyDb {
     //@nonobjc
     static let defaultDB : swiftyDb = swiftyDb.init(databaseName: "SwiftyDB")
     
+    /** A cache containing existing table names */
+    internal var existingTables: Set<String> = []
+    
     internal let queue: DispatchQueue = DispatchQueue(label: "swiftdb write or read queue", attributes: [])
     
     internal let database : DatabaseConnection
     
-    /** A cache containing existing table names */
-    internal var existingTables: Set<String> = []
+    internal var operationInQ : Bool{
+        return true
+    }
     
+    internal init(database : DatabaseConnection){
+        self.database = database
+    }
     /** Create a database queue for the database at the provided path */
-    public init(absPath: String) {
-        database = DatabaseConnection(path: absPath)
+    public convenience init(absPath: String) {
+        let db = DatabaseConnection(path: absPath)
+        self.init(database:db)
     }
     public convenience init(databaseName: String) {
         let documentsDir : String = NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0]

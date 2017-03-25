@@ -11,10 +11,7 @@ import Foundation
 //a declaration cannot be both 'final' and 'dynamic'
 //This issue arises because Swift is trying to generate a dynamic accessor for the static property for Obj-C compatibility, since the class inherits from NSObject.
 //If your project is in Swift only, rather than using a var accessor you can avoid the issue via the @nonobjc attribute in Swift 2.0
-//extension SwiftyDB  {
-//@nonobjc
-//    static let defaultDB : SwiftyDB = SwiftyDB.init(databaseName: "SwiftyDB")
-//}
+ 
 
 
 extension swiftyDb  {

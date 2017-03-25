@@ -8,18 +8,31 @@
 import Foundation
 
 //// TODO: Allow queues working on different databases at the same time
-//private let _queue: dispatch_queue_t = dispatch_queue_create("TinySQLiteQueue", nil)
 
+internal class swiftyDbTxn : swiftyDb {
+    fileprivate init(swiftyDb: swiftyDb){
+        super.init(database: swiftyDb.database)
+        self.existingTables = swiftyDb.existingTables
+    }
+    internal override var operationInQ : Bool{
+        return false
+    }
+    //internal override var existingTables: Set<String> = []
+    //数据会在txn完成之后丢失。这是正确的
+    //为什么不把这个代理到db里面去呢？因为这是一个txn，如果代理进去可能会导致数据错误。
+    //如果兴建表了，但这个txn最终失败, db里面的数据就有问题了。所以最好的办法是不要修改原来的数据，
+    //等这个txn成功了，其他地方再去判断无非就是在查下表而已。
+}
 
 extension swiftyDb  {
-    
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
+        //transaction in transaction
         do{
             try sync {(database) in
                 do {
                     try database.database.beginTransaction()
-                    try block(self)
+                    try block(swiftyDbTxn(swiftyDb:self))
                     try database.database.endTransaction()
                 } catch _ {
                     try database.database.rollback()
@@ -32,28 +45,24 @@ extension swiftyDb  {
     }
     /** Execute synchronous queries on the database in a sequential queue */
     internal func sync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
-       
         /* Run the query in a sequential queue to avoid threading related problems */
-  
-        
-        #if false
-            try block(self) 
-      #else
-        var thrownError: Error?
-        queue.sync { () -> Void in
-            do {
-                try block(self)
-            } catch let error {
-                thrownError = error
+        if !operationInQ{
+            try block(self)
+        }else{
+            var thrownError: Error?
+            queue.sync { () -> Void in
+                do {
+                    try block(self)
+                } catch let error {
+                    thrownError = error
+                }
+            }
+            /* If an error was thrown during execution, rethrow it */
+            // TODO: Improve the process of passing along the error
+            guard thrownError == nil else {
+                throw thrownError!
             }
         }
-        
-        /* If an error was thrown during execution, rethrow it */
-        // TODO: Improve the process of passing along the error
-        guard thrownError == nil else {
-            throw thrownError!
-        }
-        #endif
     }
 }
 
@@ -124,7 +133,7 @@ extension swiftyDb  {
                 }
                 
                 Swift.print("query: \(query)")
-                Swift.print("results: \(results.count)") 
+                Swift.print("results: \(results.count)")
                 
                 try statement.finalize()
             }
@@ -200,9 +209,9 @@ extension swiftyDb  {
         //        try database{ (database) -> Void in
         //        }
         do {
-//            if !(tableExistsForName(object.tableName())) {
-//                createTableByObject(object)
-//            }
+            //            if !(tableExistsForName(object.tableName())) {
+            //                createTableByObject(object)
+            //            }
             self.checkOrCreateTable(object)
             
             let insertStatement = StatementGenerator.insertStatementForType(object, update: update)
@@ -226,9 +235,9 @@ extension swiftyDb  {
     
     public func addObject<S: Storable> (_ object: S, _ update: Bool = true) -> Result<Bool> {
         var resut : Result<Bool> = Result.success(true)
-       // try! sync { (database) -> Void in
+        try! sync { (database) -> Void in
             resut = self.addObjectInner(object, update:update)
-      //  }
+        }
         return resut
     }
     //    public func addObjects <S: Storable> (_ object: S, _ moreObjects: S...) -> Result<Bool> {
@@ -254,7 +263,7 @@ extension swiftyDb  {
     }
     
     public func deleteObjectsForType (_ type: Storable, _ filter: Filter? = nil) -> Result<Bool> {
-        return self.deleteObjectsForTableName(type.tableName(), filter as! Filter? )
+        return self.deleteObjectsForTableName(type.tableName(), filter)
     }
     internal func deleteObjectsForTableName (_ tableName: String, _ filter: Filter? = nil) -> Result<Bool> {
         do {
@@ -279,7 +288,7 @@ extension swiftyDb {
     public func query(_ sql: String, _ data: SqlValues? = nil, _ cb:((StatementData)->Void)?=nil){
         do {
             try database.query(sql, data, cb)
-        } catch let _ {
+        } catch _ {
         }
     }
     public func update(_ statement: String, _ data: SqlValues? = nil)-> Result<Bool>{

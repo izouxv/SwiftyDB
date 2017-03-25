@@ -21,7 +21,11 @@ internal class swiftyDb : SwiftyDb {
     /** A cache containing existing table names */
     internal var existingTables: Set<String> = []
     
-    internal let queue: DispatchQueue = DispatchQueue(label: "swiftdb write or read queue", attributes: [])
+    
+    lazy var queue: DispatchQueue = {
+        return DispatchQueue(label: "swiftdb write or read queue", attributes: [])
+    }()
+//    internal let queue: DispatchQueue = DispatchQueue(label: "swiftdb write or read queue", attributes: [])
     
     internal let database : DatabaseConnection
     
@@ -47,7 +51,7 @@ internal class swiftyDb : SwiftyDb {
     public convenience init(userPath: String) {
         let  path1 = "\(userPath).sqlite"
         self.init(absPath:path1)
-    } 
+    }
 }
 
 

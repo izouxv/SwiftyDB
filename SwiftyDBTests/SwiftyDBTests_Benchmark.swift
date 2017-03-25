@@ -53,17 +53,6 @@ class SwiftXDb_Benchmark: XCTestCase {
             XCTAssertTrue(ret.value?[0].num == object.primaryKey)
         }
     }
-    
-    func testClose(){
-        var success = false
-        let closure = { ( flag: inout Bool) -> () in
-            flag = true
-            print(flag)
-        }
-        
-        closure(&success)  //prints "true"
-        print(success)     //prints "true"
-    }
 }
 
 /*

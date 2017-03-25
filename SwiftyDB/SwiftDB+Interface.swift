@@ -70,8 +70,6 @@ public protocol SwiftyDb{
     func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
     
     //can nested
-//    func transaction(_ block:@escaping ((SwiftyDb, _:inout Bool) throws -> Void)) ->Bool
-//    func transaction(_ block: @escaping ((SwiftyDb, _:inout Bool) throws -> Void)) ->Bool
     func transaction(_ block: @escaping (( _ db: SwiftyDb, _ rollback: inout Bool) throws -> Void)) ->Bool
     
     func addObject<S: Storable> (_ object: S,_ update: Bool) -> Result<Bool>

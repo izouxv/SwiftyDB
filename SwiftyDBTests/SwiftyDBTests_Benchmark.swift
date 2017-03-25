@@ -19,7 +19,7 @@ class SwiftXDb_Benchmark: XCTestCase {
     
     override func setUp() {
         //每个函数的执行都会调用这个
-        database = SwiftXDb(databaseName: "test_database")
+        database = SwiftXDb(databaseName: "test_databa123123se")
         super.setUp()
     }
     override func tearDown() {
@@ -34,13 +34,14 @@ class SwiftXDb_Benchmark: XCTestCase {
             object.num = NSNumber(value:i)
             
             let ok = database.transaction({(db:SwiftyDb) in
-                db.addObject(object, true).isSuccess
+                let suc = db.addObject(object, true).isSuccess
+                XCTAssertTrue(suc == true)
             })
-            XCTAssertTrue(ok == true) 
+            XCTAssertTrue(ok == true)
         }
     }
     
-    func testGet(){ 
+    func testGet(){
         for i in 0..<maxItem{
             let object = TestClassSimple()
             object.primaryKey = NSNumber(value:i)
@@ -55,39 +56,39 @@ class SwiftXDb_Benchmark: XCTestCase {
 }
 
 /*
-extension SwiftXDb_Property{
-    func testProperty() {
-        let object = TestClass()
-        object.loadSampleData()
-        self.measure() {
-            for _ in 0...100{
-                _=PropertyData.validPropertyDataForObject(object)
-            }
-        }
-    }
-    func testProperty_MirrorChildren() {
-        let object = TestClass()
-        object.loadSampleData()
-        self.measure() {
-            for _ in 0...100{
-                for property in Mirror(reflecting: object).children {
-                    //   print("name: \(property.label) type: \(type(of: property.value)) value: \(property.value)")
-                }
-            }
-        }
-    }
-    func testProperty_Mirror() {
-        let object = TestClass()
-        object.loadSampleData()
-        self.measure() {
-            for _ in 0...100{
-                Mirror(reflecting: object)
-            }
-        }
-    }
-}
-
-*/
+ extension SwiftXDb_Property{
+ func testProperty() {
+ let object = TestClass()
+ object.loadSampleData()
+ self.measure() {
+ for _ in 0...100{
+ _=PropertyData.validPropertyDataForObject(object)
+ }
+ }
+ }
+ func testProperty_MirrorChildren() {
+ let object = TestClass()
+ object.loadSampleData()
+ self.measure() {
+ for _ in 0...100{
+ for property in Mirror(reflecting: object).children {
+ //   print("name: \(property.label) type: \(type(of: property.value)) value: \(property.value)")
+ }
+ }
+ }
+ }
+ func testProperty_Mirror() {
+ let object = TestClass()
+ object.loadSampleData()
+ self.measure() {
+ for _ in 0...100{
+ Mirror(reflecting: object)
+ }
+ }
+ }
+ }
+ 
+ */
 
 
 

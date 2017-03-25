@@ -69,7 +69,7 @@ public protocol SwiftyDb{
     func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool
     func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
     
-    //by_zouxu TODO 每一个事务都需要一个实例，然后放Q里面。然后执行
+    //can nested
     func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool
     
     func addObject<S: Storable> (_ object: S,_ update: Bool) -> Result<Bool>
@@ -81,7 +81,6 @@ public protocol SwiftyDb{
     func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
-//    func with(_ obj: Storable)->Filter 
 }
 
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4215672F1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4215672E1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift */; };
 		4215A5D11DFA5DB30098830A /* OCBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4215A5D01DFA5DB30098830A /* OCBase.m */; };
 		4215A5D31DFA5E680098830A /* SwiftyDBTests_BaseOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4215A5D21DFA5E680098830A /* SwiftyDBTests_BaseOC.swift */; };
 		422472B81E8501A200FA0FCC /* SwiftyDBTests_Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422472B71E8501A200FA0FCC /* SwiftyDBTests_Benchmark.swift */; };
@@ -75,6 +76,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4215672E1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_NestedTransaction.swift; sourceTree = "<group>"; };
 		4215A5CF1DFA5DB30098830A /* OCBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBase.h; sourceTree = "<group>"; };
 		4215A5D01DFA5DB30098830A /* OCBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBase.m; sourceTree = "<group>"; };
 		4215A5D21DFA5E680098830A /* SwiftyDBTests_BaseOC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_BaseOC.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				422472B71E8501A200FA0FCC /* SwiftyDBTests_Benchmark.swift */,
+				4215672E1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift */,
 				42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */,
 				42F9AB291E4D4BC8004E9EFB /* SwiftyDBTests_Filter.swift */,
 				427D4C601E4DB77100D4D285 /* SwiftyDBTests_Migrate.swift */,
@@ -371,6 +374,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4215672F1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift in Sources */,
 				427D4C591E4D9C6000D4D285 /* TestClass.swift in Sources */,
 				427D4C5C1E4DAAC500D4D285 /* DynamicRetrievalSpec.swift in Sources */,
 				427D4C581E4D9C3900D4D285 /* Tests.swift in Sources */,

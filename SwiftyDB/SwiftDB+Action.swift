@@ -16,7 +16,7 @@ internal class swiftyDbTxn : swiftyDb {
     }
     internal override var transactioning : Bool{
         return true
-    }
+    } 
     //internal override var existingTables: Set<String> = []
     //数据会在txn完成之后丢失。这是正确的
     //为什么不把这个代理到db里面去呢？因为这是一个txn，如果代理进去可能会导致数据错误。
@@ -60,7 +60,7 @@ extension swiftyDb  {
     public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
         do{
             if transactioning{//transaction in transaction
-                let startName : String = UUID().uuidString
+                let startName : String = "POINT\(arc4random())"//UUID().uuidString
                 do {
                     try database.startSavepoint(startName)
                     try block(self)

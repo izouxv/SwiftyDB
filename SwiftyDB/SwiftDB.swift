@@ -47,10 +47,7 @@ internal class swiftyDb : SwiftyDb {
     public convenience init(userPath: String) {
         let  path1 = "\(userPath).sqlite"
         self.init(absPath:path1)
-    }
-    deinit {
-        self.close()
-    }
+    } 
 }
 
 
@@ -66,7 +63,6 @@ extension swiftyDb{
     public func close(){
         try! self.database.close()
     }
-    
 }
 
 extension swiftyDb{

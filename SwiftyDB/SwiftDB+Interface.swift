@@ -81,6 +81,14 @@ public protocol SwiftyDb{
     func dataFor<S: Storable> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[[String: Value?]]>
     func objectsFor<S> (_ obj: S,_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     
+    /*
+    //UPDATE COMPANY SET ADDRESS = 'Texas' WHERE ID = 6;
+    //UPDATE COMPANY SET ADDRESS = 'Texas', SALARY = 20000.00;
+    //按条件批量更新
+    func updateObjectEles (_ type: Storable,_ data:[String:Any],_ filter: Filter?) -> Result<Bool>
+    //查询出来制定的属性,好像可以用SQL的query
+    func objectsElesFor<S> (_ obj: S,_ names:[String],_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
+    */
 //    func with(_ obj: Storable)->Filter 
 }
 

@@ -268,7 +268,7 @@ extension DatabaseConnection {
     }
     
     /** End an ongoing transaction */
-    public  func endTransaction() throws {
+    public  func endTransaction() throws {//END TRANSACTION is an alias for COMMIT.
         try self.update("END TRANSACTION")
     }
     

@@ -25,8 +25,8 @@ internal class swiftyDb : SwiftyDb {
     
     internal let database : DatabaseConnection
     
-    internal var operationInQ : Bool{
-        return true
+    internal var transactioning : Bool{//one trancation in same db queue
+        return false
     }
     
     internal init(database : DatabaseConnection){

@@ -261,10 +261,9 @@ internal class DatabaseConnection {
 
 // MARK: - Transactions
 extension DatabaseConnection {
-    
     /** Begin a transaction */
     public  func beginTransaction() throws {
-        try self.update("BEGIN TRANSACTION")
+        try self.update("BEGIN TRANSACTION")//begin deferred transaction, begin exclusive transaction
     }
     
     /** End an ongoing transaction */
@@ -275,6 +274,18 @@ extension DatabaseConnection {
     /** Rollback a transaction */
     public func rollback() throws {
         try self.update("ROLLBACK TRANSACTION")
+    }
+}
+
+extension DatabaseConnection {
+    public  func startSavepoint(_ name : String) throws {
+        try self.update("SAVEPOINT \(name);")
+    }
+    public  func releaseSavepoint(_ name : String) throws {
+        try self.update("RELEASE SAVEPOINT \(name);")
+    }
+    public  func rollbackSavepoint(_ name : String) throws {
+        try self.update("ROLLBACK TRANSACTION TO SAVEPOINT \(name);")
     }
 }
 

@@ -14,8 +14,8 @@ internal class swiftyDbTxn : swiftyDb {
         super.init(database: swiftyDb.database)
         self.existingTables = swiftyDb.existingTables
     }
-    internal override var operationInQ : Bool{
-        return false
+    internal override var transactioning : Bool{
+        return true
     }
     //internal override var existingTables: Set<String> = []
     //数据会在txn完成之后丢失。这是正确的
@@ -24,18 +24,59 @@ internal class swiftyDbTxn : swiftyDb {
     //等这个txn成功了，其他地方再去判断无非就是在查下表而已。
 }
 
+
+/*
+ //https://www.drupal.org/node/669794
+ try {
+ $txn = db_transaction(); // BEGIN;
+ db_insert('node')
+ ->values($values);
+ ->execute();
+ 
+ try {
+ $txn2 = db_transaction(); // SAVEPOINT savepoint_1;
+ 
+ db_insert('node')
+ ->values($values2);
+ ->execute();
+ // Commit second transaction.
+ unset($txn2); // RELEASE SAVEPOINT savepoint_1;
+ 
+ }
+ catch (Exception $e) {
+ $txn2->rollback(); // ROLLBACK TO SAVEPOINT savepoint_1;
+ }
+ 
+ // Commit first transaction.
+ unset($txn); // COMMIT
+ }
+ catch (Exception $e) {
+ $txn->rollback(); // ROLLBACK;
+ }
+ */
+
 extension swiftyDb  {
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDb) throws -> Void)) ->Bool {
-        //transaction in transaction
         do{
-            try sync {(database) in
+            if transactioning{//transaction in transaction
+                let startName : String = UUID().uuidString
                 do {
-                    try database.database.beginTransaction()
-                    try block(swiftyDbTxn(swiftyDb:self))
-                    try database.database.endTransaction()
+                    try database.startSavepoint(startName)
+                    try block(self)
+                    try database.releaseSavepoint(startName)
                 } catch _ {
-                    try database.database.rollback()
+                    try database.rollbackSavepoint(startName)
+                }
+            }else{
+                try sync {(database) in
+                    do {
+                        try database.database.beginTransaction()
+                        try block(swiftyDbTxn(swiftyDb:self))
+                        try database.database.endTransaction()
+                    } catch _ {
+                        try database.database.rollback()
+                    }
                 }
             }
         } catch _ {
@@ -46,7 +87,7 @@ extension swiftyDb  {
     /** Execute synchronous queries on the database in a sequential queue */
     internal func sync(_ block: @escaping ((_ database: swiftyDb) throws -> Void)) throws {
         /* Run the query in a sequential queue to avoid threading related problems */
-        if !operationInQ{
+        if transactioning{
             try block(self)
         }else{
             var thrownError: Error?
@@ -236,7 +277,7 @@ extension swiftyDb  {
     public func addObject<S: Storable> (_ object: S, _ update: Bool = true) -> Result<Bool> {
         var resut : Result<Bool> = Result.success(true)
         try! sync { (database) -> Void in
-            resut = self.addObjectInner(object, update:update)
+            resut = database.addObjectInner(object, update:update)
         }
         return resut
     }

@@ -58,8 +58,8 @@ class SwiftXDb_NestedTransaction: XCTestCase {
     
     func testNestedTransaction_HalfDone(){
         let database = SwiftXDbReset(databaseName: "test_databasesfd")
-        let ok0 = database.transaction { (db1:SwiftyDb, rollback:inout Bool) in
-            let ok1 = db1.addObjects([object(10, 10)], true).isSuccess
+        let ok0 = database.transaction {(db1:SwiftyDb, rollback:inout Bool) in
+            let ok1 = db1.addObjects([object(10, 10),object(11, 11)], true).isSuccess
             XCTAssertTrue(ok1 == true)
             let ok2 = db1.transaction({ (db2:SwiftyDb, rollback:inout Bool) in
                 let ok3 = db1.addObject(object(20, 20), true).isSuccess
@@ -80,9 +80,9 @@ class SwiftXDb_NestedTransaction: XCTestCase {
         let ret = database.objectsFor(TestClassSimple())
         XCTAssertTrue(ret.isSuccess == true)
         let items = ret.value
-        XCTAssertTrue(items!.count == 2)
+        XCTAssertTrue(items!.count == 3)
         let names : Set<Int> = Set(items!.map{Int($0.primaryKey)})
-        XCTAssertTrue(names == Set<Int>([10,20]))
+        XCTAssertTrue(names == Set<Int>([10,11,20]))
     }
 }
 

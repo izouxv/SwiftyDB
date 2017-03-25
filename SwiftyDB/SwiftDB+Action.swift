@@ -58,7 +58,6 @@ internal class swiftyDbTxn : swiftyDb {
 extension swiftyDb  {
     /** Execute a synchronous transaction on the database in a sequential queue */
     public func transaction(_ block: @escaping ((_ db: SwiftyDb,_ rollback:inout Bool) throws -> Void)) ->Bool{
-        //    public func transaction(_ block: @escaping ((_ db: SwiftyDb, _ rollback : inout Bool) throws -> Void)) ->Bool {
         do{
             var rollback = false
             if transactioning{//transaction in transaction

@@ -71,7 +71,7 @@ class SwiftXDbFilter: SwiftyDBSpec {
                     let value = database.dataFor(TestClassSimple(), filter).value
                     Swift.print("value: \(value?.description)")
                     expect(value?.count) == 1
-                } 
+                }
             }
         }
     }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4215672F1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4215672E1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift */; };
+		421567311E8753E800C0C3FC /* SwiftyDBTests_Basic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421567301E8753E800C0C3FC /* SwiftyDBTests_Basic.swift */; };
 		4215A5D11DFA5DB30098830A /* OCBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 4215A5D01DFA5DB30098830A /* OCBase.m */; };
 		4215A5D31DFA5E680098830A /* SwiftyDBTests_BaseOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4215A5D21DFA5E680098830A /* SwiftyDBTests_BaseOC.swift */; };
 		422472B81E8501A200FA0FCC /* SwiftyDBTests_Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422472B71E8501A200FA0FCC /* SwiftyDBTests_Benchmark.swift */; };
@@ -77,6 +78,7 @@
 
 /* Begin PBXFileReference section */
 		4215672E1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_NestedTransaction.swift; sourceTree = "<group>"; };
+		421567301E8753E800C0C3FC /* SwiftyDBTests_Basic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_Basic.swift; sourceTree = "<group>"; };
 		4215A5CF1DFA5DB30098830A /* OCBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCBase.h; sourceTree = "<group>"; };
 		4215A5D01DFA5DB30098830A /* OCBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OCBase.m; sourceTree = "<group>"; };
 		4215A5D21DFA5E680098830A /* SwiftyDBTests_BaseOC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftyDBTests_BaseOC.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 		428117F61D0E56D800DD680B /* SwiftyDBTests */ = {
 			isa = PBXGroup;
 			children = (
+				421567301E8753E800C0C3FC /* SwiftyDBTests_Basic.swift */,
 				422472B71E8501A200FA0FCC /* SwiftyDBTests_Benchmark.swift */,
 				4215672E1E8659DA00C0C3FC /* SwiftyDBTests_NestedTransaction.swift */,
 				42CB29321E7A35880015436B /* SwiftyDBTests_MutiThread.swift */,
@@ -378,6 +381,7 @@
 				427D4C591E4D9C6000D4D285 /* TestClass.swift in Sources */,
 				427D4C5C1E4DAAC500D4D285 /* DynamicRetrievalSpec.swift in Sources */,
 				427D4C581E4D9C3900D4D285 /* Tests.swift in Sources */,
+				421567311E8753E800C0C3FC /* SwiftyDBTests_Basic.swift in Sources */,
 				427D4C5D1E4DAACB00D4D285 /* RetrievedDataSpec.swift in Sources */,
 				427D4C5B1E4DAA8D00D4D285 /* DatabaseManipulationSpec.swift in Sources */,
 				427D4C611E4DB77100D4D285 /* SwiftyDBTests_Migrate.swift in Sources */,

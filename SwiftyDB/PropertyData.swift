@@ -184,7 +184,7 @@ internal struct PropertyData {
         
         let mirror = Mirror(reflecting: property.value)
         isOptional = mirror.displayStyle == .optional
-        value = unwrap(property.value) as? Value
+        value = PropertyData.unwrap(property.value) as? Value
         
         type = typeForMirror(mirror)
     }
@@ -247,7 +247,7 @@ internal struct PropertyData {
      
      */
     
-    internal func unwrap(_ value: Any) -> Any? {
+    internal static func unwrap(_ value: Any) -> Any? {
         let mirror = Mirror(reflecting: value)
         
         if mirror.displayStyle == .collection {

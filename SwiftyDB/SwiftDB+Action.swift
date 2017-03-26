@@ -249,8 +249,14 @@ extension swiftyDb {
 }
 
 
+func +=<U,T>( lhs: inout [U:T], rhs: [U:T]) {
+    for (key, value) in rhs {
+        lhs[key] = value
+    }
+}
 
 extension swiftyDb  {
+    
     //by_zouxu need compare add & update
     internal func addObjectInner <S: Storable> (_ object: S, update: Bool = true) -> Result<Bool> {
         //        guard objects.count > 0 else {
@@ -283,7 +289,6 @@ extension swiftyDb  {
         }
         return Result.success(true)
     }
-    
     public func addObject<S: Storable> (_ object: S, _ update: Bool = true) -> Result<Bool> {
         var resut : Result<Bool> = Result.success(true)
         try! sync { (database) -> Void in
@@ -299,7 +304,7 @@ extension swiftyDb  {
             return Result.success(true)
         }
         do{
-            try self.transaction { (db:SwiftyDb, rollback:inout Bool) in
+            try self.transaction {(db:SwiftyDb, rollback:inout Bool) in
                 let db = db as! swiftyDb
                 for object in objects {
                     let result = db.addObjectInner(object, update: update)
@@ -314,7 +319,29 @@ extension swiftyDb  {
         }
         return Result.success(true)
     }
-    
+    public func updateObjectEles (_ type: Storable,_ data:[String:Any],_ filter: Filter?) -> Result<Bool>{
+        return updateObjectElesForTableName(type.tableName(), data, filter)
+    }
+    internal func updateObjectElesForTableName (_ tableName: String, _ data:[String:Any],_ filter: Filter?=nil) -> Result<Bool> {
+        do {
+            guard tableExistsForName(tableName) else {
+                return Result.success(true)
+            }
+            
+            let updateStatement = StatementGenerator.updateStatementForName(tableName, data, filter)
+            var mapKV : MapSQLiteValues = filter?.parameters() ?? [:]
+            mapKV+=data as! [String : SQLiteValue?]
+            
+            try sync { (database) -> Void in
+                try database.database.prepare(updateStatement)
+                    .executeUpdate(SqlValues(mapKV))
+                    .finalize()
+            }
+        } catch let error {
+            return .Error(error)
+        }
+        return .success(true)
+    }
     public func deleteObjectsForType (_ type: Storable, _ filter: Filter? = nil) -> Result<Bool> {
         return self.deleteObjectsForTableName(type.tableName(), filter)
     }

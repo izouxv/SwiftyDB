@@ -81,18 +81,38 @@ internal class StatementGenerator {
     }
     
     internal class func deleteStatementForName(_ tableName: String, matchingFilter filtex: Filter?) -> String {
-        
-//        let tableName = type.tableName()
-        
         var statement = "DELETE FROM \(tableName)"
         
         guard filtex != nil else {
             return statement
         }
-                
+        
         statement += " \(filtex!.whereStatement())"
         
-        statement += filtex!.extraStatement()
+        //        statement += filtex!.extraStatement()
+        
+        return statement
+    }
+    
+    internal class func updateStatementForName(_ tableName: String,_ data: [String:Any], _  filtex: Filter?) -> String {
+//        
+//        let kvStr = data
+//            .map{ key, value in "\(key) = \(PropertyData.unwrap(value) as? Value)"}
+//            .joined(separator: ", ")
+        
+        let kvStr = data
+            .map{key, value in "\(key) = :\(key)"}
+            .joined(separator: ", ")
+        
+        var statement = "UPDATE \(tableName) SET \(kvStr)"
+        
+        guard filtex != nil else {
+            return statement
+        }
+        
+        statement += " \(filtex!.whereStatement())"
+        
+        Swift.print("statment: \(statement)")
         
         return statement
     }

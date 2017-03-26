@@ -118,7 +118,7 @@ extension Filter {
         
         fileprivate let uniqueifier: UInt32 = arc4random()
         
-        var uniquePropertyName: String {
+        var uniquePropertyName: String {//where bind name, it is a kv pair
             return "\(propertyName)\(uniqueifier)"
         }
         

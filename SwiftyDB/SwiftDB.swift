@@ -21,7 +21,6 @@ internal class swiftyDb : SwiftyDb {
     /** A cache containing existing table names */
     internal var existingTables: Set<String> = []
     
-    
     lazy var queue: DispatchQueue = {
         return DispatchQueue(label: "swiftdb write or read queue", attributes: [])
     }()

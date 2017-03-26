@@ -12,7 +12,7 @@ import Foundation
 internal class swiftyDbTxn : swiftyDb {
     fileprivate init(swiftyDb: swiftyDb){
         super.init(database: swiftyDb.database)
-        self.existingTables = swiftyDb.existingTables
+        self.existingTables = Set<String>(swiftyDb.existingTables.map{$0})
     }
     internal override var transactioning : Bool{
         return true

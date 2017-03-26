@@ -95,11 +95,7 @@ internal class StatementGenerator {
     }
     
     internal class func updateStatementForName(_ tableName: String,_ data: [String:Any], _  filtex: Filter?) -> String {
-//        
-//        let kvStr = data
-//            .map{ key, value in "\(key) = \(PropertyData.unwrap(value) as? Value)"}
-//            .joined(separator: ", ")
-        
+
         let kvStr = data
             .map{key, value in "\(key) = :\(key)"}
             .joined(separator: ", ")

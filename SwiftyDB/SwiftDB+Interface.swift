@@ -84,7 +84,7 @@ public protocol SwiftyDb{
     func updateObjectEles (_ type: Storable,_ data:[String:Any],_ filter: Filter?) -> Result<Bool>
     /*
     func updateObjectEles (_ type: Storable,_ data:[String:Any],_ filter: Filter?) -> Result<Bool>
-    //查询出来制定的属性,好像可以用SQL的query
+    //查询出来指定的属性,好像可以用SQL的query
     func objectsElesFor<S> (_ obj: S,_ names:[String],_ filter: Filter? , _ checkTableExist:Bool) -> Result<[S]> where S: Storable
     */
 //    func with(_ obj: Storable)->Filter 

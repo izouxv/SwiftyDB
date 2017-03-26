@@ -69,7 +69,7 @@ public protocol SwiftyDb{
     func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool
     func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
     
-    //can nested
+    //can nested. db in transaction MUST in one Q
     func transaction(_ block: @escaping (( _ db: SwiftyDb, _ rollback: inout Bool) throws -> Void)) ->Bool
     
     func addObject<S: Storable> (_ object: S,_ update: Bool) -> Result<Bool>

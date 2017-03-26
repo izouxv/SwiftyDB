@@ -333,9 +333,10 @@ extension swiftyDb  {
             mapKV+=data as! [String : SQLiteValue?]
             
             try sync { (database) -> Void in
-                try database.database.prepare(updateStatement)
-                    .executeUpdate(SqlValues(mapKV))
-                    .finalize()
+                database.update(updateStatement, SqlValues(mapKV))
+//                try database.database.prepare(updateStatement)
+//                    .executeUpdate(SqlValues(mapKV))
+//                    .finalize()
             }
         } catch let error {
             return .Error(error)

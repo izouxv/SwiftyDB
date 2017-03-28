@@ -85,6 +85,27 @@ class ViewController: UIViewController {
         }
     }
     
+    func testAddInTxn(_ maxItem: Int){
+        let time1 = timestamp()
+        defer {
+            let takeTime = timestamp() - time1
+            let timeStr = "\(takeTime/1000).\(takeTime%1000)"
+            LogOut("add in txn \(maxItem) take \(timeStr) second")
+        }
+        
+        let ok = database.transaction({(db:SwiftyDb, rollback:inout Bool) in
+        for ii in 0..<maxItem{
+            let i = ii+1000000
+            let object = TestClassSimple()
+            object.primaryKey = NSNumber(value:i)
+            object.num = NSNumber(value:i)
+            
+                let suc = db.addObject(object, true).isSuccess
+            
+        }
+            })
+    }
+    
     func testGet(_ maxItem: Int){
         let time1 = timestamp()
         defer {

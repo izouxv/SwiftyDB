@@ -56,14 +56,18 @@ class ViewController: UIViewController {
         database = SwiftXDb(databaseName: "test_databa123123se")
         let num = Int(numInput.text!)!
       
-        testAddInTxn(num)
-        testGet(num)
-        testAdd(num)
         
+        DispatchQueue.global().async{
+        self.testAddInTxn(num)
+        self.testGet(num)
+        self.testAdd(num)
+        }
     }
     
     func LogOut(_ string : String){
-        statTextView.text = statTextView.text + string + "\n"
+        DispatchQueue.main.async {
+            self.statTextView.text = self.statTextView.text + string + "\n"
+        }
     }
     
     var database : SwiftyDb!

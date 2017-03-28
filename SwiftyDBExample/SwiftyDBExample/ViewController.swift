@@ -56,8 +56,10 @@ class ViewController: UIViewController {
         database = SwiftXDb(databaseName: "test_databa123123se")
         let num = Int(numInput.text!)!
       
-        testAdd(num)
+        testAddInTxn(num)
         testGet(num)
+        testAdd(num)
+        
     }
     
     func LogOut(_ string : String){
@@ -74,14 +76,16 @@ class ViewController: UIViewController {
             LogOut("add \(maxItem) take \(timeStr) second")
         }
         
-        for i in 0..<maxItem{
+        for ii in 0..<maxItem{
+            let i = ii+1000000
+            
             let object = TestClassSimple()
             object.primaryKey = NSNumber(value:i)
             object.num = NSNumber(value:i)
             
-            let ok = database.transaction({(db:SwiftyDb, rollback:inout Bool) in
-                let suc = db.addObject(object, true).isSuccess
-            })
+           // let ok = database.transaction({(db:SwiftyDb, rollback:inout Bool) in
+                let suc = database.addObject(object, true).isSuccess
+           // })
         }
     }
     
@@ -94,8 +98,7 @@ class ViewController: UIViewController {
         }
         
         let ok = database.transaction({(db:SwiftyDb, rollback:inout Bool) in
-        for ii in 0..<maxItem{
-            let i = ii+1000000
+        for i in 0..<maxItem{
             let object = TestClassSimple()
             object.primaryKey = NSNumber(value:i)
             object.num = NSNumber(value:i)

@@ -15,7 +15,7 @@ import Nimble
 class SwiftXDb_Benchmark: XCTestCase {
     
     var database : swiftyDb!
-    var maxItem : Int = 10000
+    var maxItem : Int = 1000
     
     override func setUp() {
         //每个函数的执行都会调用这个

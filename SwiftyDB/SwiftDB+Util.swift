@@ -158,29 +158,29 @@ extension swiftyDb  {
         }
         
         switch propertyData.type {
-        case is Date.Type:    return row.dateForColumn(propertyData.name!) as? Value
-        case is Data.Type:    return row.dataForColumn(propertyData.name!) as? Value
-        case is NSNumber.Type:  return row.numberForColumn(propertyData.name!) as? Value
+        case is Date.Type:    return row.dateForColumn(propertyData.name!)
+        case is Data.Type:    return row.dataForColumn(propertyData.name!)
+        case is NSNumber.Type:  return row.numberForColumn(propertyData.name!)
             
-        case is String.Type:    return row.stringForColumn(propertyData.name!) as? Value
-        case is NSString.Type:  return row.nsstringForColumn(propertyData.name!) as? Value
-        case is Character.Type: return row.characterForColumn(propertyData.name!) as? Value
+        case is String.Type:    return row.stringForColumn(propertyData.name!)
+        case is NSString.Type:  return row.nsstringForColumn(propertyData.name!)
+        case is Character.Type: return row.characterForColumn(propertyData.name!)
             
-        case is Double.Type:    return row.doubleForColumn(propertyData.name!) as? Value
-        case is Float.Type:     return row.floatForColumn(propertyData.name!) as? Value
+        case is Double.Type:    return row.doubleForColumn(propertyData.name!)
+        case is Float.Type:     return row.floatForColumn(propertyData.name!)
             
-        case is Int.Type:       return row.integerForColumn(propertyData.name!) as? Value
-        case is Int8.Type:      return row.integer8ForColumn(propertyData.name!) as? Value
-        case is Int16.Type:     return row.integer16ForColumn(propertyData.name!) as? Value
-        case is Int32.Type:     return row.integer32ForColumn(propertyData.name!) as? Value
-        case is Int64.Type:     return row.integer64ForColumn(propertyData.name!) as? Value
-        case is UInt.Type:      return row.unsignedIntegerForColumn(propertyData.name!) as? Value
-        case is UInt8.Type:     return row.unsignedInteger8ForColumn(propertyData.name!) as? Value
-        case is UInt16.Type:    return row.unsignedInteger16ForColumn(propertyData.name!) as? Value
-        case is UInt32.Type:    return row.unsignedInteger32ForColumn(propertyData.name!) as? Value
-        case is UInt64.Type:    return row.unsignedInteger64ForColumn(propertyData.name!) as? Value
+        case is Int.Type:       return row.integerForColumn(propertyData.name!)
+        case is Int8.Type:      return row.integer8ForColumn(propertyData.name!)
+        case is Int16.Type:     return row.integer16ForColumn(propertyData.name!)
+        case is Int32.Type:     return row.integer32ForColumn(propertyData.name!)
+        case is Int64.Type:     return row.integer64ForColumn(propertyData.name!)
+        case is UInt.Type:      return row.unsignedIntegerForColumn(propertyData.name!)
+        case is UInt8.Type:     return row.unsignedInteger8ForColumn(propertyData.name!)
+        case is UInt16.Type:    return row.unsignedInteger16ForColumn(propertyData.name!)
+        case is UInt32.Type:    return row.unsignedInteger32ForColumn(propertyData.name!)
+        case is UInt64.Type:    return row.unsignedInteger64ForColumn(propertyData.name!)
             
-        case is Bool.Type:      return row.boolForColumn(propertyData.name!) as? Value
+        case is Bool.Type:      return row.boolForColumn(propertyData.name!)
             
         case is NSArray.Type:
             return NSKeyedUnarchiver.unarchiveObject(with: row.dataForColumn(propertyData.name!)!) as? NSArray

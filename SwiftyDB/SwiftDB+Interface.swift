@@ -53,7 +53,7 @@ public protocol MigrationOperationI{
 }
 
 public protocol MigrationProperties : Storable{
-    static func Migrate(_ verOld:Int, _ action:MigrationOperationI)
+    static func migrate(_ verOld:Int, _ action:MigrationOperationI)
 }
 
 public protocol SwiftyDb{
@@ -66,8 +66,8 @@ public protocol SwiftyDb{
     func rekey(_ key: String)throws
     
     //Migrate first : Check, second : Action
-    func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool
-    func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
+    func migrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool
+    func migrateAction(_ versionNew : Int, _ tables : [MigrationProperties])
     
     //can nested. db in transaction MUST in one Q
     func transaction(_ block: @escaping (( _ db: SwiftyDb, _ rollback: inout Bool) throws -> Void)) ->Bool

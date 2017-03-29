@@ -195,7 +195,7 @@ class TestMigrateVer1 : NSObject, MigrationProperties, TableName{
     static  func tableName()->String{
         return "testMigrate"
     }
-    static func Migrate(_ verOld:Int, _ action:MigrationOperationI){
+    static func migrate(_ verOld:Int, _ action:MigrationOperationI){
         if verOld < 1{
             _=action.remove("email").remove("indexeddd")
                 .migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in
@@ -218,7 +218,7 @@ class TestMigrateVer2 : NSObject, MigrationProperties, TableName{
     static  func tableName()->String{
         return "testMigrate"
     }
-    static func Migrate(_ verOld:Int, _ action:MigrationOperationI){
+    static func migrate(_ verOld:Int, _ action:MigrationOperationI){
         if verOld < 2{
             _=action.rename("address", "Address")
                 .migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in//version upgrade, and data will updata
@@ -241,9 +241,9 @@ class TestMigrateVer0_2 : NSObject, MigrationProperties, TableName{
     static  func tableName()->String{
         return "testMigrate"
     }
-    static func Migrate(_ verOld:Int, _ action:MigrationOperationI){
-        TestMigrateVer1.Migrate(verOld, action)
-        TestMigrateVer2.Migrate(verOld, action)
+    static func migrate(_ verOld:Int, _ action:MigrationOperationI){
+        TestMigrateVer1.migrate(verOld, action)
+        TestMigrateVer2.migrate(verOld, action)
     }
 }
 

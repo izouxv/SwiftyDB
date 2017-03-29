@@ -183,14 +183,14 @@ extension swiftyDb {
         }
         cb(tables, self)
     }
-    public func MigrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool{
+    public func migrateCheck(_ versionNew : Int, _ tables : [MigrationProperties])->Bool{
         var needMigrate = false
         self.tableInfos({(tables_sqlite: [String:sqlite_master],db: swiftyDb) in
             let old_version = db.user_version
             for item in tables{
                 if (tables_sqlite[item.tableName()] != nil){
                     let oper : MigrationInnerX =  MigrationPropertieOperation(db, item)
-                    type(of:item).Migrate(old_version,oper)
+                    type(of:item).migrate(old_version,oper)
                     if oper.operationCount>0{
                         needMigrate = true
                         break
@@ -203,7 +203,7 @@ extension swiftyDb {
         })
         return needMigrate
     }
-    public func MigrateAction(_ versionNew : Int, _ tables : [MigrationProperties]){
+    public func migrateAction(_ versionNew : Int, _ tables : [MigrationProperties]){
         //TODO remove old db data which not in tables
         self.tableInfos({(tables_sqlite: [String:sqlite_master],db: swiftyDb) in
             let old_version = db.user_version
@@ -213,7 +213,7 @@ extension swiftyDb {
                 for item in tables{
                     if (tables_sqlite[item.tableName()] != nil){
                         let oper : MigrationInnerX =  MigrationPropertieOperation(sdb, item)
-                        type(of:item).Migrate(old_version,oper)
+                        type(of:item).migrate(old_version,oper)
                         oper.commit()
                     }else{
                         //craete table

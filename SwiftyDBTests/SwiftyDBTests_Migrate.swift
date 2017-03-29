@@ -34,7 +34,7 @@ class SwiftXDbMigrate: SwiftyDBSpec {
             var newVersion = 1
             context("migrate version 0->1") {
                 let database = SwiftXDb(databaseName: "test_database")
-                database.MigrateAction(newVersion, [TestMigrateVer1()])
+                database.migrateAction(newVersion, [TestMigrateVer1()])
                 
                 let fff : SwiftyDB.Filter = ["name": obj1.name]
                 let res = database.objectsFor(TestMigrateVer1(), fff)
@@ -46,7 +46,7 @@ class SwiftXDbMigrate: SwiftyDBSpec {
             newVersion = 2
             context("migrate version 1->2") {
                 let database = SwiftXDb(databaseName: "test_database")
-                database.MigrateAction(newVersion, [TestMigrateVer2()])
+                database.migrateAction(newVersion, [TestMigrateVer2()])
                 
                 let fff : SwiftyDB.Filter =  ["name": obj1.name]
                 let res = database.objectsFor(TestMigrateVer2(),fff)
@@ -69,10 +69,10 @@ class SwiftXDbMigrate: SwiftyDBSpec {
             context("migrate version 0->2") {
                 
                 let database = SwiftXDb(databaseName: "test_database")
-                let checkUpgrade = database.MigrateCheck(newVersion, [TestMigrateVer0_2()])
+                let checkUpgrade = database.migrateCheck(newVersion, [TestMigrateVer0_2()])
                 expect(checkUpgrade) == true
                 
-                database.MigrateAction(newVersion, [TestMigrateVer0_2()])
+                database.migrateAction(newVersion, [TestMigrateVer0_2()])
                 let fff : SwiftyDB.Filter =  ["name": obj1.name]
                 let res = database.objectsFor(TestMigrateVer2(), fff)
                 

@@ -7,45 +7,29 @@
 
 import Foundation
 
-internal enum SQLiteDatatype: String {
-    case Text       = "TEXT"
-    case Integer    = "INTEGER"
-    case Real       = "REAL"
-    case Blob       = "BLOB"
-    case Numeric    = "NUMERIC"
-    case Null       = "NULL"
-    
-    init?(type: Value.Type) {
-        switch type {
-        case is Int.Type, is Int8.Type, is Int16.Type, is Int32.Type, is Int64.Type, is UInt.Type, is UInt8.Type, is UInt16.Type, is UInt32.Type, is UInt64.Type, is Bool.Type:
-            self.init(rawValue: "INTEGER")
-        case is Double.Type, is Float.Type, is Date.Type:
-            self.init(rawValue: "REAL")
-        case is Data.Type:
-            self.init(rawValue: "BLOB")
-        case is NSNumber.Type:
-            self.init(rawValue: "NUMERIC")
-        case is String.Type, is NSString.Type, is Character.Type:
-            self.init(rawValue: "TEXT")
-        case is NSArray.Type, is NSDictionary.Type:
-            self.init(rawValue: "BLOB")
-        default:
-            fatalError("DSADSASA")
-        }
-    }
-}
-
 internal class StatementGenerator {
     
-    internal class func createTableStatementForTypeRepresentedByObject <S: Storable> (_ object: S) -> String {
-       // let tableName =  tableNameForType(S.self)
-        let tableName =   tableNameForObj(object)
+    //CREATE INDEX salary_index ON COMPANY (salary);
+    internal class func createTableIndex (_ object: Storable, _ name:String)throws -> String {
+        guard !keyWordSet.contains(name.uppercased()) else {
+            Swift.print("!!! [\(object.tableName())] has sqlKeyWork: [\(name)], you need rename")
+            throw SQLError.error
+        }
+        return "CREATE INDEX \(name)_index ON \(object.tableName()) \(name)"
+    }
+    
+    internal class func createTableStatementForTypeRepresentedByObject (_ object: Storable)throws -> String {
+        let tableName =  object.tableName() //  tableNameForObj(object)
         
         var statement = "CREATE TABLE " + tableName + " ("
         
         let items = PropertyData.validPropertyDataForObject(object)
         for i in 0..<items.count{
             let propertyData = items[i]
+            guard !keyWordSet.contains(propertyData.name!.uppercased()) else {
+                Swift.print("!!! [\(object.tableName())] has sqlKeyWork: [\(propertyData.name!)], you need rename")
+                throw SQLError.error
+            }
             statement += "\(propertyData.name!) \(SQLiteDatatype(type: propertyData.type!)!.rawValue)"
             statement += propertyData.isOptional ? "" : " NOT NULL"
             if i<items.count-1{
@@ -65,7 +49,7 @@ internal class StatementGenerator {
     }
     
     internal class func insertStatementForType(_ obj: Storable, update: Bool) -> String {
-        var statement = "INSERT OR " + (update ? "REPLACE" : "ABORT") + " INTO " + tableNameForObj(obj)
+        var statement = "INSERT OR " + (update ? "REPLACE" : "ABORT") + " INTO " + obj.tableName() // tableNameForObj(obj)
         
         let propertyData = PropertyData.validPropertyDataForObject(type(of:obj).init())
         
@@ -81,48 +65,65 @@ internal class StatementGenerator {
         return statement
     }
     
-    internal class func selectStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
-        
-        let tableName =  tableNameForObj(type)
+    internal class func selectStatementForTableName(_ tableName: String,_ filtex: Filter?) -> String {
         
         var statement = "SELECT ALL * FROM \(tableName)"
         
-        guard filter != nil else {
+        guard filtex != nil else {
             return statement
         }
         
-        statement += " " + filter!.whereStatement()
+        statement += " " + filtex!.whereStatement()
         
-        statement += " " + filter!.extraStatement()
+        statement += " " + filtex!.extraStatement()
         
         return statement
     }
     
-    internal class func deleteStatementForType(_ type: Storable, matchingFilter filter: Filter?) -> String {
-        
-        let tableName =  tableNameForObj(type)
-        
+    internal class func deleteStatementForName(_ tableName: String, matchingFilter filtex: Filter?) -> String {
         var statement = "DELETE FROM \(tableName)"
         
-        guard filter != nil else {
+        guard filtex != nil else {
             return statement
         }
-                
-        statement += " \(filter!.whereStatement())"
         
-        statement += filter!.extraStatement()
+        statement += " \(filtex!.whereStatement())"
+        
+        //        statement += filtex!.extraStatement()
         
         return statement
     }
     
-    
-    
-    /** Name of the table representing a class */
-//    fileprivate class func tableNameForType(_ type: Storable.Type) -> String {
-//        return String(describing: type)
-//    }
-    internal  class func tableNameForObj(_ obj: Storable) -> String {
-        return String(describing: type(of:obj))
+    internal class func updateStatementForName(_ tableName: String,_ data: [String:Any], _  filtex: Filter?) -> String {
+
+        let kvStr = data
+            .map{key, value in "\(key) = :\(key)"}
+            .joined(separator: ", ")
+        
+        var statement = "UPDATE \(tableName) SET \(kvStr)"
+        
+        guard filtex != nil else {
+            return statement
+        }
+        
+        statement += " \(filtex!.whereStatement())"
+        
+        Swift.print("statment: \(statement)")
+        
+        return statement
     }
-    
 }
+
+//extension StatementGenerator {
+//    /** Name of the table representing a class */
+//    internal  class func tableNameForObj(_ obj: Storable) -> String {
+//        return obj.tableName()
+////        return type(of:obj).tableName()
+////        if let tableName = type(of:obj).tableName(){
+////            return tableName
+////        }
+////        return String(describing: type(of:obj))
+//    }
+//}
+
+

@@ -7,8 +7,166 @@
 
 import Foundation
 
-/**
-*/
+//https://theswiftdev.com/2017/01/05/18-swift-gist-generic-allvalues-for-enums/
+protocol EnumCollection: Hashable {
+    static var allValues: [Self] { get }
+}
+extension EnumCollection {
+    static func cases() -> AnySequence<Self> {
+        typealias S = Self
+        return AnySequence { () -> AnyIterator<S> in
+            var raw = 0
+            return AnyIterator {
+                let current : Self = withUnsafePointer(to: &raw) { $0.withMemoryRebound(to: S.self, capacity: 1) { $0.pointee } }
+                guard current.hashValue == raw else { return nil }
+                raw += 1
+                return current
+            }
+        }
+    }
+    static var allValues: [Self] {
+        return Array(self.cases())
+    }
+}
+
+//judge table attr is correct
+public enum SqliteKeyWord : String, EnumCollection{
+    case
+    ABORT,
+    ACTION,
+    ADD,
+    AFTER,
+    ALL,
+    ALTER,
+    ANALYZE,
+    AND,
+    AS,
+    ASC,
+    ATTACH,
+    AUTOINCREMENT,
+    BEFORE,
+    BEGIN,
+    BETWEEN,
+    BY,
+    CASCADE,
+    CASE,
+    CAST,
+    CHECK,
+    COLLATE,
+    COLUMN,
+    COMMIT,
+    CONFLICT,
+    CONSTRAINT,
+    CREATE,
+    CROSS,
+    CURRENT_DATE,
+    CURRENT_TIME,
+    CURRENT_TIMESTAMP,
+    DATABASE,
+    DEFAULT,
+    DEFERRABLE,
+    DEFERRED,
+    DELETE,
+    DESC,
+    DETACH,
+    DISTINCT,
+    DROP,
+    EACH,
+    ELSE,
+    END,
+    ESCAPE,
+    EXCEPT,
+    EXCLUSIVE,
+    EXISTS,
+    EXPLAIN,
+    FAIL,
+    FOR,
+    FOREIGN,
+    FROM,
+    FULL,
+    GLOB,
+    GROUP,
+    HAVING,
+    IF,
+    IGNORE,
+    IMMEDIATE,
+    IN,
+    INDEX,
+    INDEXED,
+    INITIALLY,
+    INNER,
+    INSERT,
+    INSTEAD,
+    INTERSECT,
+    INTO,
+    IS,
+    ISNULL,
+    JOIN,
+    KEY,
+    LEFT,
+    LIKE,
+    LIMIT,
+    MATCH,
+    NATURAL,
+    NO,
+    NOT,
+    NOTNULL,
+    NULL,
+    OF,
+    OFFSET,
+    ON,
+    OR,
+    ORDER,
+    OUTER,
+    PLAN,
+    PRAGMA,
+    PRIMARY,
+    QUERY,
+    RAISE,
+    REFERENCES,
+    REGEXP,
+    REINDEX,
+    RELEASE,
+    RENAME,
+    REPLACE,
+    RESTRICT,
+    RIGHT,
+    ROLLBACK,
+    ROW,
+    SAVEPOINT,
+    SELECT,
+    SET,
+    TABLE,
+    TEMP,
+    TEMPORARY,
+    THEN,
+    TO,
+    TRANSACTION,
+    TRIGGER,
+    UNION,
+    UNIQUE,
+    UPDATE,
+    USING,
+    VACUUM,
+    VALUES,
+    VIEW,
+    VIRTUAL,
+    WHEN,
+    WHERE
+}
+
+internal var keyWordSet : Set<String> = {
+    let values = SqliteKeyWord.allValues
+    var keys : Set<String> = []
+    for item in values{
+        keys.insert(item.rawValue.uppercased())
+    }
+    return keys
+}()
+
+
+
+
 
 internal struct PropertyData {
     
@@ -26,7 +184,7 @@ internal struct PropertyData {
         
         let mirror = Mirror(reflecting: property.value)
         isOptional = mirror.displayStyle == .optional
-        value = unwrap(property.value) as? Value
+        value = PropertyData.unwrap(property.value) as? Value
         
         type = typeForMirror(mirror)
     }
@@ -38,6 +196,9 @@ internal struct PropertyData {
             }
             if mirror.displayStyle == .dictionary {
                 return NSDictionary.self
+            }
+            if mirror.displayStyle == .set {
+                return NSSet.self
             }
             return mirror.subjectType as? Value.Type
         }
@@ -72,7 +233,8 @@ internal struct PropertyData {
             
         case is Optional<NSArray>.Type:     return NSArray.self
         case is Optional<NSDictionary>.Type: return NSDictionary.self
-
+        case is Optional<NSSet>.Type:       return NSSet.self
+            
         default:                            return nil
         }
     }
@@ -85,7 +247,7 @@ internal struct PropertyData {
      
      */
     
-    internal func unwrap(_ value: Any) -> Any? {
+    internal static func unwrap(_ value: Any) -> Any? {
         let mirror = Mirror(reflecting: value)
         
         if mirror.displayStyle == .collection {
@@ -94,7 +256,10 @@ internal struct PropertyData {
         if mirror.displayStyle == .dictionary {
             return NSKeyedArchiver.archivedData(withRootObject: value as! NSDictionary)
         }
-
+        if mirror.displayStyle == .set {
+            return NSKeyedArchiver.archivedData(withRootObject: value as! NSSet)
+        }
+        
         /* Raw value */
         if mirror.displayStyle != .optional {
             return value
@@ -107,11 +272,24 @@ internal struct PropertyData {
             return nil
         }
     }
+    //    fileprivate  static var  propertyMaps : [String:[PropertyData]] = [:]
 }
 
 extension PropertyData {
     internal static func validPropertyDataForObject (_ object: Storable) -> [PropertyData] {
         return validPropertyDataForMirror(Mirror(reflecting: object))
+        
+        //        objc_sync_enter(self)
+        //        defer {objc_sync_exit(self)}
+        //
+        //        let tableName = object.tableName()
+        //        if let exist = propertyMaps[tableName]{
+        //            return exist
+        //        }else{
+        //            let datas = validPropertyDataForMirror(Mirror(reflecting: object))
+        //            propertyMaps[tableName] = datas
+        //            return datas
+        //        }
     }
     
     fileprivate static func validPropertyDataForMirror(_ mirror: Mirror, ignoredProperties: Set<String> = []) -> [PropertyData] {
@@ -128,8 +306,9 @@ extension PropertyData {
         }
         
         /* Map children to property data and filter out ignored or invalid properties */
-        propertyData += mirror.children.map { PropertyData(property: $0) }
-                                       .filter { $0.isValid && !ignoredProperties.contains($0.name!) }
+        propertyData += mirror.children
+            .map { PropertyData(property: $0) }
+            .filter { $0.isValid && !ignoredProperties.contains($0.name!) }
         
         return propertyData
     }

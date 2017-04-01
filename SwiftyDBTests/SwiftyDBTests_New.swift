@@ -71,12 +71,12 @@ class SwiftDBTestsNew: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         
         let dog1 = BigDog.init(1, "dog1")
-        let database = SwiftyDB(databaseName: "dogdsskk2rrb2122_1")
-        try! database.open()
+        let database = SwiftXDb(databaseName: "dogdsskk2rrb2122_1")
+ 
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
-        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(BigDog()).value?.count == 1)
+        XCTAssertTrue(database.addObjects(dogs, true).isSuccess)
+        XCTAssertTrue(database.dataFor(BigDog()).value?.count == 1)
     }
     
     func testWithDogNSObject() {
@@ -84,12 +84,12 @@ class SwiftDBTestsNew: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         
         let dog1 = Dog.init(1, "dog1")
-        let database = SwiftyDB(databaseName: "dogdkk2b2122_1")
-        try! database.open()
+        let database = SwiftXDb(databaseName: "dogdkk2b2122_1")
+ 
         try! database.key("123123")
         let dogs  : [NSObject] = [dog1]
-        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(Dog()).value?.count == 1)
+        XCTAssertTrue(database.addObjects(dogs, true).isSuccess)
+        XCTAssertTrue(database.dataFor(Dog()).value?.count == 1)
     }
     
     func testWithDogType() {
@@ -101,22 +101,27 @@ class SwiftDBTestsNew: XCTestCase {
         let dog3 = Dog.init(3, "dog3")
         let dogs = [dog3, dog2]
         
-        let database = SwiftyDB(databaseName: "dogdb")
-        try! database.open()
+        let database = SwiftXDb(databaseName: "dogdb")
+  
         try! database.key("123123")
         
-        XCTAssertTrue(database.addObject(dog1, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(Dog()).value?.count == 1)
-        XCTAssertTrue(database.addObjects(dogs, update: true).isSuccess)
-        XCTAssertTrue(database.dataForType(Dog()).value?.count == 3)
-        XCTAssertTrue(database.dataForType(Dog(), matchingFilter: ["id": 1]).value?.count == 1)
+        XCTAssertTrue(database.addObject(dog1, true).isSuccess)
+        XCTAssertTrue(database.dataFor(Dog()).value?.count == 1)
+        XCTAssertTrue(database.addObjects(dogs, true).isSuccess)
+        XCTAssertTrue(database.dataFor(Dog()).value?.count == 3)
+        
+        
+        let fff1 : SwiftyDB.Filter = ["id": 1]
+        XCTAssertTrue(database.dataFor(Dog(), fff1).value?.count == 1)
         
         dog2.name = "dog222"
-        XCTAssertTrue(database.addObject(dog2, update: true).isSuccess)
-   
-        XCTAssertTrue(database.deleteObjectsForType(Dog(), matchingFilter: ["name": "dog1"]).isSuccess)
-       
-        let result = database.dataForType(Dog(), matchingFilter: ["id": 2])
+        XCTAssertTrue(database.addObject(dog2, true).isSuccess)
+        
+        let fff2 : SwiftyDB.Filter = ["name": "dog1"]
+        XCTAssertTrue(database.deleteObjectsForType(Dog(), fff2).isSuccess)
+        
+        let fff3 : SwiftyDB.Filter = ["id": 2]
+        let result = database.dataFor(Dog(), fff3)
         XCTAssertTrue(result.value![0]["name"] as! String == dog2.name)
          XCTAssertTrue( database.deleteObjectsForType(Dog()).isSuccess)
     }

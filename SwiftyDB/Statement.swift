@@ -8,16 +8,73 @@
 
 import sqlite3
 
-public enum SQLiteDatatypeTiny: String {
+//public enum SQLiteDatatypeTiny: String {
+//    case Text       = "TEXT"
+//    case Integer    = "INTEGER"
+//    case Real       = "REAL"
+//    case Blob       = "BLOB"
+//    case Numeric    = "NUMERIC"
+//    case Null       = "NULL"
+//}
+
+
+public enum SQLiteDatatype: String {
     case Text       = "TEXT"
     case Integer    = "INTEGER"
     case Real       = "REAL"
     case Blob       = "BLOB"
     case Numeric    = "NUMERIC"
     case Null       = "NULL"
+    
+    init?(type: Value.Type) {
+        switch type {
+        case is Int.Type, is Int8.Type, is Int16.Type, is Int32.Type, is Int64.Type, is UInt.Type, is UInt8.Type, is UInt16.Type, is UInt32.Type, is UInt64.Type, is Bool.Type:
+            self.init(rawValue: "INTEGER")
+        case is Double.Type, is Float.Type, is Date.Type:
+            self.init(rawValue: "REAL")
+        case is Data.Type:
+            self.init(rawValue: "BLOB")
+        case is NSNumber.Type:
+            self.init(rawValue: "NUMERIC")
+        case is String.Type, is NSString.Type, is Character.Type:
+            self.init(rawValue: "TEXT")
+        case is NSArray.Type, is NSDictionary.Type, is NSSet.Type:
+            self.init(rawValue: "BLOB")
+        default:
+            fatalError("DSADSASA")
+        }
+    }
+    public func value()->SQLiteValue? {
+        switch self {
+        case .Text:
+            return ""
+        case .Integer:
+            return 0
+        case .Real:
+            return 0.0
+        case .Blob:
+            return nil
+        case .Numeric:
+            return nil
+        case .Null:
+            return nil
+        default:
+            return nil
+        }
+    }
 }
 
-open class Statement {
+
+public protocol StatementData {
+    var dictionary: MapSQLiteValues {get}
+}
+
+internal class Statement : StatementData{
+//    public func printDesc(){ 
+//        Swift.print("stat query: \(self.query)")
+//        Swift.print("stat handle: \(self.handle)")
+//    }
+    
     fileprivate var handle: OpaquePointer?
     var query: String
     
@@ -77,58 +134,42 @@ open class Statement {
         return id > 0 ? id : nil
     }
     
-// MARK: - Execute query
-    
-    /**
-    Execute a write-only update with an array of variables to bind to placeholders in the prepared query
-    
-    - parameter value:  array of values that will be bound to parameters in the prepared query
-    
-    - returns:          `self`
-    */
-    open func executeUpdate(_ values: SQLiteValues = []) throws -> Statement {
-        try execute(values)
-        try step()
+//// MARK: - Execute query
+//    internal func executeUpdateOrQuery(_ update: Bool, _ values: ArraySQLiteValues = []) throws -> Statement {
+//        if update{
+//            try bind(values)
+//            try step()
+//        }else{
+//            try bind(values)
+//        }
+//        return self
+//    }
+//    
+//    internal func executeUpdateOrQuery(_ update: Bool, _ namedValues: MapSQLiteValues) throws -> Statement {
+//        if update{
+//            try bind(namedValues)
+//            try step()
+//        }else{
+//            try bind(namedValues)
+//        }
+//        return self
+//    }
+    internal func executeUpdateOrQuery(_ update: Bool, _ values: SqlValues?) throws -> Statement {
+        if update{
+            try bind(values)
+            try step()
+        }else{
+            try bind(values)
+        }
         return self
     }
     
-    /**
-    Execute a write-only update with a dictionary of variables to bind to placeholders in the prepared query
-     
-    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
-     
-    - returns:              `self`
-    */
-    open func executeUpdate(_ namedValues: NamedSQLiteValues) throws -> Statement {
-        try execute(namedValues)
-        try step()
-        return self
+    public func executeUpdate(_ values: SqlValues? = nil) throws -> Statement {
+        return try self.executeUpdateOrQuery(true, values)
     }
     
-    /**
-    Execute a query with a dictionary of variables to bind to placeholders in the prepared query
-    Finalize the statement when you are done by calling `finalize()`
-     
-    - parameter namedValue: dictionary of values that will be bound to parameters in the prepared query
-     
-    - returns:              `self`
-    */
-    open func execute(_ namedValues: NamedSQLiteValues) throws -> Statement {
-        try bind(namedValues)
-        return self
-    }
-    
-    /**
-    Execute a query with an array of variables to bind to placeholders in the prepared query
-    Finalize the statement when you are done by calling `finalize()`
-     
-    - parameter value:  array of values that will be bound to parameters in the prepared query
-     
-    - returns:          `self`
-    */
-    open func execute(_ values: SQLiteValues = []) throws -> Statement {
-        try bind(values)
-        return self
+    public func execute(_ values: SqlValues? = nil) throws -> Statement {
+        return try self.executeUpdateOrQuery(false, values)
     }
     
 // MARK: - Internal methods
@@ -142,8 +183,6 @@ open class Statement {
     }
     
     internal func prepareForDatabase(_ databaseHandle: OpaquePointer) throws {
-      
-        //var tmp :  OpaquePointer? = handle
         try SQLiteResultHandler.verifyResultCode(
             sqlite3_prepare_v2(databaseHandle,
                                query,
@@ -153,7 +192,23 @@ open class Statement {
             forHandle: handle)
     }
     
-    internal func bind(_ namedValues: NamedSQLiteValues) throws {
+    internal func bind(_ value2: SqlValues?) throws {
+        if let value = value2{
+            if let array = value.arrayx{
+                try bindArray(array)
+                return
+            }
+            if let map = value.mapx{
+                try bindMap(map)
+                return
+            }
+        }else{
+            try bindArray([])
+            return
+        }
+    }
+    
+    internal func bindMap(_ namedValues: MapSQLiteValues) throws {
         var parameterNameToIndexMapping: [String: Int32] = [:]
         
         for (name, _) in namedValues {
@@ -161,14 +216,14 @@ open class Statement {
             parameterNameToIndexMapping[name] = index
         }
         
-        let values: SQLiteValues = namedValues.keys.sorted {
+        let values: ArraySQLiteValues = namedValues.keys.sorted {
             parameterNameToIndexMapping[$0]! < parameterNameToIndexMapping[$1]!
             }.map {namedValues[$0]!}
         
-        try bind(values)
+        try bindArray(values)
     }
     
-    internal func bind(_ values: SQLiteValues) throws {
+    internal func bindArray(_ values: ArraySQLiteValues) throws {
         try reset()
         try clearBindings()
         
@@ -308,7 +363,7 @@ open class Statement {
 extension Statement {
     
     /** Returns the datatype for the column given by an index */
-    public func typeForColumn(_ index: Int32) -> SQLiteDatatypeTiny? {
+    public func typeForColumn(_ index: Int32) -> SQLiteDatatype? {
         switch sqlite3_column_type(handle, index) {
         case SQLITE_INTEGER:
             return .Integer
@@ -499,15 +554,12 @@ extension Statement {
 }
 
 
-
-
-
 //MARK: - Dictionary representation of row
 extension Statement {
     
     /** A dictionary representation of the data contained in the row */
-    public var dictionary: NamedSQLiteValues {
-        var dictionary: NamedSQLiteValues = [:]
+    public var dictionary: MapSQLiteValues {
+        var dictionary: MapSQLiteValues = [:]
         
         for i in 0..<sqlite3_column_count(handle) {
             dictionary[indexToNameMapping[i]!] = valueForColumn(i)
@@ -518,14 +570,11 @@ extension Statement {
 }
 
 
-
-
-
 //MARK: - Values for named columns
 extension Statement {
     
     /** Returns the datatype for the column given by a column name */
-    public func typeForColumn(_ name: String) -> SQLiteDatatypeTiny? {
+    public func typeForColumn(_ name: String) -> SQLiteDatatype? {
         return typeForColumn(nameToIndexMapping[name]!)
     }
     

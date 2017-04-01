@@ -11,12 +11,10 @@ import Foundation
 //a declaration cannot be both 'final' and 'dynamic'
 //This issue arises because Swift is trying to generate a dynamic accessor for the static property for Obj-C compatibility, since the class inherits from NSObject.
 //If your project is in Swift only, rather than using a var accessor you can avoid the issue via the @nonobjc attribute in Swift 2.0
-//extension SwiftyDB  {
-    //@nonobjc
-//    static let defaultDB : SwiftyDB = SwiftyDB.init(databaseName: "SwiftyDB")
-//}
+ 
 
-extension SwiftyDB  {
+
+extension swiftyDb  {
     
     
     // MARK: - Private functions
@@ -31,21 +29,23 @@ extension SwiftyDB  {
      - returns:          Result type indicating the success of the query
      */
     
-    internal func createTableForTypeRepresentedByObject <S: Storable> (_ object: S) -> Result<Bool> {
-        
-        let statement = StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
-        
+    internal func createTableByObject(_ object: Storable) -> Result<Bool> {
         do {
-          //  try dbSync({ (database) -> Void in
-                try database.prepare(statement)
-                    .executeUpdate()
-                    .finalize()
-          //  })
+            let table = try StatementGenerator.createTableStatementForTypeRepresentedByObject(object)
+            try database.update(table)
+            if let sss = self as? IndexProperties{
+                let indexNames = (type(of:sss)).indexProperties()
+                for name in indexNames{
+                    let index = try StatementGenerator.createTableIndex(object, name)
+                    try database.update(index)
+                }
+            }
+            //            try database.prepare(statement)
+            //                .executeUpdate()
+            //                .finalize()
         } catch let error {
             return .Error(error)
         }
-        
-        existingTables.insert(tableNameForType(S))
         
         return .success(true)
     }
@@ -68,58 +68,47 @@ extension SwiftyDB  {
         return dictionary
     }
     
-    /**
-     Check whether a table representing a type exists, or not
-     
-     - parameter type:  type implementing the Storable protocol
-     
-     - returns:         boolean indicating if the table exists
-     */
-    
-//    internal func tableExistsForType(_ type: Storable.Type) throws -> Bool {
-//        let tableName = tableNameForType(type)
-//        return try self.tableExistsForName(tableName)
+//    public func synchronized<T>(_ lockObj: Any!,_ closure: () throws -> T) rethrows ->  T{
+//        objc_sync_enter(lockObj)
+//        defer {objc_sync_exit(lockObj)}
+//        return try closure()
 //    }
+
     
-    
-    internal func tableExistsForObj(_ obj: Storable) throws -> Bool {
-        let tableName = tableNameForObj(obj)
-        Swift.print("tableName: \(tableName)")
-        return try self.tableExistsForName(tableName)
-    }
-    
-    internal func tableExistsForName(_ tableName: String) throws -> Bool {
+    fileprivate func tableExist(_ tableName: String)->Bool{
         var exists: Bool = existingTables.contains(tableName)
-        
         /* Return true if the result is cached */
         guard !exists else {
-            return exists
+            return true
         }
-        
-        //TODO 需要优先判断
-      //  try dbSync({ (database) in
-            exists = try database.containsTable(tableName)
-      //  })
-        
-        /* Cache the result */
+        exists = database.containsTable(tableName)
         if exists {
             existingTables.insert(tableName)
+            return true
+        }else{
+            return false
         }
+    }
+    
+    internal func tableExistsForName(_ tableName: String) -> Bool {
+        objc_sync_enter(self)
+        defer {objc_sync_exit(self)}
+        return tableExist(tableName)
+    }
+    
+    internal func checkOrCreateTable(_ object: Storable){
+        let tableName = object.tableName()
+        objc_sync_enter(self)
+        defer {objc_sync_exit(self)}
         
-        return exists
-    }
-    /**
-     Used to create name of the table representing a type
-     
-     - parameter type:  type for which to generate a table name
-     
-     - returns:         table name as a String
-     */
-    internal func tableNameForType(_ type: Storable.Type) -> String {
-        return String(describing: type)
-    }
-    internal func tableNameForObj(_ obj: Storable) -> String {
-        return String(describing: type(of:obj))
+        let exist = tableExist(tableName)
+        if !exist{
+            if createTableByObject(object).isSuccess{
+                existingTables.insert(tableName)
+            }else{
+                exit(-1)
+            }
+        }
     }
     
     /**
@@ -142,6 +131,18 @@ extension SwiftyDB  {
         return rowData
     }
     
+    
+    internal func parsedDataForRow2(_ row: Statement) -> [String: SQLiteValue?] {
+        var rowData: [String: SQLiteValue?] = [:]
+        
+        for (index, name) in row.indexToNameMapping {
+            let value = row.valueForColumn(index)
+            rowData[name] = value
+        }
+        
+        return rowData
+    }
+    
     /**
      Retrieve the value for a property with the correct datatype
      
@@ -157,34 +158,36 @@ extension SwiftyDB  {
         }
         
         switch propertyData.type {
-        case is Date.Type:    return row.dateForColumn(propertyData.name!) as? Value
-        case is Data.Type:    return row.dataForColumn(propertyData.name!) as? Value
-        case is NSNumber.Type:  return row.numberForColumn(propertyData.name!) as? Value
+        case is Date.Type:    return row.dateForColumn(propertyData.name!)
+        case is Data.Type:    return row.dataForColumn(propertyData.name!)
+        case is NSNumber.Type:  return row.numberForColumn(propertyData.name!)
             
-        case is String.Type:    return row.stringForColumn(propertyData.name!) as? Value
-        case is NSString.Type:  return row.nsstringForColumn(propertyData.name!) as? Value
-        case is Character.Type: return row.characterForColumn(propertyData.name!) as? Value
+        case is String.Type:    return row.stringForColumn(propertyData.name!)
+        case is NSString.Type:  return row.nsstringForColumn(propertyData.name!)
+        case is Character.Type: return row.characterForColumn(propertyData.name!)
             
-        case is Double.Type:    return row.doubleForColumn(propertyData.name!) as? Value
-        case is Float.Type:     return row.floatForColumn(propertyData.name!) as? Value
+        case is Double.Type:    return row.doubleForColumn(propertyData.name!)
+        case is Float.Type:     return row.floatForColumn(propertyData.name!)
             
-        case is Int.Type:       return row.integerForColumn(propertyData.name!) as? Value
-        case is Int8.Type:      return row.integer8ForColumn(propertyData.name!) as? Value
-        case is Int16.Type:     return row.integer16ForColumn(propertyData.name!) as? Value
-        case is Int32.Type:     return row.integer32ForColumn(propertyData.name!) as? Value
-        case is Int64.Type:     return row.integer64ForColumn(propertyData.name!) as? Value
-        case is UInt.Type:      return row.unsignedIntegerForColumn(propertyData.name!) as? Value
-        case is UInt8.Type:     return row.unsignedInteger8ForColumn(propertyData.name!) as? Value
-        case is UInt16.Type:    return row.unsignedInteger16ForColumn(propertyData.name!) as? Value
-        case is UInt32.Type:    return row.unsignedInteger32ForColumn(propertyData.name!) as? Value
-        case is UInt64.Type:    return row.unsignedInteger64ForColumn(propertyData.name!) as? Value
+        case is Int.Type:       return row.integerForColumn(propertyData.name!)
+        case is Int8.Type:      return row.integer8ForColumn(propertyData.name!)
+        case is Int16.Type:     return row.integer16ForColumn(propertyData.name!)
+        case is Int32.Type:     return row.integer32ForColumn(propertyData.name!)
+        case is Int64.Type:     return row.integer64ForColumn(propertyData.name!)
+        case is UInt.Type:      return row.unsignedIntegerForColumn(propertyData.name!)
+        case is UInt8.Type:     return row.unsignedInteger8ForColumn(propertyData.name!)
+        case is UInt16.Type:    return row.unsignedInteger16ForColumn(propertyData.name!)
+        case is UInt32.Type:    return row.unsignedInteger32ForColumn(propertyData.name!)
+        case is UInt64.Type:    return row.unsignedInteger64ForColumn(propertyData.name!)
             
-        case is Bool.Type:      return row.boolForColumn(propertyData.name!) as? Value
+        case is Bool.Type:      return row.boolForColumn(propertyData.name!)
             
         case is NSArray.Type:
             return NSKeyedUnarchiver.unarchiveObject(with: row.dataForColumn(propertyData.name!)!) as? NSArray
         case is NSDictionary.Type:
             return NSKeyedUnarchiver.unarchiveObject(with: row.dataForColumn(propertyData.name!)!) as? NSDictionary
+        case is NSSet.Type:
+            return NSKeyedUnarchiver.unarchiveObject(with: row.dataForColumn(propertyData.name!)!) as? NSSet
             
             
         default:                return nil

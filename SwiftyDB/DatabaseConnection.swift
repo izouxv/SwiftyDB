@@ -17,9 +17,7 @@ public protocol SQLiteValue {}
 extension String: SQLiteValue {}
 extension NSString: SQLiteValue {}
 extension Character: SQLiteValue {}
-
 extension Bool: SQLiteValue {}
-
 extension Int: SQLiteValue {}
 extension Int8: SQLiteValue {}
 extension Int16: SQLiteValue {}
@@ -30,16 +28,52 @@ extension UInt8: SQLiteValue {}
 extension UInt16: SQLiteValue {}
 extension UInt32: SQLiteValue {}
 extension UInt64: SQLiteValue {}
-
 extension Float: SQLiteValue {}
 extension Double: SQLiteValue {}
-
 extension Data: SQLiteValue {}
 extension Date: SQLiteValue {}
 extension NSNumber: SQLiteValue {}
 
-public typealias SQLiteValues = Array<SQLiteValue?>
-public typealias NamedSQLiteValues = Dictionary<String, SQLiteValue?>
+public typealias ArraySQLiteValues = Array<SQLiteValue?>
+public typealias MapSQLiteValues = Dictionary<String, SQLiteValue?>
+
+public class SqlValues : ExpressibleByArrayLiteral, ExpressibleByDictionaryLiteral{
+    var arrayx : ArraySQLiteValues?
+    var mapx : MapSQLiteValues?
+    public init(_ values: ArraySQLiteValues) {
+        self.arrayx = values
+    }
+    public init(_ values: MapSQLiteValues) {
+        self.mapx = values
+    }
+    public required init(arrayLiteral elements: SQLiteValue?...){
+        self.arrayx = elements
+    }
+    public required init(dictionaryLiteral elements: (String, SQLiteValue?)...){
+        var mapxx : MapSQLiteValues = [:]
+        elements.forEach { (propertyName, value) in
+            mapxx[propertyName] = value
+        }
+        self.mapx = mapxx
+    }
+    internal func asdf() {
+        test(["a":123])
+        test([1])
+//        var numarray: ArraySQLiteValues = [1]
+//        test(numarray)
+//        let xxx : MapSQLiteValues = ["a":123]
+//        test(xxx)
+    }
+    internal func test(_ s : SqlValues){ 
+    }
+}
+
+//func = (inout left: SqlValues, right: ArraySQLiteValues)-> SqlValues {
+//    return SqlValues(right)
+//}
+//func = (inout left: Vector2D, right: MapSQLiteValues) -> SqlValues{
+//    return SqlValues(right)
+//}
 
 // MARK: -
 
@@ -176,15 +210,14 @@ internal let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.se
 
 
 /** Responsible for opening and closing database connections, executing queries, and managing transactions */
-open class DatabaseConnection {
+internal class DatabaseConnection {
     
     fileprivate var handle: OpaquePointer? = nil
-    fileprivate let path: String
     
-    fileprivate var isOpen: Bool = false
+    public internal(set) var path: String
     
     public func IsOpen() -> Bool {
-        return self.isOpen
+        return handle != nil
     }
     
     public init(path: String) {
@@ -197,21 +230,19 @@ open class DatabaseConnection {
     
     /** Open the database connection */
     public func open() throws {
-        if isOpen{
+        if self.IsOpen(){
             return
         }
         try SQLiteResultHandler.verifyResultCode(sqlite3_open(path, &handle), forHandle: handle)
-        isOpen = true
     }
     
     /** Close the database connection */
     public func close() throws {
-        if !isOpen{
+        if !self.IsOpen(){
             return
         }
         try SQLiteResultHandler.verifyResultCode(sqlite3_close(handle), forHandle: handle)
         handle = nil
-        isOpen = false
     }
     
     /**
@@ -230,26 +261,31 @@ open class DatabaseConnection {
 
 // MARK: - Transactions
 extension DatabaseConnection {
-    
     /** Begin a transaction */
     public  func beginTransaction() throws {
-        try self.prepare("BEGIN TRANSACTION")
-            .executeUpdate()
-            .finalize()
+        try self.update("BEGIN TRANSACTION")//begin deferred transaction, begin exclusive transaction
     }
     
     /** End an ongoing transaction */
-    public  func endTransaction() throws {
-        try self.prepare("END TRANSACTION")
-            .executeUpdate()
-            .finalize()
+    public  func endTransaction() throws {//END TRANSACTION is an alias for COMMIT.
+        try self.update("END TRANSACTION")
     }
     
     /** Rollback a transaction */
     public func rollback() throws {
-        try self.prepare("ROLLBACK TRANSACTION")
-            .executeUpdate()
-            .finalize()
+        try self.update("ROLLBACK TRANSACTION")
+    }
+}
+
+extension DatabaseConnection {
+    public  func startSavepoint(_ name : String) throws {
+        try self.update("SAVEPOINT \(name);")
+    }
+    public  func releaseSavepoint(_ name : String) throws {
+        try self.update("RELEASE SAVEPOINT \(name);")
+    }
+    public  func rollbackSavepoint(_ name : String) throws {
+        try self.update("ROLLBACK TRANSACTION TO SAVEPOINT \(name);")
     }
 }
 
@@ -282,21 +318,11 @@ extension DatabaseConnection {
      
      - returns:              boolean indicating whether the table exists, or not
      */
-    public func containsTable(_ tableName: String) throws -> Bool {
+    public func containsTable(_ tableName: String) -> Bool {
         let query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
-        
-        let statement = try prepare(query)
-            .execute([tableName])
-        
-        /* Finalize the statement if necessary */
-        defer {
-            try! statement.finalize()
-        }
-        
-        return statement.next() != nil
+        return try! self.query(query, [tableName]) 
     }
 }
-
 
 extension DatabaseConnection {
     public func key(key: String) throws {
@@ -311,6 +337,35 @@ extension DatabaseConnection {
     }
 }
 
+extension DatabaseConnection{
+    internal func query(_ sql: String, _ values: SqlValues? = nil, _ cb:((StatementData)->Void)?=nil) throws -> Bool{
+        var statement = try prepare(sql)
+        if let v = values{
+            statement = try statement.execute(v)
+        }
+        
+        /* Finalize the statement if necessary */
+        defer {
+            try! statement.finalize()
+        }
+        
+        var stat : Statement? = statement.next()
+        let ret = stat != nil
+        if (cb == nil){
+            return ret
+        }
+        while stat != nil{
+            cb!(stat!)
+            stat = stat!.next()
+        }
+        return ret
+    }
+    internal func update(_ statement: String, _ data: SqlValues?=nil) throws{
+        try prepare(statement)
+            .executeUpdate(data)
+            .finalize()
+    }
+}
 
 
 

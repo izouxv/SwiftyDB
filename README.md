@@ -66,8 +66,8 @@ database.addObjects(dogs, update: true)
 Retrieve data with datatypes matching those of the type's properties
 ```Swift
 /* Array of dictionaries representing `Dog` objects from the database */
-database.dataForType(Dog.self)
-database.dataForType(Dog.self, matchingFilters: ["id": 1])
+database.dataFor(Dog.self)
+database.dataFor(Dog.self, matchingFilters: ["id": 1])
 ````
 Dog data example
 ```Swift
@@ -83,8 +83,8 @@ Dog data example
 
 Retrieve objects with data from the database
 ```Swift
-database.objectsForType(Dog.self)
-database.objectsForType(Dog.self, matchingFilters: ["id": 1])
+database.objectsFor(Dog.self)
+database.objectsFor(Dog.self, matchingFilters: ["id": 1])
 ````
 
 > In order to retrieve objects, Swift currently imposes some [restictions on your classes](#howToRetrieveObjects)
@@ -146,7 +146,7 @@ database.asyncDeleteObjectsForType(Dog.self) { (result) -> Void in
 #### <a name="simpleFilters">Simple filters</a>
 The easiest way to define your filter, is by using a dictionary:
 ```Swift
-database.objectsForType(Dog.self, matchingFilters: ["name": "Ghost"])
+database.objectsFor(Dog.self, matchingFilters: ["name": "Ghost"])
 ```
 All objects with the name 'Ghost' will be retrieved
 
@@ -159,7 +159,7 @@ let filter = Filter.equal("name", value: "Ghost")
                    .like("owner", pattern: "J_h%")
                    .greaterThan("id", value: 3)
 
-database.objectsForType(Dog.self, matchingFilters: filter)
+database.objectsFor(Dog.self, matchingFilters: filter)
 ```
 
 See all available filters in the [documentation](http://oyvindkg.github.io/swiftydb/docs/Classes/Filter.html).

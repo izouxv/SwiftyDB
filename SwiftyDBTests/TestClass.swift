@@ -8,9 +8,9 @@
 
 import Foundation
 
-import SwiftyDB
+@testable import SwiftyDB
 
-class DynamicTestClass: NSObject, Storable {
+class DynamicTestClass: NSObject {
     
     var primaryKey: NSNumber = 1
     
@@ -53,9 +53,28 @@ extension DynamicTestClass: PrimaryKeys {
     }
 }
 
-class TestClass:NSObject, Storable {
-  
-
+class TestClass:NSObject {
+    
+    func loadSampleData(){
+          optionalString = "123"
+          optionalNSString = "123"
+          optionalNumber = 123
+          optionalInt = 123
+          optionalInt8 = 123
+          optionalInt16 = 123
+          optionalInt32 = 123
+          optionalInt64 = 123
+          optionalUint = 123
+          optionalUint8 = 123
+          optionalUint16 = 123
+          optionalUint32 = 123
+          optionalUint64 = 123
+        
+          optionalBool = true
+        
+          optionalFloat = 123
+          optionalDouble = 123
+    }
     
     var primaryKey: NSNumber = 1
     var ignored: Int = -1
@@ -93,7 +112,7 @@ class TestClass:NSObject, Storable {
     var date: Date        = Date()
     var number: NSNumber    = 1
     var data: Data        = String("Test").data(using: String.Encoding.utf8)! //Empty data is treated as NULL by sqlite3
-
+    
     var int: Int            = 1
     var int8: Int8          = 1
     var int16: Int16        = 1
@@ -114,18 +133,135 @@ class TestClass:NSObject, Storable {
     var optionalArray: NSArray? = ["1","2"]
     var dictionary: NSDictionary = ["1":1,"2":2]
     var optionalDictionary: NSDictionary? = ["1":1,"2":2]
+    var setttt : NSSet =  ["1","2"]
+//    var set : NSSet =  ["1","2"]
     
     required override init() {}
+    
+    
 }
+
+
 
 extension TestClass: PrimaryKeys {
     static func primaryKeys() -> Set<String> {
         return ["primaryKey"]
     }
 }
-
 extension TestClass: IgnoredProperties {
     static func ignoredProperties() -> Set<String> {
         return ["ignored"]
     }
 }
+
+class TestClassSimple:NSObject {
+    var primaryKey: NSNumber = 1
+    var num: NSNumber = 1
+}
+
+extension TestClassSimple: PrimaryKeys {
+    static func primaryKeys() -> Set<String> {
+        return ["primaryKey"]
+    }
+}
+
+class TestMigrateVer0 : NSObject{
+    var name : String = ""
+    var age : String = ""
+    var email : String = ""
+    var ignored : String = ""
+    var indexeddd : String = ""
+}
+extension TestMigrateVer0: PrimaryKeys,IgnoredProperties,TableName,IndexProperties {
+    static func primaryKeys() -> Set<String> {
+        return ["name"]
+    }
+    static func ignoredProperties() -> Set<String> {
+        return ["ignored"]
+    }
+    static func tableName()->String{
+        return "testMigrate"
+    }
+    static func indexProperties() -> Set<String>{
+        return ["indexeddd"]
+    }
+}
+
+class TestMigrateVer1 : NSObject, MigrationProperties, TableName{
+    var name : String = ""
+    var age : Int = 0  //retype
+    var address : String = ""//add
+    //    var email : String = ""//remove
+    static  func tableName()->String{
+        return "testMigrate"
+    }
+    static func migrate(_ verOld:Int, _ action:MigrationOperationI){
+        if verOld < 1{
+            _=action.remove("email").remove("indexeddd")
+                .migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in
+                    return Int(oldData as! String)
+                })
+                .add("address")//add new colume and set default data
+                .migrate("address", { (oldData:SQLiteValue?) -> SQLiteValue? in
+                    return "Add"
+                })
+        }
+    }
+}
+
+
+class TestMigrateVer2 : NSObject, MigrationProperties, TableName{
+    var name : String = ""
+    var age : Int = 0//update data
+    var Address : String = ""//rename
+    var nikeName : String = ""//add and init
+    static  func tableName()->String{
+        return "testMigrate"
+    }
+    static func migrate(_ verOld:Int, _ action:MigrationOperationI){
+        if verOld < 2{
+            _=action.rename("address", "Address")
+                .migrate("age", { (oldData:SQLiteValue?) -> SQLiteValue? in//version upgrade, and data will updata
+                    return 100
+                })
+                .add("nikeName")//add new colume and set default data
+                .migrate("nikeName", { (oldData:SQLiteValue?) -> SQLiteValue? in
+                    return "default"
+                })
+        }
+    }
+}
+
+
+class TestMigrateVer0_2 : NSObject, MigrationProperties, TableName{
+    var name : String = ""
+    var age : Int = 0//update data
+    var Address : String = ""//rename
+    var nikeName : String = ""//add and init
+    static  func tableName()->String{
+        return "testMigrate"
+    }
+    static func migrate(_ verOld:Int, _ action:MigrationOperationI){
+        TestMigrateVer1.migrate(verOld, action)
+        TestMigrateVer2.migrate(verOld, action)
+    }
+}
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

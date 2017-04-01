@@ -7,20 +7,21 @@
 
 import Quick
 import Nimble
-import SwiftyDB
+@testable import SwiftyDB
 
 
 class RetrievedDataSpec: SwiftyDBSpec {
     override func spec() {
         super.spec()
         
-        let database = SwiftyDB(databaseName: "test_database")
+        let database = SwiftXDb(databaseName: "test_database")
+      
         
         describe("Datatypes retrieved matches datatypes stored") {
             let object = TestClass()
             database.addObject(object)
             
-            let data = database.dataForType(TestClass.self).value!.first!
+            let data = database.dataFor(TestClass()).value!.first!
             
             context("Text types matches") {
                 it("should return String") {
@@ -95,6 +96,9 @@ class RetrievedDataSpec: SwiftyDBSpec {
                 
                 it("should return NSDictionary") {
                     expect(data["dictionary"]! is NSDictionary).to(beTrue())
+                }
+                it("should return NSSSet") {
+                    expect(data["setttt"]! is NSSet).to(beTrue())
                 }
             }
         }
